@@ -1,151 +1,1053 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tersus — Andy Nguyen</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Inter:wght@400;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Tersus — A case study by Andy Nguyen</title>
+<meta name="description" content="Tersus — a two-sided cleaning marketplace. Designed solo, mobile + web, over ~1 year. UX/UI case study by Andy Nguyen." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,300..800,0..100&family=Inter:wght@300..700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+/* ============================================================
+   Tersus — editorial case study
+   Warm cream, deep ink, blue accent, peach period
+   Fraunces (display) + Inter (body)
+   ============================================================ */
+
+:root {
+  --cream:   #fcf7f4;
+  --cream-2: #f5ede5;
+  --paper:   #fff9f3;
+  --ink:     #1a1612;
+  --ink-2:   #2a2520;
+  --ink-soft:#6b625a;
+  --muted:   #a39a90;
+  --rule:    #e9dfd2;
+  --rule-2:  #d8ccba;
+  --blue:    #1353be;
+  --blue-soft:#e3ecfb;
+  --peach:   #f49e4f;
+  --peach-soft:#fde2c8;
+
+  --display: "Fraunces", "Times New Roman", serif;
+  --sans:    "Inter", -apple-system, "Helvetica Neue", sans-serif;
+  --mono:    "JetBrains Mono", "SF Mono", Menlo, monospace;
+
+  --maxw: 1240px;
+  --gutter: clamp(20px, 4vw, 56px);
+
+  --sidebar-w: 220px;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+html, body {
+  margin: 0; padding: 0;
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 16px; line-height: 1.6;
+  font-feature-settings: "ss01" on, "cv11" on;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+img, svg { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; padding: 0; }
+::selection { background: var(--ink); color: var(--cream); }
+
+.wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 var(--gutter); }
+
+/* ============== Top nav ============== */
+.nav {
+  position: sticky; top: 0;
+  background: rgba(252, 247, 244, 0.86);
+  backdrop-filter: saturate(140%) blur(10px);
+  -webkit-backdrop-filter: saturate(140%) blur(10px);
+  border-bottom: 1px solid transparent;
+  z-index: 50;
+  transition: border-color 200ms ease;
+}
+.nav.scrolled { border-bottom-color: var(--rule); }
+.nav-inner {
+  max-width: var(--maxw); margin: 0 auto;
+  padding: 18px var(--gutter);
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 24px;
+}
+.nav-left  { justify-self: start; }
+.nav-mark  { justify-self: center; }
+.nav-right { justify-self: end; }
+.nav-back {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 13px; color: var(--ink-soft); font-weight: 500;
+  transition: gap 200ms ease, color 200ms ease;
+}
+.nav-back:hover { gap: 14px; color: var(--ink); }
+.nav-back .arrow {
+  width: 24px; height: 24px; border-radius: 50%;
+  display: inline-grid; place-items: center;
+  background: var(--ink); color: var(--cream);
+}
+.brandmark {
+  font-family: var(--display);
+  font-weight: 400;
+  font-style: italic;
+  font-size: 22px;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  display: inline-flex; align-items: baseline; gap: 1px;
+}
+.brandmark .dot { color: var(--peach); }
+.nav-links {
+  display: flex; align-items: center; gap: 28px;
+  font-size: 13px; font-weight: 500;
+}
+.nav-links a { color: var(--ink-soft); transition: color 180ms; }
+.nav-links a:hover { color: var(--ink); }
+
+/* ============== HERO ============== */
+.hero {
+  padding: clamp(48px, 8vw, 96px) 0 clamp(60px, 9vw, 120px);
+  position: relative;
+  text-align: center;
+}
+.hero .eyebrow {
+  font-family: var(--mono);
+  font-size: 11px; letter-spacing: 0.24em; text-transform: uppercase;
+  color: var(--ink-soft); font-weight: 500;
+  display: inline-flex; align-items: center; gap: 14px;
+  margin-bottom: 56px;
+}
+.hero .eyebrow::before,
+.hero .eyebrow::after {
+  content: ""; width: 28px; height: 1px; background: var(--rule-2);
+}
+
+.hero-title {
+  font-family: var(--display);
+  font-weight: 300;
+  font-style: normal;
+  font-variation-settings: "opsz" 144, "SOFT" 30;
+  font-size: clamp(120px, 22vw, 320px);
+  line-height: 0.86;
+  letter-spacing: -0.045em;
+  margin: 0;
+  color: var(--ink);
+}
+.hero-title .dot { color: var(--peach); }
+
+.hero-sub {
+  margin: clamp(40px, 6vw, 64px) auto 0;
+  font-family: var(--display);
+  font-weight: 350;
+  font-style: italic;
+  font-variation-settings: "opsz" 36, "SOFT" 50;
+  font-size: clamp(22px, 2.6vw, 32px);
+  line-height: 1.32;
+  letter-spacing: -0.015em;
+  color: var(--ink-2);
+  max-width: 26ch;
+  text-wrap: balance;
+}
+
+.hero-pills {
+  margin: 48px auto 0;
+  display: flex; flex-wrap: wrap; justify-content: center;
+  gap: 10px;
+}
+.pill {
+  padding: 9px 18px;
+  border: 1px solid var(--rule-2);
+  border-radius: 100px;
+  background: var(--paper);
+  font-size: 12px; font-weight: 500; letter-spacing: 0.04em;
+  color: var(--ink);
+  display: inline-flex; align-items: center; gap: 8px;
+}
+.pill .dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--blue);
+}
+.pill.peach .dot { background: var(--peach); }
+.pill.ink .dot { background: var(--ink); }
+
+/* ============== Quick meta bar (under hero) ============== */
+.metabar {
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  background: var(--paper);
+}
+.metabar-inner {
+  max-width: var(--maxw); margin: 0 auto;
+  padding: 24px var(--gutter);
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 28px;
+  align-items: center;
+}
+.metabar dt {
+  font-family: var(--mono);
+  font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--ink-soft); font-weight: 500;
+  margin-bottom: 6px;
+}
+.metabar dd {
+  margin: 0;
+  font-size: 14px; font-weight: 500;
+  color: var(--ink);
+  line-height: 1.4;
+}
+
+/* ============== LAYOUT: sticky sidebar + content ============== */
+.layout {
+  max-width: var(--maxw); margin: 0 auto;
+  padding: clamp(80px, 10vw, 140px) var(--gutter) 80px;
+  display: grid;
+  grid-template-columns: var(--sidebar-w) 1fr;
+  gap: clamp(40px, 6vw, 96px);
+  align-items: start;
+}
+
+/* ----- Sticky section nav ----- */
+.side {
+  position: sticky; top: 120px;
+  align-self: start;
+}
+.side ol {
+  list-style: none; padding: 0; margin: 0;
+  display: flex; flex-direction: column; gap: 18px;
+}
+.side a {
+  display: inline-flex; align-items: center; gap: 14px;
+  font-size: 14px; font-weight: 500;
+  color: var(--muted);
+  transition: color 220ms ease;
+  line-height: 1.3;
+}
+.side a .num {
+  font-family: var(--mono);
+  font-size: 10px; letter-spacing: 0.12em;
+  color: var(--rule-2);
+  width: 22px; flex: none;
+  transition: color 220ms ease;
+}
+.side a:hover { color: var(--ink-soft); }
+.side a:hover .num { color: var(--ink-soft); }
+.side a.active { color: var(--ink); }
+.side a.active .num { color: var(--blue); }
+.side a.active::after {
+  content: ""; width: 6px; height: 6px; border-radius: 50%;
+  background: var(--blue);
+  margin-left: auto;
+}
+
+/* ----- Content column ----- */
+.col { min-width: 0; }
+
+.section {
+  padding: clamp(48px, 7vw, 96px) 0;
+  scroll-margin-top: 96px;
+}
+.section:first-of-type { padding-top: 0; }
+.section + .section { border-top: 1px solid var(--rule); }
+
+.eyebrow-sm {
+  font-family: var(--mono);
+  font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--ink-soft); font-weight: 500;
+  margin-bottom: 28px;
+}
+
+.h-display {
+  font-family: var(--display);
+  font-weight: 380;
+  font-variation-settings: "opsz" 144, "SOFT" 30;
+  font-size: clamp(36px, 4.6vw, 60px);
+  line-height: 1.04;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+  margin: 0 0 32px;
+  text-wrap: balance;
+}
+.h-display .em {
+  font-style: italic;
+  font-weight: 350;
+  color: var(--blue);
+}
+.h-display .em-ink {
+  font-style: italic;
+  font-weight: 350;
+}
+
+.prose p {
+  font-size: 17px; line-height: 1.72;
+  color: var(--ink-2);
+  margin: 0 0 22px;
+  max-width: 62ch;
+  text-wrap: pretty;
+}
+.prose p strong { color: var(--ink); font-weight: 600; }
+.prose p em { font-style: italic; }
+.prose .lede {
+  font-family: var(--display);
+  font-weight: 360;
+  font-variation-settings: "opsz" 36;
+  font-size: clamp(20px, 2vw, 24px);
+  line-height: 1.42;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  max-width: 38ch;
+  margin-bottom: 28px;
+}
+
+/* ----- Image placeholders ----- */
+.figure {
+  margin: clamp(36px, 5vw, 72px) 0;
+  border-radius: 16px;
+  overflow: hidden;
+}
+.fig-stage {
+  position: relative;
+  background: var(--cream-2);
+  border: 1px solid var(--rule);
+  border-radius: 16px;
+  aspect-ratio: 16 / 10;
+  display: grid; place-items: center;
+  overflow: hidden;
+}
+.fig-stage.peach { background: var(--peach-soft); border-color: #f0c89a; }
+.fig-stage.blue  { background: var(--blue-soft); border-color: #c7d6f3; }
+.fig-stage.ink   { background: var(--ink); border-color: var(--ink); color: var(--cream); }
+.fig-stage.tall { aspect-ratio: 4 / 3; }
+.fig-stage.wide { aspect-ratio: 21 / 9; }
+
+/* Diagonal-stripe placeholder body */
+.fig-stage::before {
+  content: "";
+  position: absolute; inset: 0;
+  background-image: repeating-linear-gradient(135deg,
+    transparent 0 22px,
+    rgba(26, 22, 18, 0.035) 22px 23px);
+  pointer-events: none;
+}
+.fig-stage.ink::before {
+  background-image: repeating-linear-gradient(135deg,
+    transparent 0 22px,
+    rgba(252, 247, 244, 0.06) 22px 23px);
+}
+
+.fig-label {
+  position: relative;
+  z-index: 2;
+  font-family: var(--mono);
+  font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--ink-soft);
+  display: inline-flex; flex-direction: column; align-items: center; gap: 8px;
+  text-align: center; max-width: 38ch; padding: 0 24px;
+}
+.fig-stage.ink .fig-label { color: rgba(252,247,244,0.7); }
+.fig-label .tag {
+  padding: 6px 12px;
+  background: var(--paper);
+  border: 1px solid var(--rule-2);
+  border-radius: 100px;
+  letter-spacing: 0.16em;
+}
+.fig-stage.ink .fig-label .tag {
+  background: rgba(252,247,244,0.06);
+  border-color: rgba(252,247,244,0.18);
+  color: var(--cream);
+}
+.fig-label .desc {
+  font-family: var(--sans);
+  font-size: 13px; line-height: 1.5;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--ink-soft);
+}
+.fig-stage.ink .fig-label .desc { color: rgba(252,247,244,0.7); }
+
+.fig-cap {
+  margin-top: 16px;
+  font-size: 13px; color: var(--ink-soft);
+  font-style: italic;
+  max-width: 70ch;
+  text-wrap: pretty;
+}
+
+/* ----- "Two users" split figure (the challenge) ----- */
+.split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 48px 0 24px;
+}
+.split .fig-stage { aspect-ratio: 4 / 5; border-radius: 12px; }
+.split-card {
+  padding: 24px;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  margin-top: 14px;
+}
+.split-card .who {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.22em;
+  text-transform: uppercase; color: var(--blue); font-weight: 500;
+  margin-bottom: 12px;
+}
+.split-card .lead {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 22px; line-height: 1.25;
+  letter-spacing: -0.01em;
+  color: var(--ink); margin: 0 0 8px;
+}
+.split-card p {
+  font-size: 14px; line-height: 1.55; color: var(--ink-soft);
+  margin: 0;
+}
+
+/* ----- Stat callouts ----- */
+.stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 48px 0;
+}
+.stat-card {
+  padding: 36px 32px;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 14px;
+  position: relative;
+}
+.stat-card .n {
+  font-family: var(--display);
+  font-weight: 320;
+  font-variation-settings: "opsz" 144, "SOFT" 40;
+  font-size: clamp(64px, 8vw, 96px);
+  line-height: 0.9; letter-spacing: -0.035em;
+  color: var(--ink);
+  display: inline-flex; align-items: baseline;
+}
+.stat-card .n .dot { color: var(--peach); }
+.stat-card .n .em { font-style: italic; color: var(--blue); font-weight: 320; }
+.stat-card .l {
+  margin-top: 14px;
+  font-size: 14px; line-height: 1.45;
+  color: var(--ink-soft);
+  max-width: 32ch;
+}
+.stat-card.blue {
+  background: var(--blue);
+  color: var(--cream);
+  border-color: var(--blue);
+}
+.stat-card.blue .n { color: var(--cream); }
+.stat-card.blue .n .em { color: var(--peach); }
+.stat-card.blue .l { color: rgba(252,247,244, 0.78); }
+
+/* ----- Research table ----- */
+.research-table {
+  margin: 40px 0 8px;
+  border-top: 1px solid var(--rule);
+}
+.research-table .row {
+  display: grid;
+  grid-template-columns: 48px 1fr 140px;
+  gap: 24px;
+  padding: 22px 4px;
+  border-bottom: 1px solid var(--rule);
+  align-items: baseline;
+}
+.research-table .phase {
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.16em;
+  color: var(--blue); font-weight: 500;
+}
+.research-table .focus {
+  font-size: 15px; color: var(--ink); font-weight: 500;
+}
+.research-table .pp {
+  font-family: var(--mono); font-size: 12px; color: var(--ink-soft);
+  text-align: right;
+}
+
+/* ----- Decision blocks ----- */
+.decision { padding: 56px 0; }
+.decision + .decision { border-top: 1px solid var(--rule); }
+.decision .num {
+  font-family: var(--mono);
+  font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--blue); font-weight: 500;
+  margin-bottom: 18px;
+  display: inline-flex; align-items: center; gap: 10px;
+}
+.decision .num::before {
+  content: ""; width: 18px; height: 1px; background: var(--blue);
+}
+.decision h3 {
+  font-family: var(--display);
+  font-weight: 380;
+  font-size: clamp(30px, 3.4vw, 42px);
+  line-height: 1.08; letter-spacing: -0.02em;
+  margin: 0 0 24px;
+  text-wrap: balance;
+  max-width: 22ch;
+  color: var(--ink);
+}
+.decision h3 em { font-style: italic; font-weight: 360; color: var(--blue); }
+
+.pullquote {
+  margin: 40px 0 8px;
+  padding: 36px 40px;
+  background: var(--ink);
+  color: var(--cream);
+  border-radius: 16px;
+  position: relative;
+}
+.pullquote .mark {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 56px; line-height: 1;
+  color: var(--peach);
+  position: absolute; top: 12px; left: 20px;
+}
+.pullquote q {
+  display: block;
+  font-family: var(--display);
+  font-weight: 360;
+  font-style: italic;
+  font-size: clamp(22px, 2.4vw, 30px);
+  line-height: 1.32;
+  letter-spacing: -0.01em;
+  margin: 12px 0 18px;
+  max-width: 38ch;
+  quotes: none;
+}
+.pullquote q::before, .pullquote q::after { content: ""; }
+.pullquote cite {
+  font-family: var(--mono);
+  font-style: normal;
+  font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: rgba(252, 247, 244, 0.6);
+}
+
+/* ----- Outcome list ----- */
+.outcome-list {
+  list-style: none; padding: 0; margin: 32px 0 0;
+  border-top: 1px solid var(--rule);
+}
+.outcome-list li {
+  display: grid;
+  grid-template-columns: 40px 1fr;
+  gap: 24px;
+  padding: 22px 0;
+  border-bottom: 1px solid var(--rule);
+  align-items: baseline;
+}
+.outcome-list li .n {
+  font-family: var(--mono);
+  font-size: 11px; letter-spacing: 0.18em;
+  color: var(--blue); font-weight: 500;
+}
+.outcome-list li p {
+  font-size: 17px; line-height: 1.55; color: var(--ink);
+  margin: 0; max-width: 60ch;
+}
+
+/* ----- HMW pull box ----- */
+.hmw {
+  margin: 48px 0;
+  border-radius: 16px;
+  background: var(--peach-soft);
+  border: 1px solid #f0c89a;
+  padding: clamp(48px, 6vw, 80px) clamp(36px, 5vw, 60px);
+  text-align: center;
+  position: relative;
+}
+.hmw .label {
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.22em;
+  color: var(--ink-soft); text-transform: uppercase; font-weight: 500;
+  margin-bottom: 18px;
+}
+.hmw .q {
+  font-family: var(--display);
+  font-weight: 360;
+  font-size: clamp(24px, 3vw, 36px);
+  line-height: 1.18;
+  letter-spacing: -0.015em;
+  max-width: 28ch;
+  margin: 0 auto;
+  color: var(--ink);
+}
+.hmw .q em { font-style: italic; color: var(--blue); }
+
+/* ----- Next case + footer ----- */
+.next-case {
+  margin: 60px 0 0;
+  padding: clamp(48px, 6vw, 80px) clamp(36px, 5vw, 60px);
+  background: var(--ink);
+  color: var(--cream);
+  border-radius: 18px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 32px;
+  align-items: end;
+}
+.next-case .label {
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.22em;
+  text-transform: uppercase; color: var(--peach); font-weight: 500;
+  margin-bottom: 14px;
+}
+.next-case .t {
+  font-family: var(--display);
+  font-weight: 360;
+  font-size: clamp(32px, 4.6vw, 56px);
+  line-height: 1.05; letter-spacing: -0.02em;
+  margin: 0;
+  max-width: 18ch;
+}
+.next-case .t em { font-style: italic; color: var(--peach); font-weight: 360; }
+.next-case .arrow {
+  width: 64px; height: 64px; border-radius: 50%;
+  background: var(--cream); color: var(--ink);
+  display: grid; place-items: center;
+  transition: transform 240ms cubic-bezier(.2,.7,.2,1);
+}
+.next-case:hover .arrow { transform: rotate(-12deg) scale(1.06); }
+
+.footer {
+  margin-top: 80px;
+  border-top: 1px solid var(--rule);
+}
+.footer-inner {
+  max-width: var(--maxw); margin: 0 auto;
+  padding: 40px var(--gutter);
+  display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: 16px;
+  font-size: 13px; color: var(--ink-soft);
+}
+.footer-inner .brandmark { font-size: 18px; }
+.footer-inner a { color: var(--ink-soft); transition: color 180ms; }
+.footer-inner a:hover { color: var(--ink); }
+
+/* ============== Reveal ============== */
+.reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 800ms cubic-bezier(.2,.7,.2,1), transform 800ms cubic-bezier(.2,.7,.2,1);
+}
+.reveal.in { opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; }
+  .reveal { opacity: 1; transform: none; }
+  html { scroll-behavior: auto; }
+}
+
+/* ============== Responsive ============== */
+@media (max-width: 1020px) {
+  .layout {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  .side {
+    position: static;
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--rule);
+    overflow-x: auto;
+  }
+  .side ol {
+    flex-direction: row;
+    gap: 24px;
+    white-space: nowrap;
+  }
+  .side a .num { display: none; }
+  .side a.active::after { display: none; }
+  .metabar-inner {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+}
+@media (max-width: 720px) {
+  .nav-inner { padding: 14px var(--gutter); }
+  .nav-back span:not(.arrow) { display: none; }
+  .hero { padding: 56px 0 64px; }
+  .hero .eyebrow { margin-bottom: 36px; }
+  .split, .stats { grid-template-columns: 1fr; }
+  .next-case { grid-template-columns: 1fr; gap: 24px; }
+  .research-table .row { grid-template-columns: 48px 1fr; }
+  .research-table .pp { grid-column: 2; text-align: left; padding-top: 4px; }
+  .outcome-list li { grid-template-columns: 32px 1fr; gap: 14px; }
+}
+</style>
 </head>
 <body>
-  <div class="page-wrapper">
 
-    <!-- NAV -->
-    <nav class="nav">
-      <a href="index.html" class="nav-logo">
-        <img src="assets/logo.png" alt="Pixel and Patches">
+<header class="nav" id="topNav">
+  <div class="nav-inner">
+    <div class="nav-left">
+      <a class="nav-back" href="index.html">
+        <span class="arrow" aria-hidden="true">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        </span>
+        <span>Back to work</span>
       </a>
-      <ul class="nav-links">
-        <li><a href="index.html" class="nav-link" data-page="work">Work<span class="nav-underline"></span></a></li>
-        <li><a href="#" class="nav-link" data-page="playground">Playground<span class="nav-underline"></span></a></li>
-        <li><a href="#" class="nav-link" data-page="about">About<span class="nav-underline"></span></a></li>
-        <li><a href="#" class="nav-link" data-page="contact">Contact<span class="nav-underline"></span></a></li>
-      </ul>
+    </div>
+    <div class="nav-mark">
+      <a href="index.html" class="brandmark">andy<span class="dot">.</span></a>
+    </div>
+    <nav class="nav-links nav-right" aria-label="primary">
+      <a href="index.html">Work</a>
+      <a href="#">About</a>
+      <a href="mailto:nguyenlandy@gmail.com">Contact</a>
     </nav>
-    <div class="nav-rule"></div>
-
-    <main style="padding-top:64px; padding-bottom:120px;">
-
-      <!-- BREADCRUMB -->
-      <a href="index.html" class="breadcrumb">← Work</a>
-
-      <!-- HERO -->
-      <div class="cs-hero">
-        <div class="cs-hero-images">
-          <div class="cs-placeholder" style="width:340px; height:260px;">
-            [PLACEHOLDER: Tersus Final Quote Screen — customer side]
-          </div>
-          <div class="cs-placeholder" style="width:340px; height:260px;">
-            [PLACEHOLDER: Tersus Current Job Screen — cleaner side]
-          </div>
-        </div>
-        <div class="cs-meta">
-          <p class="kicker">MOBILE APP & WEB · SOLE PRODUCT DESIGNER</p>
-          <h1 class="cs-title">Tersus<span class="accent-period">.</span></h1>
-          <p class="cs-summary">Two completely different users. One design system. I was the sole designer across the full product — both sides, mobile and web, from the first wireframe to developer handoff.</p>
-          <div class="pill-row" style="justify-content:center;">
-            <span class="pill">MOBILE APP & WEB</span>
-            <span class="pill">SOLE PRODUCT DESIGNER</span>
-            <span class="pill">~1 YEAR</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- BODY -->
-      <div class="cs-body">
-
-        <!-- Context -->
-        <div class="cs-section">
-          <h2 class="cs-section-heading">Context</h2>
-          <p class="body-text">Most cleaning services make you hand over your phone number before you see a price. Tersus was built to change that — instant, self-serve booking for customers, and a reliable job management experience for the cleaners doing the work.</p>
-        </div>
-
-        <!-- Full-width image placeholder -->
-        <div class="cs-image-full">
-          <div class="cs-placeholder" style="height:400px;">[PLACEHOLDER: Full Flow Mosaic — zoomed-out Figma canvas showing screens from both sides side by side]</div>
-        </div>
-
-        <!-- The Challenge -->
-        <div class="cs-section">
-          <h2 class="cs-section-heading">The Challenge</h2>
-          <p class="body-text">Two completely different users. One design system.</p>
-          <p class="body-text"><strong>Customers</strong> needed to see a real price upfront, configure their service, and confirm a booking in minutes — no contact forms, no waiting for a callback.</p>
-          <p class="body-text"><strong>Cleaners</strong> needed a dependable system for finding jobs nearby, understanding what a job involves before accepting, managing an active cleaning, and getting paid without friction.</p>
-          <p class="body-text">Every design decision had to work for both. Midway through the project, scope expanded to include a full web product — requiring the mobile-first design system to scale to desktop without being rebuilt from scratch.</p>
-        </div>
-
-        <!-- Research -->
-        <div class="cs-section">
-          <h2 class="cs-section-heading">Research</h2>
-          <p class="body-text">Five rounds of usability testing. 30+ participants. Both sides of the platform tested across mobile and web. Testing ran on a rolling cycle — each phase fed directly back into the product while development continued forward.</p>
-        </div>
-
-        <!-- Full-width image placeholder -->
-        <div class="cs-image-full">
-          <div class="cs-placeholder" style="height:300px;">[PLACEHOLDER: Research Table — Phase 1–5 with participant counts]</div>
-        </div>
-
-        <!-- Design Decisions -->
-        <div class="cs-section">
-          <h2 class="cs-section-heading">Design Decisions</h2>
-          <h3 style="font-family:var(--font-display); font-variation-settings:var(--font-variation); font-size:24px; letter-spacing:-0.24px; margin-bottom:12px;">Bringing Pricing to the Surface</h3>
-          <p class="body-text">Pricing was surfaced earlier and made transparent throughout the configuration steps — individual room prices, base costs, and premium service prices shown as users built their booking. By the time they reached the Final Quote screen, the total wasn't a surprise. It was a confirmation of decisions they'd already made.</p>
-        </div>
-
-        <!-- Decision 1 image -->
-        <div class="cs-image-full">
-          <div class="cs-placeholder" style="height:360px;">[PLACEHOLDER: Final Quote screen showing itemized pricing breakdown + Single_Unit_Flow.mov embed]</div>
-        </div>
-
-        <div class="cs-section">
-          <h3 style="font-family:var(--font-display); font-variation-settings:var(--font-variation); font-size:24px; letter-spacing:-0.24px; margin-bottom:12px;">Building a Guide for the Actual Clean</h3>
-          <p class="body-text">A service checklist and progress timer were added to the active job screen — not in the original scope, identified entirely through research. Cleaners could track rooms as they went, see elapsed time, access pre-job customer instructions, and reach a support link directly from the job.</p>
-        </div>
-
-        <!-- Decision 2 image -->
-        <div class="cs-image-full">
-          <div class="cs-placeholder" style="height:360px;">[PLACEHOLDER: Current Job screen — timer, checklist, customer info card + Cleaner_Flow.mov embed]</div>
-        </div>
-
-        <div class="cs-section">
-          <h3 style="font-family:var(--font-display); font-variation-settings:var(--font-variation); font-size:24px; letter-spacing:-0.24px; margin-bottom:12px;">Giving Cleaners Control Over Their Work Area</h3>
-          <p class="body-text">A dedicated Cleaning Area screen was added — not in the original scope, identified through research. Cleaners could set a preferred location by address or by drawing a radius directly on the map. A custom radius slider gave precise control over distance.</p>
-        </div>
-
-        <!-- Decision 3 image -->
-        <div class="cs-image-full">
-          <div class="cs-placeholder" style="height:360px;">[PLACEHOLDER: Cleaning Area screen — map with teal radius circle, custom radius slider]</div>
-        </div>
-
-        <!-- Outcome -->
-        <div class="cs-section">
-          <h2 class="cs-section-heading">Outcome</h2>
-          <p class="body-text">One designer. Two platforms. Two completely different users. Roughly a year from first wireframe to developer handoff.</p>
-          <ul style="padding-left:20px; display:flex; flex-direction:column; gap:8px;" class="body-text">
-            <li>Customer and cleaner experiences designed in full — mobile app and web, both sides, simultaneously</li>
-            <li>8+ screens added to scope mid-build, driven entirely by research findings</li>
-            <li>Rolling handoff to developers across the full year — annotated Figma files, interaction notes, and component specs updated continuously</li>
-            <li>Critical issues surfaced through structured pre-launch testing before reaching real users</li>
-          </ul>
-        </div>
-
-        <!-- Reflection -->
-        <div class="cs-section">
-          <h2 class="cs-section-heading">Reflection</h2>
-          <p class="body-text">Tersus was my first real UX/UI project. I didn't know about design systems at the beginning — I jumped straight into designing screens. The component library came later, assembled from work that was already done rather than built as a foundation from the start. If I were doing this again, I'd slow down the first two weeks significantly and build the system before touching a single screen.</p>
-          <p class="body-text">Most of all, this project taught me how to learn on the job at speed. The things I'd do differently aren't failures — they're exactly what this project gave me.</p>
-        </div>
-
-        <!-- Next case study -->
-        <div class="cs-next">
-          <a href="cure-quick-quote.html" class="link-arrow">Next: NJ Quick Quote <span>➜</span></a>
-        </div>
-
-      </div>
-    </main>
   </div>
-  <script src="scripts.js"></script>
+</header>
+
+<main>
+
+  <!-- ============== HERO ============== -->
+  <section class="hero">
+    <div class="wrap">
+      <div class="eyebrow reveal">Case study · 01 / 04</div>
+      <h1 class="hero-title reveal">Tersus<span class="dot">.</span></h1>
+      <p class="hero-sub reveal">Two users. One platform.<br/>A cleaning marketplace, designed end-to-end.</p>
+      <div class="hero-pills reveal">
+        <span class="pill"><span class="dot"></span>Mobile App &amp; Web</span>
+        <span class="pill ink"><span class="dot"></span>Sole Designer</span>
+        <span class="pill peach"><span class="dot"></span>~1 Year</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== METABAR ============== -->
+  <section class="metabar" aria-label="Project details">
+    <dl class="metabar-inner">
+      <div><dt>Role</dt><dd>Sole Product Designer</dd></div>
+      <div><dt>Team</dt><dd>1 designer · 4 eng · 1 PM</dd></div>
+      <div><dt>Timeline</dt><dd>2023 — 2024</dd></div>
+      <div><dt>Platform</dt><dd>iOS · Android · Web</dd></div>
+      <div><dt>Tools</dt><dd>Figma · Dev Mode · Jira</dd></div>
+    </dl>
+  </section>
+
+  <!-- ============== LAYOUT ============== -->
+  <div class="layout">
+
+    <!-- ----- Sticky section nav ----- -->
+    <aside class="side" aria-label="Section navigation">
+      <ol id="sideNav">
+        <li><a href="#context"    data-target="context"><span class="num">01</span>Context</a></li>
+        <li><a href="#challenge"  data-target="challenge"><span class="num">02</span>The Challenge</a></li>
+        <li><a href="#research"   data-target="research"><span class="num">03</span>Research</a></li>
+        <li><a href="#decisions"  data-target="decisions"><span class="num">04</span>Design Decisions</a></li>
+        <li><a href="#outcome"    data-target="outcome"><span class="num">05</span>Outcome</a></li>
+        <li><a href="#reflection" data-target="reflection"><span class="num">06</span>Reflection</a></li>
+      </ol>
+    </aside>
+
+    <!-- ----- Content column ----- -->
+    <div class="col">
+
+      <!-- 01 — Context -->
+      <section class="section" id="context">
+        <div class="eyebrow-sm reveal">— 01 / Context</div>
+        <h2 class="h-display reveal">A <span class="em">two-sided marketplace</span> for home cleaning — instant booking on one side, real job tools on the other.</h2>
+        <div class="prose reveal">
+          <p class="lede">Most cleaning services make you hand over your phone number before you ever see a price.</p>
+          <p>Tersus was built to change that. Customers get <strong>transparent, self-serve booking</strong>. Cleaners get a dependable system for finding nearby work, understanding each job before accepting, and managing the clean itself.</p>
+          <p>I joined as the sole designer and worked across the full product — mobile app and web, both sides of the marketplace, from first wireframe to developer handoff.</p>
+        </div>
+
+        <figure class="figure reveal">
+          <div class="fig-stage peach wide">
+            <div class="fig-label">
+              <span class="tag">Hero · Full Flow Mosaic</span>
+              <span class="desc">Zoomed-out Figma canvas showing the customer flow (left) and cleaner flow (right) side by side — establishing the scope of the system.</span>
+            </div>
+          </div>
+          <figcaption class="fig-cap">Two products, one design language. Customer-facing flows on the left, cleaner-facing flows on the right — every screen on one side has a counterpart on the other.</figcaption>
+        </figure>
+      </section>
+
+      <!-- 02 — The Challenge -->
+      <section class="section" id="challenge">
+        <div class="eyebrow-sm reveal">— 02 / The Challenge</div>
+        <h2 class="h-display reveal">Two completely different users. <span class="em-ink">One design system.</span></h2>
+        <div class="prose reveal">
+          <p>Every decision had to work for two opposite mental models — and survive the move from mobile to web midway through the project.</p>
+        </div>
+
+        <div class="split reveal">
+          <div>
+            <div class="fig-stage peach">
+              <div class="fig-label">
+                <span class="tag">Customer · Final Quote</span>
+                <span class="desc">Booking confirmation screen — itemized pricing breakdown, transparent total.</span>
+              </div>
+            </div>
+            <div class="split-card">
+              <div class="who">The Customer</div>
+              <h3 class="lead">Wants a price, fast.</h3>
+              <p>See real cost upfront, configure a service, confirm in minutes. No contact forms. No waiting for a callback.</p>
+            </div>
+          </div>
+          <div>
+            <div class="fig-stage blue">
+              <div class="fig-label">
+                <span class="tag">Cleaner · Current Job</span>
+                <span class="desc">Active job screen with timer, checklist, and customer instructions.</span>
+              </div>
+            </div>
+            <div class="split-card">
+              <div class="who">The Cleaner</div>
+              <h3 class="lead">Wants reliable tools.</h3>
+              <p>Find jobs nearby, understand each one before accepting, manage the active clean, get paid without friction.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="prose reveal" style="margin-top: 24px;">
+          <p>Midway through the project, scope expanded to a full web product. The mobile-first system had to scale to desktop <em>without being rebuilt from scratch</em>.</p>
+        </div>
+      </section>
+
+      <!-- 03 — Research -->
+      <section class="section" id="research">
+        <div class="eyebrow-sm reveal">— 03 / Research</div>
+        <h2 class="h-display reveal">Five rounds of usability testing — <span class="em">on a rolling cycle</span>, while development kept going.</h2>
+        <div class="prose reveal">
+          <p>Findings fed directly back into the product. Some scope was added late based on what testing surfaced — a hard rhythm to manage in a mostly-waterfall handoff, but it kept research <em>useful</em> instead of decorative.</p>
+        </div>
+
+        <div class="stats reveal">
+          <div class="stat-card blue">
+            <div class="n">30<span class="em">+</span></div>
+            <div class="l">Participants across the five rounds, covering customers and cleaners on both mobile and web.</div>
+          </div>
+          <div class="stat-card">
+            <div class="n">8<span class="em">+</span><span class="dot">.</span></div>
+            <div class="l">Screens added <em>mid-build</em> as a direct result of research — features that weren't in the original brief.</div>
+          </div>
+        </div>
+
+        <div class="research-table reveal" aria-label="Research phases">
+          <div class="row">
+            <div class="phase">Phase 1</div>
+            <div class="focus">Customer booking flow · mobile</div>
+            <div class="pp">16 participants</div>
+          </div>
+          <div class="row">
+            <div class="phase">Phase 2</div>
+            <div class="focus">Customer dashboard · web</div>
+            <div class="pp">17 participants</div>
+          </div>
+          <div class="row">
+            <div class="phase">Phase 3 / 4</div>
+            <div class="focus">Cleaner onboarding &amp; job management · web</div>
+            <div class="pp">15 participants</div>
+          </div>
+          <div class="row">
+            <div class="phase">Phase 5</div>
+            <div class="focus">Full mobile app · both sides, pre-launch</div>
+            <div class="pp">9 participants</div>
+          </div>
+        </div>
+
+        <div class="hmw reveal">
+          <div class="label">How might we</div>
+          <p class="q">…build a single product that earns trust from <em>customers and cleaners alike</em> — without compromising either experience?</p>
+        </div>
+      </section>
+
+      <!-- 04 — Design Decisions -->
+      <section class="section" id="decisions">
+        <div class="eyebrow-sm reveal">— 04 / Design Decisions</div>
+        <h2 class="h-display reveal">Three decisions that <span class="em-ink">shaped the product</span>.</h2>
+        <div class="prose reveal">
+          <p>Each one started in research, hit resistance somewhere in the build, and made it to production because the evidence was undeniable.</p>
+        </div>
+
+        <!-- Decision 01 -->
+        <article class="decision reveal">
+          <div class="num">Decision 01</div>
+          <h3>Bringing pricing <em>to the surface</em>.</h3>
+          <div class="prose">
+            <p>The client wanted pricing hidden until the end of the flow — worried that showing cost too early would scare users off. Research told a different story. Users who hit a surprise total at checkout without context lost trust in the product. Several disengaged entirely.</p>
+            <p>Pricing surfaced earlier and more transparently — individual room prices, base costs, and premium add-ons shown as users built their booking. By the time they reached the Final Quote screen, the total <strong>wasn't a surprise — it was a confirmation</strong>.</p>
+          </div>
+
+          <figure class="figure">
+            <div class="fig-stage peach">
+              <div class="fig-label">
+                <span class="tag">Booking Flow · Customer side</span>
+                <span class="desc">Pricing visible at every step — itemized rooms, base costs, premium add-ons — culminating in a Final Quote screen that confirms, not surprises.</span>
+              </div>
+            </div>
+            <figcaption class="fig-cap">Final Quote screen showing itemized pricing breakdown.</figcaption>
+          </figure>
+
+          <div class="pullquote">
+            <span class="mark" aria-hidden="true">"</span>
+            <q>The website is very transparent.</q>
+            <cite>— Phase 2 tester · customer dashboard round</cite>
+          </div>
+        </article>
+
+        <!-- Decision 02 -->
+        <article class="decision reveal">
+          <div class="num">Decision 02</div>
+          <h3>Building a guide for <em>the actual clean</em>.</h3>
+          <div class="prose">
+            <p>Once a cleaner accepted a job and arrived at the property, the app had nothing for them. No checklist. No timer. No way to see what the customer expected, or how to reach support.</p>
+            <p>A service checklist and progress timer were added to the active job screen — <strong>not in the original scope</strong>, identified entirely through research. Cleaners track rooms as they go, see elapsed time, access pre-job customer instructions, and reach support directly from the job.</p>
+          </div>
+
+          <figure class="figure">
+            <div class="fig-stage blue tall">
+              <div class="fig-label">
+                <span class="tag">Cleaner side · Current Job</span>
+                <span class="desc">Active-job screen with timer, room checklist, and customer info card.</span>
+              </div>
+            </div>
+            <figcaption class="fig-cap">Cleaner side — finding, starting, and completing a job. The active screen gave structure to the work itself, not just the process of finding it.</figcaption>
+          </figure>
+        </article>
+
+        <!-- Decision 03 -->
+        <article class="decision reveal">
+          <div class="num">Decision 03</div>
+          <h3>Giving cleaners <em>control over their work area</em>.</h3>
+          <div class="prose">
+            <p>Cleaners had no way to define where they wanted to work. The job feed showed everything available regardless of distance — creating friction for cleaners who only wanted jobs nearby, and reducing match quality for customers.</p>
+            <p>A dedicated Cleaning Area screen let cleaners set a preferred location — by address, or by drawing a radius directly on the map. A custom radius slider gave precise control over distance. The result: a feed that felt relevant, and customers matched to cleaners <strong>genuinely available nearby</strong>.</p>
+          </div>
+
+          <figure class="figure">
+            <div class="fig-stage">
+              <div class="fig-label">
+                <span class="tag">Cleaner side · Cleaning Area</span>
+                <span class="desc">Map with teal radius circle and a custom radius slider. One of the most positively received additions in later testing rounds.</span>
+              </div>
+            </div>
+            <figcaption class="fig-cap">Geographic control, straight from research — not in the original brief.</figcaption>
+          </figure>
+        </article>
+      </section>
+
+      <!-- 05 — Outcome -->
+      <section class="section" id="outcome">
+        <div class="eyebrow-sm reveal">— 05 / Outcome</div>
+        <h2 class="h-display reveal">One designer. Two platforms. <span class="em-ink">A year of work, shipped.</span></h2>
+
+        <ol class="outcome-list reveal">
+          <li>
+            <span class="n">01</span>
+            <p>Customer and cleaner experiences designed in full — mobile app and web, both sides, simultaneously.</p>
+          </li>
+          <li>
+            <span class="n">02</span>
+            <p><strong>8+ screens</strong> added to scope mid-build, driven entirely by research findings — features that wouldn't exist without usability testing.</p>
+          </li>
+          <li>
+            <span class="n">03</span>
+            <p>Rolling handoff to developers across the full year — annotated Figma files, interaction notes, and component specs updated continuously as the product evolved.</p>
+          </li>
+          <li>
+            <span class="n">04</span>
+            <p>Critical issues surfaced through structured pre-launch testing before reaching real users.</p>
+          </li>
+          <li>
+            <span class="n">05</span>
+            <p>A shared design language that scaled across two user types, two platforms, and one marketplace system.</p>
+          </li>
+        </ol>
+      </section>
+
+      <!-- 06 — Reflection -->
+      <section class="section" id="reflection">
+        <div class="eyebrow-sm reveal">— 06 / Reflection</div>
+        <h2 class="h-display reveal">What I'd <span class="em">do differently</span>.</h2>
+        <div class="prose reveal">
+          <p>Tersus was my first real UX/UI project at this scale, and looking back, it shows in how it started. I didn't know about design systems when I began — I jumped straight into designing screens because the project was moving fast and there was pressure to keep up with development.</p>
+          <p>The component library came later, assembled from work that was already done rather than built as a foundation. <strong>If I were doing this again, I'd slow down the first two weeks significantly and build the system before touching a single screen.</strong> That upfront investment would have saved far more time than it cost.</p>
+          <p>The process was also largely waterfall — designs were handed off to development, and when problems surfaced after build, the work came back upstream for revision. On a project this size, with both sides of a platform running simultaneously, that created real pressure. It taught me how much more effective a closer, more iterative collaboration with engineering is compared to a clean handoff model.</p>
+          <p>Most of all, this project taught me how to <em>learn on the job at speed</em>. I grew significantly as a designer across this year — in systems thinking, in how to run and apply research, and in how to make decisions with incomplete information under a deadline. The things I'd do differently aren't failures. They're exactly what this project gave me.</p>
+        </div>
+
+        <a class="next-case reveal" href="cure-quick-quote.html">
+          <div>
+            <div class="label">Next case study</div>
+            <h3 class="t">Halving the <em>quote flow</em> — and shipping it.</h3>
+          </div>
+          <span class="arrow" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+          </span>
+        </a>
+      </section>
+
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="index.html" class="brandmark">andy<span class="dot">.</span></a>
+      <div>© 2026 Andy Nguyen — designed, coded, cat approved.</div>
+      <div>
+        <a href="mailto:nguyenlandy@gmail.com">nguyenlandy@gmail.com</a>
+      </div>
+    </div>
+  </footer>
+
+</main>
+
+<script>
+(function () {
+  // Scrollspy for sticky side nav
+  const links = Array.from(document.querySelectorAll('#sideNav a'));
+  const sections = links
+    .map(a => document.getElementById(a.dataset.target))
+    .filter(Boolean);
+
+  function setActive(id) {
+    links.forEach(a => a.classList.toggle('active', a.dataset.target === id));
+  }
+
+  const io = new IntersectionObserver((entries) => {
+    const visible = entries
+      .filter(e => e.isIntersecting)
+      .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+    if (visible[0]) setActive(visible[0].target.id);
+  }, { rootMargin: '-25% 0px -60% 0px', threshold: [0, 0.2, 0.6] });
+  sections.forEach(s => io.observe(s));
+  if (sections[0]) setActive(sections[0].id);
+
+  // Nav border on scroll
+  const nav = document.getElementById('topNav');
+  const onScroll = () => nav.classList.toggle('scrolled', window.scrollY > 8);
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  // Reveal on scroll
+  const reveal = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('in');
+        reveal.unobserve(e.target);
+      }
+    });
+  }, { rootMargin: '0px 0px -8% 0px', threshold: 0.05 });
+  document.querySelectorAll('.reveal').forEach(el => reveal.observe(el));
+})();
+</script>
+
 </body>
 </html>

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Andy Nguyen — Product Designer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Inter:wght@400;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="page-wrapper">
+
+    <!-- NAV -->
+    <nav class="nav">
+      <a href="index.html" class="nav-logo">
+        <img src="assets/logo.png" alt="Pixel and Patches">
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html" class="nav-link" data-page="work">Work<span class="nav-underline"></span></a></li>
+        <li><a href="#" class="nav-link" data-page="playground">Playground<span class="nav-underline"></span></a></li>
+        <li><a href="#" class="nav-link" data-page="about">About<span class="nav-underline"></span></a></li>
+        <li><a href="#" class="nav-link" data-page="contact">Contact<span class="nav-underline"></span></a></li>
+      </ul>
+    </nav>
+    <div class="nav-rule"></div>
+
+    <main class="main-content">
+
+      <!-- HERO -->
+      <div style="display:flex; align-items:flex-start; gap:40px; min-height:380px;">
+        <!-- Left column -->
+        <div style="display:flex; flex-direction:column; gap:16px; padding:16px 0; flex-shrink:0; max-width:480px;">
+          <p class="kicker">UX/UI DESIGN</p>
+          <h1 class="display-heading">
+            Human-centered<br>
+            product design,<br>
+            with a playful edge<span class="accent-period">.</span>
+          </h1>
+          <p class="body-text">
+            Hi, I'm Andy - a UX/UI designer who helps teams turn
+            complex problems into clear, intuitive experiences.
+            I care about craft, strategy, and the details that make
+            products feel effortless.
+          </p>
+        </div>
+        <!-- Right column: overlapping screenshots -->
+        <div style="position:relative; flex:1; min-height:380px;">
+          <img
+            src="assets/hero-mobile-home.png"
+            alt="Tersus mobile app"
+            style="position:absolute; left:0; top:54px; width:107px; height:271px; border-radius:10px; box-shadow:4px 4px 4px rgba(0,0,0,0.1); object-fit:cover;">
+          <img
+            src="assets/hero-tersus-web.png"
+            alt="Tersus web app"
+            style="position:absolute; left:75px; top:0; width:596px; height:367px; border-radius:10px; box-shadow:4px 4px 4px rgba(0,0,0,0.1); object-fit:cover;">
+          <img
+            src="assets/hero-auto-quote.png"
+            alt="CURE auto quote"
+            style="position:absolute; right:0; top:47px; width:138px; height:287px; border-radius:10px; box-shadow:0 4px 4px rgba(0,0,0,0.25); object-fit:cover;">
+        </div>
+      </div>
+
+      <!-- SELECTED WORK HEADER + TERSUS FEATURED CARD -->
+      <div style="display:flex; flex-direction:column; gap:24px;">
+        <div class="section-header">
+          <div class="section-header-left">
+            <span class="kicker">SELECTED WORK</span>
+            <div class="section-header-rule"></div>
+          </div>
+          <a href="tersus.html" class="link-arrow">View all case studies <span>➜</span></a>
+        </div>
+
+        <div class="featured-card">
+          <div class="featured-card-body" style="width:681px;">
+            <div class="featured-card-body-inner">
+              <p class="body-text">TERSUS</p>
+              <h2 class="card-title-lg">Designing a simpler marketplace for home cleaning services</h2>
+              <p class="body-text">Enhancing the booking experience with clearer flows, thoughtful UX decisions, and end-to-end product design that reduced friction for both customers and cleaners.</p>
+              <div class="pill-row">
+                <span class="pill">UX RESEARCH</span>
+                <span class="pill">PRODUCT DESIGN</span>
+                <span class="pill">DESIGN SYSTEM</span>
+                <span class="pill">2023–2024</span>
+              </div>
+            </div>
+            <a href="tersus.html" class="link-arrow">View Case Studies <span>➜</span></a>
+          </div>
+          <div class="featured-card-image" style="min-height:380px;">
+            <img src="assets/tersus-card-bg.png" alt="" style="object-fit:cover;">
+            <img src="assets/tersus-card-screens.png" alt="Tersus product screens" style="object-fit:contain; z-index:1;">
+          </div>
+        </div>
+      </div>
+
+      <!-- CURE AUTO INSURANCE CLUSTER -->
+      <div class="cure-cluster">
+        <p class="cure-cluster-label">CURE AUTO INSURANCE</p>
+        <div class="cure-cards-row">
+
+          <div class="cure-card">
+            <div class="cure-card-thumbnail">
+              <img src="assets/cure-quick-quote.png" alt="CURE Quick Quote">
+            </div>
+            <div class="cure-card-body">
+              <div class="cure-card-body-inner">
+                <h3 class="card-title-lg">Quick Quote</h3>
+                <p class="body-text">Redesigned the quote experience to reduce user friction, improve form clarity, and help customers move through the insurance signup process with more confidence.</p>
+                <div class="pill-row">
+                  <span class="pill">UX RESEARCH</span>
+                  <span class="pill">PRODUCT DESIGN</span>
+                  <span class="pill">DESIGN SYSTEM</span>
+                </div>
+              </div>
+              <a href="cure-quick-quote.html" class="link-arrow">View Case Study <span>➜</span></a>
+            </div>
+          </div>
+
+          <div class="cure-card">
+            <div class="cure-card-thumbnail">
+              <img src="assets/cure-scan-license.png" alt="CURE Scan to Insure">
+            </div>
+            <div class="cure-card-body">
+              <div class="cure-card-body-inner">
+                <h3 class="card-title-lg">Scan to Insure</h3>
+                <p class="body-text">Created a mobile-first quote experience that reduced manual entry by pre-filling customer details from a scanned driver's license.</p>
+                <div class="pill-row">
+                  <span class="pill">UX RESEARCH</span>
+                  <span class="pill">PRODUCT DESIGN</span>
+                  <span class="pill">DESIGN SYSTEM</span>
+                </div>
+              </div>
+              <a href="cure-scan-license.html" class="link-arrow">View Case Study <span>➜</span></a>
+            </div>
+          </div>
+
+          <div class="cure-card">
+            <div class="cure-card-thumbnail">
+              <img src="assets/cure-my-account.png" alt="CURE My Account Portal">
+            </div>
+            <div class="cure-card-body">
+              <div class="cure-card-body-inner">
+                <h3 class="card-title-lg">My Account Portal</h3>
+                <p class="body-text">Redesigned the account portal to help customers access policy details, manage account tasks, and navigate important insurance information with less confusion.</p>
+                <div class="pill-row">
+                  <span class="pill">UX RESEARCH</span>
+                  <span class="pill">PRODUCT DESIGN</span>
+                  <span class="pill">DESIGN SYSTEM</span>
+                </div>
+              </div>
+              <a href="cure-my-account.html" class="link-arrow">View Case Study <span>➜</span></a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- BOTTOM CARDS: About + Contact -->
+      <div class="bottom-cards">
+
+        <div class="bottom-card">
+          <div class="bottom-card-content">
+            <div class="bottom-card-text">
+              <h3 class="card-title-sm">About Andy</h3>
+              <p class="body-text" style="max-width:380px;">I'm a product designer with 8+ years of experience partnering with founders and cross-functional teams. My approach blends research, clarity, and craft to design experiences that are useful, usable, and a little delightful.</p>
+            </div>
+            <a href="#" class="link-arrow">More about me <span>➜</span></a>
+          </div>
+          <div class="bottom-card-illustration">
+            <img src="assets/about-cat.png" alt="Illustrated cat" style="width:185px; height:199px; object-fit:contain;">
+          </div>
+        </div>
+
+        <div class="bottom-card">
+          <div class="bottom-card-content">
+            <div class="bottom-card-text">
+              <h3 class="card-title-sm">Let's Work Together</h3>
+              <p class="body-text">I'm always open to new opportunities and interesting problems. Whether you have a project in mind or just want to say hello, I'd love to hear from you.</p>
+            </div>
+            <a href="mailto:nguyenlandy@gmail.com" class="btn-primary">
+              Let's Chat
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M3 13L13 3M13 3H6M13 3V10" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
+          </div>
+          <div class="bottom-card-illustration">
+            <img src="assets/contact-laptop.png" alt="Illustrated laptop" style="height:270px; object-fit:contain;">
+          </div>
+        </div>
+
+      </div>
+
+    </main>
+  </div>
+  <script src="scripts.js"></script>
+</body>
+</html>

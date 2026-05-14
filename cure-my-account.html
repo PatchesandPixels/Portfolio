@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Account Portal — Andy Nguyen</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Inter:wght@400;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="page-wrapper">
+
+    <nav class="nav">
+      <a href="index.html" class="nav-logo"><img src="assets/logo.png" alt="Pixel and Patches"></a>
+      <ul class="nav-links">
+        <li><a href="index.html" class="nav-link" data-page="work">Work<span class="nav-underline"></span></a></li>
+        <li><a href="#" class="nav-link" data-page="playground">Playground<span class="nav-underline"></span></a></li>
+        <li><a href="#" class="nav-link" data-page="about">About<span class="nav-underline"></span></a></li>
+        <li><a href="#" class="nav-link" data-page="contact">Contact<span class="nav-underline"></span></a></li>
+      </ul>
+    </nav>
+    <div class="nav-rule"></div>
+
+    <main style="padding-top:64px; padding-bottom:120px;">
+
+      <a href="index.html" class="breadcrumb">← Work</a>
+
+      <div class="cs-hero">
+        <div class="cs-hero-images">
+          <div class="cs-placeholder" style="width:460px; height:280px;">[PLACEHOLDER: Full Canvas Overview — all screens across both breakpoints]</div>
+          <div class="cs-placeholder" style="width:220px; height:280px;">[PLACEHOLDER: Mobile breakpoint — Home screen]</div>
+        </div>
+        <div class="cs-meta">
+          <p class="kicker">DESKTOP & MOBILE · 11 SECTIONS · CURE AUTO INSURANCE</p>
+          <h1 class="cs-title">My Account Portal<span class="accent-period">.</span></h1>
+          <p class="cs-summary">Full redesign of CURE's policyholder portal across 11 sections and two breakpoints — the first version with true mobile parity.</p>
+          <div class="pill-row" style="justify-content:center;">
+            <span class="pill">DESKTOP & MOBILE</span>
+            <span class="pill">11 SECTIONS</span>
+            <span class="pill">DESIGN SYSTEM</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="cs-body">
+
+        <div class="cs-section">
+          <h2 class="cs-section-heading">Context</h2>
+          <p class="body-text">CURE's existing My Account portal had all three of the classic problems: the experience was costing them money and trust. Navigation was a raw bullet-point list with no visual hierarchy, no icons, no priority. The entire portal had zero mobile design — not responsive, undesigned.</p>
+        </div>
+
+        <div class="cs-image-full">
+          <div class="cs-placeholder" style="height:400px;">[PLACEHOLDER: Before/After — Home dashboard transformation]</div>
+        </div>
+
+        <div class="cs-section">
+          <h2 class="cs-section-heading">The Challenge</h2>
+          <p class="body-text">Scope and scale. Designing 11 distinct portal sections across two breakpoints required constant context-switching and an obsessive attention to consistency. A sidebar nav that works well on desktop becomes a bottom sheet or hamburger menu on mobile. Form layouts that fit neatly in a two-column desktop grid need to be rethought as single-column stacks on mobile.</p>
+        </div>
+
+        <div class="cs-image-full">
+          <div class="cs-placeholder" style="height:400px;">[PLACEHOLDER: Desktop vs. Mobile side-by-side — Home, Claims, Vehicle Management]</div>
+        </div>
+
+        <div class="cs-section">
+          <h2 class="cs-section-heading">Design Decisions</h2>
+          <h3 style="font-family:var(--font-display); font-variation-settings:var(--font-variation); font-size:24px; letter-spacing:-0.24px; margin-bottom:12px;">Home Screen Hierarchy</h3>
+          <p class="body-text">The most important screen in the portal — it's what every user sees first, every time. The redesign focused on surfacing the most critical information immediately: policy status, upcoming payment, quick links to the most-used sections. The hierarchy was rebuilt from the ground up so users can orient themselves instantly rather than hunting for what they need.</p>
+        </div>
+
+        <div class="cs-image-full">
+          <div class="cs-placeholder" style="height:400px;">[PLACEHOLDER: Home Screen — annotated hero shot showing hierarchy decisions]</div>
+        </div>
+
+        <div class="cs-section">
+          <h3 style="font-family:var(--font-display); font-variation-settings:var(--font-variation); font-size:24px; letter-spacing:-0.24px; margin-bottom:12px;">Claims Flow</h3>
+          <p class="body-text">The highest-stakes flow in the portal. When a user is filing a claim, they're often stressed and need clarity above all else. The redesigned claims flow is structured, step-by-step, and designed to reduce cognitive load at a moment when users have none to spare.</p>
+        </div>
+
+        <div class="cs-image-full">
+          <div class="cs-placeholder" style="height:360px;">[PLACEHOLDER: Submit a Claim — step sequence across 6 screens]</div>
+        </div>
+
+        <div class="cs-section">
+          <h2 class="cs-section-heading">Design System</h2>
+          <p class="body-text">Across a project of this scope, consistency isn't accidental — it's engineered. I maintained a shared component library throughout the redesign, ensuring that buttons, form fields, navigation elements, cards, and status indicators behaved consistently across all 11 sections and both breakpoints.</p>
+        </div>
+
+        <div class="cs-image-full">
+          <div class="cs-placeholder" style="height:300px;">[PLACEHOLDER: Component Library — buttons, form fields, cards, navigation elements]</div>
+        </div>
+
+        <div class="cs-section">
+          <h2 class="cs-section-heading">Outcome</h2>
+          <ul style="padding-left:20px; display:flex; flex-direction:column; gap:8px;" class="body-text">
+            <li>Full portal redesigned across desktop and mobile — 11 sections, two breakpoints</li>
+            <li>Navigation clarity improved through a rebuilt Home screen hierarchy</li>
+            <li>Mobile parity achieved — every flow fully designed for mobile users for the first time</li>
+            <li>Self-service flows streamlined for vehicle management and claims submission</li>
+            <li>Consistent component system maintained throughout, supporting clean developer handoff</li>
+          </ul>
+        </div>
+
+        <div class="cs-section">
+          <h2 class="cs-section-heading">Reflection</h2>
+          <p class="body-text">This project taught me what it means to design at scale as a solo designer. Staying organized — through a disciplined component library, a clear file structure, and a consistent naming system — wasn't just good practice. It was what made the project possible.</p>
+        </div>
+
+        <div class="cs-next">
+          <a href="index.html" class="link-arrow">← Back to all work</a>
+        </div>
+
+      </div>
+    </main>
+  </div>
+  <script src="scripts.js"></script>
+</body>
+</html>

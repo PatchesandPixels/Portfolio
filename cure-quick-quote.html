@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NJ Quick Quote — Andy Nguyen</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Inter:wght@400;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="page-wrapper">
+
+    <nav class="nav">
+      <a href="index.html" class="nav-logo"><img src="assets/logo.png" alt="Pixel and Patches"></a>
+      <ul class="nav-links">
+        <li><a href="index.html" class="nav-link" data-page="work">Work<span class="nav-underline"></span></a></li>
+        <li><a href="#" class="nav-link" data-page="playground">Playground<span class="nav-underline"></span></a></li>
+        <li><a href="#" class="nav-link" data-page="about">About<span class="nav-underline"></span></a></li>
+        <li><a href="#" class="nav-link" data-page="contact">Contact<span class="nav-underline"></span></a></li>
+      </ul>
+    </nav>
+    <div class="nav-rule"></div>
+
+    <main style="padding-top:64px; padding-bottom:120px;">
+
+      <a href="index.html" class="breadcrumb">← Work</a>
+
+      <div class="cs-hero">
+        <div class="cs-hero-images">
+          <div class="cs-placeholder" style="width:340px; height:260px;">[PLACEHOLDER: Old Quick Quote flow screenshot]</div>
+          <div class="cs-placeholder" style="width:340px; height:260px;">[PLACEHOLDER: New Quick Quote flow screenshot]</div>
+        </div>
+        <div class="cs-meta">
+          <p class="kicker">WEB APP · SHIPPED · CURE AUTO INSURANCE</p>
+          <h1 class="cs-title">NJ Quick Quote<span class="accent-period">.</span></h1>
+          <p class="cs-summary">Redesigning CURE's primary customer acquisition flow from the ground up — 20 screens down to 10, built for production.</p>
+          <div class="pill-row" style="justify-content:center;">
+            <span class="pill">WEB APP</span>
+            <span class="pill">SHIPPED</span>
+            <span class="pill">DESIGN SPRINT</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="cs-body">
+
+        <div class="cs-section">
+          <h2 class="cs-section-heading">Context</h2>
+          <p class="body-text">CURE Auto Insurance's Quick Quote flow is the primary entry point for new customers seeking an auto insurance quote in New Jersey. It's one of the most business-critical pages in their digital product — if users drop off here, they never become customers.</p>
+        </div>
+
+        <div class="cs-image-full">
+          <div class="cs-placeholder" style="height:400px;">[PLACEHOLDER: Full Flow Mosaic — all 10 screens in sequence]</div>
+        </div>
+
+        <div class="cs-section">
+          <h2 class="cs-section-heading">The Problem</h2>
+          <p class="body-text">The original Quick Quote flow had accumulated 20 screens of manual data entry. Users were asked for the same information multiple times across different screens. Dense legal warnings appeared mid-flow with no visual separation. The flow ended by telling users to call a phone number.</p>
+        </div>
+
+        <div class="cs-image-full">
+          <div class="cs-placeholder" style="height:360px;">[PLACEHOLDER: Before/After — old dense flow vs new clean flow]</div>
+        </div>
+
+        <div class="cs-section">
+          <h2 class="cs-section-heading">Design Decisions</h2>
+          <h3 style="font-family:var(--font-display); font-variation-settings:var(--font-variation); font-size:24px; letter-spacing:-0.24px; margin-bottom:12px;">Consolidating Coverage Adjustment</h3>
+          <p class="body-text">Rather than requiring users to navigate to separate pages for vehicle coverage and policy coverage, both are surfaced in a single scrollable view. Each coverage line shows pricing clearly. Users can adjust without losing context of the full picture. This single design decision eliminates significant back-and-forth from the original experience.</p>
+        </div>
+
+        <div class="cs-image-full">
+          <div class="cs-placeholder" style="height:400px;">[PLACEHOLDER: Adjust Your Coverages screen — annotated two-column layout]</div>
+        </div>
+
+        <div class="cs-section">
+          <h2 class="cs-section-heading">Component System</h2>
+          <p class="body-text">Because this project required a fully functional prototype for CEO and stakeholder review, I built a comprehensive component library using Figma's boolean and variable features. Every dropdown, toggle, selection state, and interactive element was a live component with real behavior.</p>
+        </div>
+
+        <div class="cs-image-full">
+          <div class="cs-placeholder" style="height:300px;">[PLACEHOLDER: Boolean components GIF — dropdowns opening, selections changing, toggles switching]</div>
+        </div>
+
+        <div class="cs-section">
+          <h2 class="cs-section-heading">Outcome</h2>
+          <p class="body-text">The redesigned Quick Quote flow was presented to CURE's leadership and CEO. It was approved and pushed to production, where it has been in active development for approximately a year.</p>
+          <ul style="padding-left:20px; display:flex; flex-direction:column; gap:8px;" class="body-text">
+            <li>Pushed to production — the strongest measure of stakeholder confidence</li>
+            <li>Coverage adjustment consolidated into a single screen</li>
+            <li>Full prototype fidelity secured leadership buy-in without ambiguity</li>
+            <li>Component library built to support future iterations and developer handoff</li>
+          </ul>
+        </div>
+
+        <div class="cs-section">
+          <h2 class="cs-section-heading">Reflection</h2>
+          <p class="body-text">This project taught me that working within constraints is a design skill in itself. The challenge wasn't just making things look better — it was making things work better while keeping the experience familiar enough that users and stakeholders both felt comfortable moving forward.</p>
+        </div>
+
+        <div class="cs-next">
+          <a href="cure-scan-license.html" class="link-arrow">Next: Scan to Insure <span>➜</span></a>
+        </div>
+
+      </div>
+    </main>
+  </div>
+  <script src="scripts.js"></script>
+</body>
+</html>

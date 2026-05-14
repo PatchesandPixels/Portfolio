@@ -1,111 +1,517 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NJ Quick Quote — Andy Nguyen</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Inter:wght@400;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Quick Quote — A case study by Andy Nguyen</title>
+<meta name="description" content="CURE Auto Insurance Quick Quote redesign — halving a 20-screen quote flow and shipping it to production. UX/UI case study by Andy Nguyen." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,300..800,0..100&family=Inter:wght@300..700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --cream:   #fcf7f4;
+  --cream-2: #f5ede5;
+  --paper:   #fff9f3;
+  --ink:     #1a1612;
+  --ink-2:   #2a2520;
+  --ink-soft:#6b625a;
+  --muted:   #a39a90;
+  --rule:    #e9dfd2;
+  --rule-2:  #d8ccba;
+  --blue:    #1353be;
+  --blue-soft:#e3ecfb;
+  --peach:   #f49e4f;
+  --peach-soft:#fde2c8;
+
+  --display: "Fraunces", "Times New Roman", serif;
+  --sans:    "Inter", -apple-system, "Helvetica Neue", sans-serif;
+  --mono:    "JetBrains Mono", "SF Mono", Menlo, monospace;
+
+  --maxw: 1240px;
+  --gutter: clamp(20px, 4vw, 56px);
+  --sidebar-w: 220px;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+html, body {
+  margin: 0; padding: 0;
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 16px; line-height: 1.6;
+  font-feature-settings: "ss01" on, "cv11" on;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+img, svg { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; padding: 0; }
+::selection { background: var(--ink); color: var(--cream); }
+
+.wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 var(--gutter); }
+.page-outer { max-width: calc(var(--maxw) + 112px); margin: 0 auto; padding: 0 var(--gutter); }
+
+/* Nav */
+.nav {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  padding-top: 45px; position: sticky; top: 0; z-index: 50; background: var(--cream);
+}
+.nav-logo { width: 102px; height: 102px; flex-shrink: 0; }
+.nav-logo img { width: 100%; height: 100%; object-fit: contain; }
+.nav-links { display: flex; gap: 64px; list-style: none; padding: 0; margin: 0; }
+.nav-link {
+  display: flex; flex-direction: column; gap: 24px; align-items: center;
+  font-family: var(--display); font-weight: 400; font-size: 16px;
+  letter-spacing: -0.16px; font-variation-settings: "opsz" 144, "SOFT" 0;
+  color: var(--ink); white-space: nowrap; text-decoration: none;
+}
+.nav-underline { display: none; height: 4px; width: 100%; background: var(--blue); }
+.nav-link.active .nav-underline { display: block; }
+.nav-rule { height: 1px; background: var(--rule-2); }
+
+/* Hero */
+.hero { padding: clamp(48px, 8vw, 96px) 0 clamp(60px, 9vw, 120px); text-align: center; }
+.hero .eyebrow {
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.24em; text-transform: uppercase;
+  color: var(--ink-soft); font-weight: 500;
+  display: inline-flex; align-items: center; gap: 14px; margin-bottom: 56px;
+}
+.hero .eyebrow::before, .hero .eyebrow::after { content: ""; width: 28px; height: 1px; background: var(--rule-2); }
+.hero-title {
+  font-family: var(--display); font-weight: 300;
+  font-variation-settings: "opsz" 144, "SOFT" 30;
+  font-size: clamp(100px, 18vw, 260px); line-height: 0.86; letter-spacing: -0.045em; margin: 0; color: var(--ink);
+}
+.hero-title .dot { color: var(--peach); }
+.hero-sub {
+  margin: clamp(40px, 6vw, 64px) auto 0;
+  font-family: var(--display); font-weight: 350; font-style: italic;
+  font-variation-settings: "opsz" 36, "SOFT" 50;
+  font-size: clamp(22px, 2.6vw, 32px); line-height: 1.32; letter-spacing: -0.015em;
+  color: var(--ink-2); max-width: 26ch; text-wrap: balance;
+}
+.hero-pills { margin: 48px auto 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+.pill {
+  padding: 9px 18px; border: 1px solid var(--rule-2); border-radius: 100px;
+  background: var(--paper); font-size: 12px; font-weight: 500; letter-spacing: 0.04em;
+  color: var(--ink); display: inline-flex; align-items: center; gap: 8px;
+}
+.pill .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--blue); }
+.pill.peach .dot { background: var(--peach); }
+.pill.ink .dot { background: var(--ink); }
+
+/* Metabar */
+.metabar { border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); background: var(--paper); }
+.metabar-inner {
+  max-width: var(--maxw); margin: 0 auto; padding: 24px var(--gutter);
+  display: grid; grid-template-columns: repeat(5, 1fr); gap: 28px; align-items: center;
+}
+.metabar dt { font-family: var(--mono); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-soft); font-weight: 500; margin-bottom: 6px; }
+.metabar dd { margin: 0; font-size: 14px; font-weight: 500; color: var(--ink); line-height: 1.4; }
+
+/* Layout */
+.layout {
+  max-width: var(--maxw); margin: 0 auto;
+  padding: clamp(80px, 10vw, 140px) var(--gutter) 80px;
+  display: grid; grid-template-columns: var(--sidebar-w) 1fr;
+  gap: clamp(40px, 6vw, 96px); align-items: start;
+}
+.side { position: sticky; top: 120px; align-self: start; }
+.side ol { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 18px; }
+.side a { display: inline-flex; align-items: center; gap: 14px; font-size: 14px; font-weight: 500; color: var(--muted); transition: color 220ms ease; line-height: 1.3; }
+.side a .num { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; color: var(--rule-2); width: 22px; flex: none; transition: color 220ms ease; }
+.side a:hover { color: var(--ink-soft); }
+.side a:hover .num { color: var(--ink-soft); }
+.side a.active { color: var(--ink); }
+.side a.active .num { color: var(--blue); }
+.side a.active::after { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--blue); margin-left: auto; }
+.col { min-width: 0; }
+.section { padding: clamp(48px, 7vw, 96px) 0; scroll-margin-top: 96px; }
+.section:first-of-type { padding-top: 0; }
+.section + .section { border-top: 1px solid var(--rule); }
+
+.eyebrow-sm { font-family: var(--mono); font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-soft); font-weight: 500; margin-bottom: 28px; }
+.h-display { font-family: var(--display); font-weight: 380; font-variation-settings: "opsz" 144, "SOFT" 30; font-size: clamp(36px, 4.6vw, 60px); line-height: 1.04; letter-spacing: -0.025em; color: var(--ink); margin: 0 0 32px; text-wrap: balance; }
+.h-display .em { font-style: italic; font-weight: 350; color: var(--blue); }
+.h-display .em-ink { font-style: italic; font-weight: 350; }
+
+.prose p { font-size: 17px; line-height: 1.72; color: var(--ink-2); margin: 0 0 22px; max-width: 62ch; text-wrap: pretty; }
+.prose p strong { color: var(--ink); font-weight: 600; }
+.prose p em { font-style: italic; }
+.prose .lede { font-family: var(--display); font-weight: 360; font-variation-settings: "opsz" 36; font-size: clamp(20px, 2vw, 24px); line-height: 1.42; letter-spacing: -0.01em; color: var(--ink); max-width: 38ch; margin-bottom: 28px; }
+
+/* Figures */
+.figure { margin: clamp(36px, 5vw, 72px) 0; border-radius: 16px; overflow: hidden; }
+.fig-stage { position: relative; background: var(--cream-2); border: 1px solid var(--rule); border-radius: 16px; aspect-ratio: 16 / 10; display: grid; place-items: center; overflow: hidden; }
+.fig-stage.peach { background: var(--peach-soft); border-color: #f0c89a; }
+.fig-stage.blue  { background: var(--blue-soft); border-color: #c7d6f3; }
+.fig-stage.ink   { background: var(--ink); border-color: var(--ink); }
+.fig-stage.tall  { aspect-ratio: 4 / 3; }
+.fig-stage.wide  { aspect-ratio: 21 / 9; }
+.fig-stage::before { content: ""; position: absolute; inset: 0; background-image: repeating-linear-gradient(135deg, transparent 0 22px, rgba(26,22,18,0.035) 22px 23px); pointer-events: none; }
+.fig-stage.ink::before { background-image: repeating-linear-gradient(135deg, transparent 0 22px, rgba(252,247,244,0.06) 22px 23px); }
+.fig-label { position: relative; z-index: 2; font-family: var(--mono); font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-soft); display: inline-flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; max-width: 38ch; padding: 0 24px; }
+.fig-stage.ink .fig-label { color: rgba(252,247,244,0.7); }
+.fig-label .tag { padding: 6px 12px; background: var(--paper); border: 1px solid var(--rule-2); border-radius: 100px; letter-spacing: 0.16em; }
+.fig-stage.ink .fig-label .tag { background: rgba(252,247,244,0.06); border-color: rgba(252,247,244,0.18); color: var(--cream); }
+.fig-label .desc { font-family: var(--sans); font-size: 13px; line-height: 1.5; letter-spacing: 0; text-transform: none; color: var(--ink-soft); }
+.fig-stage.ink .fig-label .desc { color: rgba(252,247,244,0.7); }
+.fig-cap { margin-top: 16px; font-size: 13px; color: var(--ink-soft); font-style: italic; max-width: 70ch; text-wrap: pretty; }
+
+/* Flow list */
+.flow-list { list-style: none; padding: 0; margin: 32px 0; border-top: 1px solid var(--rule); }
+.flow-list li { display: grid; grid-template-columns: 32px 1fr; gap: 16px; padding: 14px 4px; border-bottom: 1px solid var(--rule); align-items: baseline; }
+.flow-list li .n { font-family: var(--mono); font-size: 10px; letter-spacing: 0.18em; color: var(--muted); font-weight: 500; }
+.flow-list li p { font-size: 14px; line-height: 1.5; color: var(--ink-soft); margin: 0; }
+.flow-list li p strong { color: var(--ink); font-weight: 600; }
+
+/* Stats */
+.stats { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 48px 0; }
+.stat-card { padding: 36px 32px; background: var(--paper); border: 1px solid var(--rule); border-radius: 14px; }
+.stat-card .n { font-family: var(--display); font-weight: 320; font-variation-settings: "opsz" 144, "SOFT" 40; font-size: clamp(48px, 7vw, 80px); line-height: 0.9; letter-spacing: -0.035em; color: var(--ink); display: inline-flex; align-items: baseline; flex-wrap: wrap; gap: 4px; }
+.stat-card .n .dot { color: var(--peach); }
+.stat-card .n .em { font-style: italic; color: var(--blue); font-weight: 320; font-size: 0.65em; }
+.stat-card .l { margin-top: 14px; font-size: 14px; line-height: 1.45; color: var(--ink-soft); max-width: 32ch; }
+.stat-card.blue { background: var(--blue); color: var(--cream); border-color: var(--blue); }
+.stat-card.blue .n { color: var(--cream); }
+.stat-card.blue .n .em { color: var(--peach); }
+.stat-card.blue .l { color: rgba(252,247,244,0.78); }
+
+/* Decisions */
+.decision { padding: 56px 0; }
+.decision + .decision { border-top: 1px solid var(--rule); }
+.decision .num { font-family: var(--mono); font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--blue); font-weight: 500; margin-bottom: 18px; display: inline-flex; align-items: center; gap: 10px; }
+.decision .num::before { content: ""; width: 18px; height: 1px; background: var(--blue); }
+.decision h3 { font-family: var(--display); font-weight: 380; font-size: clamp(30px, 3.4vw, 42px); line-height: 1.08; letter-spacing: -0.02em; margin: 0 0 24px; text-wrap: balance; max-width: 22ch; color: var(--ink); }
+.decision h3 em { font-style: italic; font-weight: 360; color: var(--blue); }
+
+.pullquote { margin: 40px 0 8px; padding: 36px 40px; background: var(--ink); color: var(--cream); border-radius: 16px; position: relative; }
+.pullquote .mark { font-family: var(--display); font-weight: 400; font-size: 56px; line-height: 1; color: var(--peach); position: absolute; top: 12px; left: 20px; }
+.pullquote q { display: block; font-family: var(--display); font-weight: 360; font-style: italic; font-size: clamp(22px, 2.4vw, 30px); line-height: 1.32; letter-spacing: -0.01em; margin: 12px 0 18px; max-width: 38ch; quotes: none; }
+.pullquote q::before, .pullquote q::after { content: ""; }
+.pullquote cite { font-family: var(--mono); font-style: normal; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(252,247,244,0.6); }
+
+/* HMW */
+.hmw { margin: 48px 0; border-radius: 16px; background: var(--peach-soft); border: 1px solid #f0c89a; padding: clamp(48px, 6vw, 80px) clamp(36px, 5vw, 60px); text-align: center; }
+.hmw .label { font-family: var(--mono); font-size: 11px; letter-spacing: 0.22em; color: var(--ink-soft); text-transform: uppercase; font-weight: 500; margin-bottom: 18px; }
+.hmw .q { font-family: var(--display); font-weight: 360; font-size: clamp(24px, 3vw, 36px); line-height: 1.18; letter-spacing: -0.015em; max-width: 28ch; margin: 0 auto; color: var(--ink); }
+.hmw .q em { font-style: italic; color: var(--blue); }
+
+/* Outcome list */
+.outcome-list { list-style: none; padding: 0; margin: 32px 0 0; border-top: 1px solid var(--rule); }
+.outcome-list li { display: grid; grid-template-columns: 40px 1fr; gap: 24px; padding: 22px 0; border-bottom: 1px solid var(--rule); align-items: baseline; }
+.outcome-list li .n { font-family: var(--mono); font-size: 11px; letter-spacing: 0.18em; color: var(--blue); font-weight: 500; }
+.outcome-list li p { font-size: 17px; line-height: 1.55; color: var(--ink); margin: 0; max-width: 60ch; }
+
+/* Next case */
+.next-case { margin: 60px 0 0; padding: clamp(48px, 6vw, 80px) clamp(36px, 5vw, 60px); background: var(--ink); color: var(--cream); border-radius: 18px; display: grid; grid-template-columns: 1fr auto; gap: 32px; align-items: end; }
+.next-case .label { font-family: var(--mono); font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--peach); font-weight: 500; margin-bottom: 14px; }
+.next-case .t { font-family: var(--display); font-weight: 360; font-size: clamp(32px, 4.6vw, 56px); line-height: 1.05; letter-spacing: -0.02em; margin: 0; max-width: 18ch; }
+.next-case .t em { font-style: italic; color: var(--peach); font-weight: 360; }
+.next-case .arrow { width: 64px; height: 64px; border-radius: 50%; background: var(--cream); color: var(--ink); display: grid; place-items: center; transition: transform 240ms cubic-bezier(.2,.7,.2,1); }
+.next-case:hover .arrow { transform: rotate(-12deg) scale(1.06); }
+
+/* Footer */
+.footer { margin-top: 80px; border-top: 1px solid var(--rule); }
+.footer-inner { max-width: var(--maxw); margin: 0 auto; padding: 40px var(--gutter); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; font-size: 13px; color: var(--ink-soft); }
+.footer-inner a { color: var(--ink-soft); transition: color 180ms; }
+.footer-inner a:hover { color: var(--ink); }
+
+/* Reveal */
+.reveal { opacity: 0; transform: translateY(14px); transition: opacity 800ms cubic-bezier(.2,.7,.2,1), transform 800ms cubic-bezier(.2,.7,.2,1); }
+.reveal.in { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; } .reveal { opacity: 1; transform: none; } html { scroll-behavior: auto; } }
+
+/* Responsive */
+@media (max-width: 1020px) {
+  .layout { grid-template-columns: 1fr; gap: 0; }
+  .side { position: static; margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--rule); overflow-x: auto; }
+  .side ol { flex-direction: row; gap: 24px; white-space: nowrap; }
+  .side a .num { display: none; }
+  .side a.active::after { display: none; }
+  .metabar-inner { grid-template-columns: repeat(2, 1fr); gap: 20px; }
+}
+@media (max-width: 720px) {
+  .hero { padding: 56px 0 64px; }
+  .stats { grid-template-columns: 1fr; }
+  .next-case { grid-template-columns: 1fr; gap: 24px; }
+}
+</style>
 </head>
 <body>
-  <div class="page-wrapper">
 
-    <nav class="nav">
-      <a href="index.html" class="nav-logo"><img src="assets/logo.png" alt="Pixel and Patches"></a>
-      <ul class="nav-links">
-        <li><a href="index.html" class="nav-link" data-page="work">Work<span class="nav-underline"></span></a></li>
-        <li><a href="#" class="nav-link" data-page="playground">Playground<span class="nav-underline"></span></a></li>
-        <li><a href="#" class="nav-link" data-page="about">About<span class="nav-underline"></span></a></li>
-        <li><a href="#" class="nav-link" data-page="contact">Contact<span class="nav-underline"></span></a></li>
-      </ul>
-    </nav>
-    <div class="nav-rule"></div>
+<div class="page-outer">
+  <nav class="nav" id="topNav">
+    <a href="index.html" class="nav-logo"><img src="assets/logo.png" alt="Pixel and Patches"></a>
+    <ul class="nav-links">
+      <li><a href="index.html" class="nav-link" data-page="work">Work<span class="nav-underline"></span></a></li>
+      <li><a href="#" class="nav-link" data-page="playground">Playground<span class="nav-underline"></span></a></li>
+      <li><a href="#" class="nav-link" data-page="about">About<span class="nav-underline"></span></a></li>
+      <li><a href="mailto:nguyenlandy@gmail.com" class="nav-link" data-page="contact">Contact<span class="nav-underline"></span></a></li>
+    </ul>
+  </nav>
+  <div class="nav-rule"></div>
 
-    <main style="padding-top:64px; padding-bottom:120px;">
+<main>
 
-      <a href="index.html" class="breadcrumb">← Work</a>
+  <section class="hero">
+    <div class="wrap">
+      <div class="eyebrow reveal">Case study · 02 / 04</div>
+      <h1 class="hero-title reveal">Quick<br>Quote<span class="dot">.</span></h1>
+      <p class="hero-sub reveal">Halving a 20-screen quote flow — and shipping it to production.</p>
+      <div class="hero-pills reveal">
+        <span class="pill"><span class="dot"></span>Mobile &amp; Web</span>
+        <span class="pill ink"><span class="dot"></span>Sole Designer</span>
+        <span class="pill peach"><span class="dot"></span>CURE Auto Insurance</span>
+      </div>
+    </div>
+  </section>
 
-      <div class="cs-hero">
-        <div class="cs-hero-images">
-          <div class="cs-placeholder" style="width:340px; height:260px;">[PLACEHOLDER: Old Quick Quote flow screenshot]</div>
-          <div class="cs-placeholder" style="width:340px; height:260px;">[PLACEHOLDER: New Quick Quote flow screenshot]</div>
+  <section class="metabar" aria-label="Project details">
+    <dl class="metabar-inner">
+      <div><dt>Role</dt><dd>Sole UX/UI Designer</dd></div>
+      <div><dt>Company</dt><dd>CURE Auto Insurance</dd></div>
+      <div><dt>Timeline</dt><dd>Design Sprint → Production</dd></div>
+      <div><dt>Platform</dt><dd>Mobile &amp; Web</dd></div>
+      <div><dt>Tools</dt><dd>Figma · Booleans · Variables</dd></div>
+    </dl>
+  </section>
+
+  <div class="layout">
+    <aside class="side" aria-label="Section navigation">
+      <ol id="sideNav">
+        <li><a href="#context"    data-target="context"><span class="num">01</span>Context</a></li>
+        <li><a href="#problem"    data-target="problem"><span class="num">02</span>The Problem</a></li>
+        <li><a href="#decisions"  data-target="decisions"><span class="num">03</span>Design Decisions</a></li>
+        <li><a href="#prototype"  data-target="prototype"><span class="num">04</span>Prototype Fidelity</a></li>
+        <li><a href="#outcome"    data-target="outcome"><span class="num">05</span>Outcome</a></li>
+        <li><a href="#reflection" data-target="reflection"><span class="num">06</span>Reflection</a></li>
+      </ol>
+    </aside>
+
+    <div class="col">
+
+      <!-- 01 Context -->
+      <section class="section" id="context">
+        <div class="eyebrow-sm reveal">— 01 / Context</div>
+        <h2 class="h-display reveal">The quote flow is <span class="em">the whole funnel</span> — if it breaks, nothing else matters.</h2>
+        <div class="prose reveal">
+          <p class="lede">No quote means no policy. No policy means no customer.</p>
+          <p>CURE Auto Insurance's Quick Quote flow is the primary entry point for new customers in New Jersey. I was brought in to redesign it from the ground up — modernizing the visual style, simplifying the experience, and reducing the friction that was costing CURE customers before they ever became policyholders.</p>
+          <p>The redesign also needed to accommodate a newly introduced <strong>Driver's License Scan feature</strong> as an optional accelerated path through the flow.</p>
         </div>
-        <div class="cs-meta">
-          <p class="kicker">WEB APP · SHIPPED · CURE AUTO INSURANCE</p>
-          <h1 class="cs-title">NJ Quick Quote<span class="accent-period">.</span></h1>
-          <p class="cs-summary">Redesigning CURE's primary customer acquisition flow from the ground up — 20 screens down to 10, built for production.</p>
-          <div class="pill-row" style="justify-content:center;">
-            <span class="pill">WEB APP</span>
-            <span class="pill">SHIPPED</span>
-            <span class="pill">DESIGN SPRINT</span>
+
+        <div class="stats reveal">
+          <div class="stat-card blue">
+            <div class="n">20<span class="em">→10</span></div>
+            <div class="l">Screens in the redesigned flow — every screen doing one clear job, nothing redundant.</div>
+          </div>
+          <div class="stat-card">
+            <div class="n">Shipped<span class="dot">.</span></div>
+            <div class="l">Approved by leadership and pushed to production — in active development for approximately a year.</div>
           </div>
         </div>
-      </div>
 
-      <div class="cs-body">
+        <figure class="figure reveal">
+          <div class="fig-stage peach wide">
+            <div class="fig-label">
+              <span class="tag">Full Flow Mosaic</span>
+              <span class="desc">All 10 redesigned screens in sequence — the new visual language at a glance.</span>
+            </div>
+          </div>
+          <figcaption class="fig-cap">Ten screens, each doing one job. The new flow moves — the old one made users work.</figcaption>
+        </figure>
+      </section>
 
-        <div class="cs-section">
-          <h2 class="cs-section-heading">Context</h2>
-          <p class="body-text">CURE Auto Insurance's Quick Quote flow is the primary entry point for new customers seeking an auto insurance quote in New Jersey. It's one of the most business-critical pages in their digital product — if users drop off here, they never become customers.</p>
+      <!-- 02 The Problem -->
+      <section class="section" id="problem">
+        <div class="eyebrow-sm reveal">— 02 / The Problem</div>
+        <h2 class="h-display reveal">Twenty screens of <span class="em-ink">manual data entry</span> — and it showed.</h2>
+        <div class="prose reveal">
+          <p>The original Quick Quote flow had accumulated 20 screens of fragmented, redundant steps. Users were asked for the same information multiple times. Dense legal warnings appeared mid-flow with no visual separation. The flow ended by telling users to call a phone number.</p>
         </div>
 
-        <div class="cs-image-full">
-          <div class="cs-placeholder" style="height:400px;">[PLACEHOLDER: Full Flow Mosaic — all 10 screens in sequence]</div>
+        <ul class="flow-list reveal">
+          <li><span class="n">01</span><p><strong>Start Quote</strong> — Email, confirm email, zip code. Three fields, full screen.</p></li>
+          <li><span class="n">02</span><p><strong>Basic Information</strong> — Policy date and one dropdown. Full screen for a binary choice.</p></li>
+          <li><span class="n">03</span><p><strong>Coverage Selection</strong> — A full-page wall of legal text, mid-flow, no visual separation.</p></li>
+          <li><span class="n">04</span><p><strong>Applicant Information</strong> — Name, full address, housing status, two phone fields, email. One dense screen.</p></li>
+          <li><span class="n">05</span><p><strong>Driver Details</strong> — DOB in 3 separate dropdowns, marital status, gender, occupation, credit score range. All one screen.</p></li>
+          <li><span class="n">06</span><p><strong>Customary Drivers</strong> — License number and medical condition checkboxes on the same screen as driver details.</p></li>
+          <li><span class="n">07</span><p><strong>Driver Assignment (×2)</strong> — The exact same screen appeared twice in the same flow.</p></li>
+          <li><span class="n">08</span><p><strong>Applicant Information (again)</strong> — Same name and address fields from earlier, re-entered.</p></li>
+          <li><span class="n">09</span><p><strong>Vehicle Details (again)</strong> — More vehicle questions separate from the earlier vehicle screen.</p></li>
+          <li><span class="n">10+</span><p><strong>Thanks for Your Application</strong> — Flow ends by telling the user to call the office.</p></li>
+        </ul>
+
+        <div class="hmw reveal">
+          <div class="label">How might we</div>
+          <p class="q">…make getting an auto insurance quote feel as fast and clear as <em>any modern digital product</em>?</p>
+        </div>
+      </section>
+
+      <!-- 03 Design Decisions -->
+      <section class="section" id="decisions">
+        <div class="eyebrow-sm reveal">— 03 / Design Decisions</div>
+        <h2 class="h-display reveal">Three decisions that <span class="em-ink">restructured the experience</span>.</h2>
+        <div class="prose reveal">
+          <p>Brand constraints meant the visual redesign had to stay close to what users already knew. That constraint pushed the real work onto the structural and interaction layer — fewer decisions per screen, clearer next steps, more consolidation without confusion.</p>
         </div>
 
-        <div class="cs-section">
-          <h2 class="cs-section-heading">The Problem</h2>
-          <p class="body-text">The original Quick Quote flow had accumulated 20 screens of manual data entry. Users were asked for the same information multiple times across different screens. Dense legal warnings appeared mid-flow with no visual separation. The flow ended by telling users to call a phone number.</p>
+        <article class="decision reveal">
+          <div class="num">Decision 01</div>
+          <h3>Consolidating coverage into <em>one screen</em>.</h3>
+          <div class="prose">
+            <p>The original flow required users to navigate between multiple separate pages to review and adjust coverage. Making a change meant leaving the summary, going to a coverage screen, making an adjustment, and returning — adding friction at the moment of highest user decision-making.</p>
+            <p>The redesigned <strong>Adjust Your Coverages</strong> screen surfaces both vehicle and policy coverage in a single scrollable view. Each line shows pricing clearly. Users adjust without losing context of the full picture. One design decision, one fewer source of abandonment.</p>
+          </div>
+          <figure class="figure">
+            <div class="fig-stage peach">
+              <div class="fig-label">
+                <span class="tag">Adjust Your Coverages</span>
+                <span class="desc">Vehicle coverage and policy coverage consolidated into one scrollable view. Pricing visible on every line. No round-trips between screens.</span>
+              </div>
+            </div>
+            <figcaption class="fig-cap">The most impactful structural decision in the redesign — two previously separate pages, unified.</figcaption>
+          </figure>
+          <div class="pullquote">
+            <span class="mark" aria-hidden="true">"</span>
+            <q>Static mockups can be misread as "just a painting." A working prototype made the UX improvements undeniable.</q>
+            <cite>— Reflection on stakeholder review</cite>
+          </div>
+        </article>
+
+        <article class="decision reveal">
+          <div class="num">Decision 02</div>
+          <h3>Surface the quote <em>before</em> coverage decisions.</h3>
+          <div class="prose">
+            <p>The original flow made users commit to coverage selections before showing them a price. They arrived at a total with no context for how it was assembled — creating anxiety and abandonment at the worst possible moment.</p>
+            <p>The redesigned Quote Summary screen surfaces <strong>pricing prominently and immediately</strong>. Users see their starting quote before making any coverage decisions. The total anchors the experience — by the time they reach coverage adjustments, the number isn't a surprise. It's a reference point they're actively working with.</p>
+          </div>
+          <figure class="figure">
+            <div class="fig-stage blue">
+              <div class="fig-label">
+                <span class="tag">Quote Summary Screen</span>
+                <span class="desc">Price surfaced first — clear hierarchy, coverage context visible before users commit to any adjustments.</span>
+              </div>
+            </div>
+            <figcaption class="fig-cap">Price first, adjustments second. A different sequence that creates a completely different feeling.</figcaption>
+          </figure>
+        </article>
+
+        <article class="decision reveal">
+          <div class="num">Decision 03</div>
+          <h3>One clear entry point — <em>no ambiguous choices</em> upfront.</h3>
+          <div class="prose">
+            <p>The original Start Quote screen asked users to choose a quote type before they understood what that meant. Two option cards appeared simultaneously selected — a broken state that created confusion before the flow had even begun.</p>
+            <p>The redesigned entry screen collects only what's necessary to begin: one clear action, two paths forward. <strong>No asking users to make a decision they don't yet have context for.</strong></p>
+          </div>
+          <figure class="figure">
+            <div class="fig-stage">
+              <div class="fig-label">
+                <span class="tag">Start Your Quote</span>
+                <span class="desc">Clean entry — minimum required fields, one action, two clearly differentiated paths. No broken multi-select state.</span>
+              </div>
+            </div>
+            <figcaption class="fig-cap">First impressions set trust. The entry screen communicates competence before a word is read.</figcaption>
+          </figure>
+        </article>
+      </section>
+
+      <!-- 04 Prototype Fidelity -->
+      <section class="section" id="prototype">
+        <div class="eyebrow-sm reveal">— 04 / Prototype Fidelity</div>
+        <h2 class="h-display reveal">A prototype that felt like <span class="em">the real product</span>.</h2>
+        <div class="prose reveal">
+          <p>This project required a fully functional prototype for CEO and stakeholder review — not static mockups. I built a comprehensive component library using Figma's boolean and variable features for the first time on this project.</p>
+          <p>Every dropdown, toggle, selection state, and interactive element was a live component with real behavior. Leadership could click through the entire quote flow and experience the speed and clarity of the redesigned experience firsthand. <strong>A working prototype made the UX improvements undeniable.</strong></p>
+        </div>
+        <figure class="figure reveal">
+          <div class="fig-stage blue tall">
+            <div class="fig-label">
+              <span class="tag">Component Library — Boolean Components</span>
+              <span class="desc">Dropdowns, toggles, selection states, form fields — all built as live Figma components with real behavior using booleans and variables.</span>
+            </div>
+          </div>
+          <figcaption class="fig-cap">The prototype didn't just look like the final product — it felt like it. That's what got it approved.</figcaption>
+        </figure>
+      </section>
+
+      <!-- 05 Outcome -->
+      <section class="section" id="outcome">
+        <div class="eyebrow-sm reveal">— 05 / Outcome</div>
+        <h2 class="h-display reveal">Approved by the CEO. <span class="em-ink">Pushed to production.</span></h2>
+
+        <ol class="outcome-list reveal">
+          <li><span class="n">01</span><p><strong>Pushed to production</strong> — the strongest possible measure of stakeholder confidence in a design.</p></li>
+          <li><span class="n">02</span><p>Coverage adjustment <strong>consolidated into a single screen</strong>, eliminating multi-page navigation at the point of highest user anxiety.</p></li>
+          <li><span class="n">03</span><p>Full prototype fidelity using Figma booleans and variables — secured leadership buy-in without ambiguity at CEO review.</p></li>
+          <li><span class="n">04</span><p>On-brand modernization — improved experience without disrupting the visual trust CURE had established with existing customers.</p></li>
+          <li><span class="n">05</span><p>Component library built and documented to support future iterations and clean developer handoff.</p></li>
+        </ol>
+      </section>
+
+      <!-- 06 Reflection -->
+      <section class="section" id="reflection">
+        <div class="eyebrow-sm reveal">— 06 / Reflection</div>
+        <h2 class="h-display reveal">Working within constraints is a <span class="em">design skill</span>.</h2>
+        <div class="prose reveal">
+          <p>My early explorations pushed the visual design further than stakeholders were comfortable with — more whitespace, bolder typography, a cleaner overall palette. The feedback brought me back toward the brand. Rather than fighting that constraint, I redirected my energy toward the structural and interaction layer.</p>
+          <p>The things users <em>feel</em> but don't consciously see: how many decisions per screen, how clearly the interface communicates what comes next, how much information can be consolidated without confusion. That's where the real redesign happened.</p>
+          <p><strong>Building a fully interactive prototype using booleans and variables for the first time</strong> was a genuine skill unlock. It also reinforced something I now bring to every high-stakes project: when the stakes are high, the prototype has to be as close to real as possible. That's what gets things approved and built.</p>
         </div>
 
-        <div class="cs-image-full">
-          <div class="cs-placeholder" style="height:360px;">[PLACEHOLDER: Before/After — old dense flow vs new clean flow]</div>
-        </div>
+        <a class="next-case reveal" href="cure-scan-license.html">
+          <div>
+            <div class="label">Next case study</div>
+            <h3 class="t">20 screens to 6 — a <em>2-week sprint</em>.</h3>
+          </div>
+          <span class="arrow" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+          </span>
+        </a>
+      </section>
 
-        <div class="cs-section">
-          <h2 class="cs-section-heading">Design Decisions</h2>
-          <h3 style="font-family:var(--font-display); font-variation-settings:var(--font-variation); font-size:24px; letter-spacing:-0.24px; margin-bottom:12px;">Consolidating Coverage Adjustment</h3>
-          <p class="body-text">Rather than requiring users to navigate to separate pages for vehicle coverage and policy coverage, both are surfaced in a single scrollable view. Each coverage line shows pricing clearly. Users can adjust without losing context of the full picture. This single design decision eliminates significant back-and-forth from the original experience.</p>
-        </div>
-
-        <div class="cs-image-full">
-          <div class="cs-placeholder" style="height:400px;">[PLACEHOLDER: Adjust Your Coverages screen — annotated two-column layout]</div>
-        </div>
-
-        <div class="cs-section">
-          <h2 class="cs-section-heading">Component System</h2>
-          <p class="body-text">Because this project required a fully functional prototype for CEO and stakeholder review, I built a comprehensive component library using Figma's boolean and variable features. Every dropdown, toggle, selection state, and interactive element was a live component with real behavior.</p>
-        </div>
-
-        <div class="cs-image-full">
-          <div class="cs-placeholder" style="height:300px;">[PLACEHOLDER: Boolean components GIF — dropdowns opening, selections changing, toggles switching]</div>
-        </div>
-
-        <div class="cs-section">
-          <h2 class="cs-section-heading">Outcome</h2>
-          <p class="body-text">The redesigned Quick Quote flow was presented to CURE's leadership and CEO. It was approved and pushed to production, where it has been in active development for approximately a year.</p>
-          <ul style="padding-left:20px; display:flex; flex-direction:column; gap:8px;" class="body-text">
-            <li>Pushed to production — the strongest measure of stakeholder confidence</li>
-            <li>Coverage adjustment consolidated into a single screen</li>
-            <li>Full prototype fidelity secured leadership buy-in without ambiguity</li>
-            <li>Component library built to support future iterations and developer handoff</li>
-          </ul>
-        </div>
-
-        <div class="cs-section">
-          <h2 class="cs-section-heading">Reflection</h2>
-          <p class="body-text">This project taught me that working within constraints is a design skill in itself. The challenge wasn't just making things look better — it was making things work better while keeping the experience familiar enough that users and stakeholders both felt comfortable moving forward.</p>
-        </div>
-
-        <div class="cs-next">
-          <a href="cure-scan-license.html" class="link-arrow">Next: Scan to Insure <span>➜</span></a>
-        </div>
-
-      </div>
-    </main>
+    </div>
   </div>
-  <script src="scripts.js"></script>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="index.html">andy<span style="color:var(--peach)">.</span></a>
+      <div>© 2026 Andy Nguyen — designed, coded, cat approved.</div>
+      <div><a href="mailto:nguyenlandy@gmail.com">nguyenlandy@gmail.com</a></div>
+    </div>
+  </footer>
+
+</main>
+
+<script src="scripts.js"></script>
+<script>
+(function () {
+  const links = Array.from(document.querySelectorAll('#sideNav a'));
+  const sections = links.map(a => document.getElementById(a.dataset.target)).filter(Boolean);
+  function setActive(id) { links.forEach(a => a.classList.toggle('active', a.dataset.target === id)); }
+  const io = new IntersectionObserver((entries) => {
+    const visible = entries.filter(e => e.isIntersecting).sort((a,b) => a.boundingClientRect.top - b.boundingClientRect.top);
+    if (visible[0]) setActive(visible[0].target.id);
+  }, { rootMargin: '-25% 0px -60% 0px', threshold: [0, 0.2, 0.6] });
+  sections.forEach(s => io.observe(s));
+  if (sections[0]) setActive(sections[0].id);
+  const nav = document.getElementById('topNav');
+  const onScroll = () => nav.classList.toggle('scrolled', window.scrollY > 8);
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+  const reveal = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); reveal.unobserve(e.target); } });
+  }, { rootMargin: '0px 0px -8% 0px', threshold: 0.05 });
+  document.querySelectorAll('.reveal').forEach(el => reveal.observe(el));
+})();
+</script>
+
+</div><!-- end .page-outer -->
 </body>
 </html>

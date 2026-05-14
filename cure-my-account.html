@@ -1,120 +1,524 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Account Portal — Andy Nguyen</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Inter:wght@400;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>My Account Portal — A case study by Andy Nguyen</title>
+<meta name="description" content="CURE Auto Insurance My Account Portal — redesigning 11 sections across desktop and mobile, achieving true mobile parity for the first time. UX/UI case study by Andy Nguyen." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,300..800,0..100&family=Inter:wght@300..700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --cream:   #fcf7f4;
+  --cream-2: #f5ede5;
+  --paper:   #fff9f3;
+  --ink:     #1a1612;
+  --ink-2:   #2a2520;
+  --ink-soft:#6b625a;
+  --muted:   #a39a90;
+  --rule:    #e9dfd2;
+  --rule-2:  #d8ccba;
+  --blue:    #1353be;
+  --blue-soft:#e3ecfb;
+  --peach:   #f49e4f;
+  --peach-soft:#fde2c8;
+
+  --display: "Fraunces", "Times New Roman", serif;
+  --sans:    "Inter", -apple-system, "Helvetica Neue", sans-serif;
+  --mono:    "JetBrains Mono", "SF Mono", Menlo, monospace;
+
+  --maxw: 1240px;
+  --gutter: clamp(20px, 4vw, 56px);
+  --sidebar-w: 220px;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+html, body { margin: 0; padding: 0; background: var(--cream); color: var(--ink); font-family: var(--sans); font-size: 16px; line-height: 1.6; font-feature-settings: "ss01" on, "cv11" on; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+img, svg { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; padding: 0; }
+::selection { background: var(--ink); color: var(--cream); }
+
+.wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 var(--gutter); }
+.page-outer { max-width: calc(var(--maxw) + 112px); margin: 0 auto; padding: 0 var(--gutter); }
+
+.nav { display: flex; align-items: flex-end; justify-content: space-between; padding-top: 45px; position: sticky; top: 0; z-index: 50; background: var(--cream); }
+.nav-logo { width: 102px; height: 102px; flex-shrink: 0; }
+.nav-logo img { width: 100%; height: 100%; object-fit: contain; }
+.nav-links { display: flex; gap: 64px; list-style: none; padding: 0; margin: 0; }
+.nav-link { display: flex; flex-direction: column; gap: 24px; align-items: center; font-family: var(--display); font-weight: 400; font-size: 16px; letter-spacing: -0.16px; font-variation-settings: "opsz" 144, "SOFT" 0; color: var(--ink); white-space: nowrap; text-decoration: none; }
+.nav-underline { display: none; height: 4px; width: 100%; background: var(--blue); }
+.nav-link.active .nav-underline { display: block; }
+.nav-rule { height: 1px; background: var(--rule-2); }
+
+.hero { padding: clamp(48px, 8vw, 96px) 0 clamp(60px, 9vw, 120px); text-align: center; }
+.hero .eyebrow { font-family: var(--mono); font-size: 11px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--ink-soft); font-weight: 500; display: inline-flex; align-items: center; gap: 14px; margin-bottom: 56px; }
+.hero .eyebrow::before, .hero .eyebrow::after { content: ""; width: 28px; height: 1px; background: var(--rule-2); }
+.hero-title { font-family: var(--display); font-weight: 300; font-variation-settings: "opsz" 144, "SOFT" 30; font-size: clamp(88px, 16vw, 230px); line-height: 0.86; letter-spacing: -0.045em; margin: 0; color: var(--ink); }
+.hero-title .dot { color: var(--peach); }
+.hero-sub { margin: clamp(40px, 6vw, 64px) auto 0; font-family: var(--display); font-weight: 350; font-style: italic; font-variation-settings: "opsz" 36, "SOFT" 50; font-size: clamp(22px, 2.6vw, 32px); line-height: 1.32; letter-spacing: -0.015em; color: var(--ink-2); max-width: 28ch; text-wrap: balance; }
+.hero-pills { margin: 48px auto 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+.pill { padding: 9px 18px; border: 1px solid var(--rule-2); border-radius: 100px; background: var(--paper); font-size: 12px; font-weight: 500; letter-spacing: 0.04em; color: var(--ink); display: inline-flex; align-items: center; gap: 8px; }
+.pill .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--blue); }
+.pill.peach .dot { background: var(--peach); }
+.pill.ink .dot { background: var(--ink); }
+
+.metabar { border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); background: var(--paper); }
+.metabar-inner { max-width: var(--maxw); margin: 0 auto; padding: 24px var(--gutter); display: grid; grid-template-columns: repeat(5, 1fr); gap: 28px; align-items: center; }
+.metabar dt { font-family: var(--mono); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-soft); font-weight: 500; margin-bottom: 6px; }
+.metabar dd { margin: 0; font-size: 14px; font-weight: 500; color: var(--ink); line-height: 1.4; }
+
+.layout { max-width: var(--maxw); margin: 0 auto; padding: clamp(80px, 10vw, 140px) var(--gutter) 80px; display: grid; grid-template-columns: var(--sidebar-w) 1fr; gap: clamp(40px, 6vw, 96px); align-items: start; }
+.side { position: sticky; top: 120px; align-self: start; }
+.side ol { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 18px; }
+.side a { display: inline-flex; align-items: center; gap: 14px; font-size: 14px; font-weight: 500; color: var(--muted); transition: color 220ms ease; line-height: 1.3; }
+.side a .num { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; color: var(--rule-2); width: 22px; flex: none; transition: color 220ms ease; }
+.side a:hover { color: var(--ink-soft); }
+.side a:hover .num { color: var(--ink-soft); }
+.side a.active { color: var(--ink); }
+.side a.active .num { color: var(--blue); }
+.side a.active::after { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--blue); margin-left: auto; }
+.col { min-width: 0; }
+.section { padding: clamp(48px, 7vw, 96px) 0; scroll-margin-top: 96px; }
+.section:first-of-type { padding-top: 0; }
+.section + .section { border-top: 1px solid var(--rule); }
+
+.eyebrow-sm { font-family: var(--mono); font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-soft); font-weight: 500; margin-bottom: 28px; }
+.h-display { font-family: var(--display); font-weight: 380; font-variation-settings: "opsz" 144, "SOFT" 30; font-size: clamp(36px, 4.6vw, 60px); line-height: 1.04; letter-spacing: -0.025em; color: var(--ink); margin: 0 0 32px; text-wrap: balance; }
+.h-display .em { font-style: italic; font-weight: 350; color: var(--blue); }
+.h-display .em-ink { font-style: italic; font-weight: 350; }
+
+.prose p { font-size: 17px; line-height: 1.72; color: var(--ink-2); margin: 0 0 22px; max-width: 62ch; text-wrap: pretty; }
+.prose p strong { color: var(--ink); font-weight: 600; }
+.prose p em { font-style: italic; }
+.prose .lede { font-family: var(--display); font-weight: 360; font-variation-settings: "opsz" 36; font-size: clamp(20px, 2vw, 24px); line-height: 1.42; letter-spacing: -0.01em; color: var(--ink); max-width: 38ch; margin-bottom: 28px; }
+
+/* Section grid (portal sections list) */
+.sections-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 32px 0; }
+.section-chip { padding: 16px 20px; background: var(--paper); border: 1px solid var(--rule); border-radius: 10px; }
+.section-chip .num { font-family: var(--mono); font-size: 10px; letter-spacing: 0.18em; color: var(--blue); font-weight: 500; margin-bottom: 6px; }
+.section-chip .name { font-size: 15px; font-weight: 500; color: var(--ink); }
+.section-chip .note { font-size: 13px; color: var(--ink-soft); margin-top: 4px; line-height: 1.4; }
+
+.figure { margin: clamp(36px, 5vw, 72px) 0; border-radius: 16px; overflow: hidden; }
+.fig-stage { position: relative; background: var(--cream-2); border: 1px solid var(--rule); border-radius: 16px; aspect-ratio: 16 / 10; display: grid; place-items: center; overflow: hidden; }
+.fig-stage.peach { background: var(--peach-soft); border-color: #f0c89a; }
+.fig-stage.blue  { background: var(--blue-soft); border-color: #c7d6f3; }
+.fig-stage.ink   { background: var(--ink); border-color: var(--ink); }
+.fig-stage.tall  { aspect-ratio: 4 / 3; }
+.fig-stage.wide  { aspect-ratio: 21 / 9; }
+.fig-stage::before { content: ""; position: absolute; inset: 0; background-image: repeating-linear-gradient(135deg, transparent 0 22px, rgba(26,22,18,0.035) 22px 23px); pointer-events: none; }
+.fig-stage.ink::before { background-image: repeating-linear-gradient(135deg, transparent 0 22px, rgba(252,247,244,0.06) 22px 23px); }
+.fig-label { position: relative; z-index: 2; font-family: var(--mono); font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-soft); display: inline-flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; max-width: 38ch; padding: 0 24px; }
+.fig-stage.ink .fig-label { color: rgba(252,247,244,0.7); }
+.fig-label .tag { padding: 6px 12px; background: var(--paper); border: 1px solid var(--rule-2); border-radius: 100px; letter-spacing: 0.16em; }
+.fig-stage.ink .fig-label .tag { background: rgba(252,247,244,0.06); border-color: rgba(252,247,244,0.18); color: var(--cream); }
+.fig-label .desc { font-family: var(--sans); font-size: 13px; line-height: 1.5; letter-spacing: 0; text-transform: none; color: var(--ink-soft); }
+.fig-stage.ink .fig-label .desc { color: rgba(252,247,244,0.7); }
+.fig-cap { margin-top: 16px; font-size: 13px; color: var(--ink-soft); font-style: italic; max-width: 70ch; text-wrap: pretty; }
+
+/* Stats */
+.stats { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 48px 0; }
+.stat-card { padding: 36px 32px; background: var(--paper); border: 1px solid var(--rule); border-radius: 14px; }
+.stat-card .n { font-family: var(--display); font-weight: 320; font-variation-settings: "opsz" 144, "SOFT" 40; font-size: clamp(48px, 7vw, 80px); line-height: 0.9; letter-spacing: -0.035em; color: var(--ink); display: inline-flex; align-items: baseline; flex-wrap: wrap; gap: 4px; }
+.stat-card .n .dot { color: var(--peach); }
+.stat-card .n .em { font-style: italic; color: var(--blue); font-weight: 320; font-size: 0.65em; }
+.stat-card .l { margin-top: 14px; font-size: 14px; line-height: 1.45; color: var(--ink-soft); max-width: 32ch; }
+.stat-card.blue { background: var(--blue); color: var(--cream); border-color: var(--blue); }
+.stat-card.blue .n { color: var(--cream); }
+.stat-card.blue .n .em { color: var(--peach); }
+.stat-card.blue .l { color: rgba(252,247,244,0.78); }
+
+/* Research table (used for breakpoint comparison) */
+.compare-table { margin: 40px 0 8px; border-top: 1px solid var(--rule); }
+.compare-table .row { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; padding: 22px 4px; border-bottom: 1px solid var(--rule); align-items: baseline; }
+.compare-table .row-header { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; padding: 12px 4px; border-bottom: 2px solid var(--rule-2); }
+.compare-table .h { font-family: var(--mono); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-soft); font-weight: 500; }
+.compare-table .before { font-size: 14px; color: var(--ink-soft); line-height: 1.45; }
+.compare-table .after { font-size: 14px; color: var(--ink); font-weight: 500; line-height: 1.45; }
+
+.decision { padding: 56px 0; }
+.decision + .decision { border-top: 1px solid var(--rule); }
+.decision .num { font-family: var(--mono); font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--blue); font-weight: 500; margin-bottom: 18px; display: inline-flex; align-items: center; gap: 10px; }
+.decision .num::before { content: ""; width: 18px; height: 1px; background: var(--blue); }
+.decision h3 { font-family: var(--display); font-weight: 380; font-size: clamp(30px, 3.4vw, 42px); line-height: 1.08; letter-spacing: -0.02em; margin: 0 0 24px; text-wrap: balance; max-width: 22ch; color: var(--ink); }
+.decision h3 em { font-style: italic; font-weight: 360; color: var(--blue); }
+
+.pullquote { margin: 40px 0 8px; padding: 36px 40px; background: var(--ink); color: var(--cream); border-radius: 16px; position: relative; }
+.pullquote .mark { font-family: var(--display); font-weight: 400; font-size: 56px; line-height: 1; color: var(--peach); position: absolute; top: 12px; left: 20px; }
+.pullquote q { display: block; font-family: var(--display); font-weight: 360; font-style: italic; font-size: clamp(22px, 2.4vw, 30px); line-height: 1.32; letter-spacing: -0.01em; margin: 12px 0 18px; max-width: 38ch; quotes: none; }
+.pullquote q::before, .pullquote q::after { content: ""; }
+.pullquote cite { font-family: var(--mono); font-style: normal; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(252,247,244,0.6); }
+
+.hmw { margin: 48px 0; border-radius: 16px; background: var(--peach-soft); border: 1px solid #f0c89a; padding: clamp(48px, 6vw, 80px) clamp(36px, 5vw, 60px); text-align: center; }
+.hmw .label { font-family: var(--mono); font-size: 11px; letter-spacing: 0.22em; color: var(--ink-soft); text-transform: uppercase; font-weight: 500; margin-bottom: 18px; }
+.hmw .q { font-family: var(--display); font-weight: 360; font-size: clamp(24px, 3vw, 36px); line-height: 1.18; letter-spacing: -0.015em; max-width: 30ch; margin: 0 auto; color: var(--ink); }
+.hmw .q em { font-style: italic; color: var(--blue); }
+
+.outcome-list { list-style: none; padding: 0; margin: 32px 0 0; border-top: 1px solid var(--rule); }
+.outcome-list li { display: grid; grid-template-columns: 40px 1fr; gap: 24px; padding: 22px 0; border-bottom: 1px solid var(--rule); align-items: baseline; }
+.outcome-list li .n { font-family: var(--mono); font-size: 11px; letter-spacing: 0.18em; color: var(--blue); font-weight: 500; }
+.outcome-list li p { font-size: 17px; line-height: 1.55; color: var(--ink); margin: 0; max-width: 60ch; }
+
+.next-case { margin: 60px 0 0; padding: clamp(48px, 6vw, 80px) clamp(36px, 5vw, 60px); background: var(--ink); color: var(--cream); border-radius: 18px; display: grid; grid-template-columns: 1fr auto; gap: 32px; align-items: end; }
+.next-case .label { font-family: var(--mono); font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--peach); font-weight: 500; margin-bottom: 14px; }
+.next-case .t { font-family: var(--display); font-weight: 360; font-size: clamp(32px, 4.6vw, 56px); line-height: 1.05; letter-spacing: -0.02em; margin: 0; max-width: 18ch; }
+.next-case .t em { font-style: italic; color: var(--peach); font-weight: 360; }
+.next-case .arrow { width: 64px; height: 64px; border-radius: 50%; background: var(--cream); color: var(--ink); display: grid; place-items: center; transition: transform 240ms cubic-bezier(.2,.7,.2,1); }
+.next-case:hover .arrow { transform: rotate(-12deg) scale(1.06); }
+
+.footer { margin-top: 80px; border-top: 1px solid var(--rule); }
+.footer-inner { max-width: var(--maxw); margin: 0 auto; padding: 40px var(--gutter); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; font-size: 13px; color: var(--ink-soft); }
+.footer-inner a { color: var(--ink-soft); transition: color 180ms; }
+.footer-inner a:hover { color: var(--ink); }
+
+.reveal { opacity: 0; transform: translateY(14px); transition: opacity 800ms cubic-bezier(.2,.7,.2,1), transform 800ms cubic-bezier(.2,.7,.2,1); }
+.reveal.in { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; } .reveal { opacity: 1; transform: none; } html { scroll-behavior: auto; } }
+
+@media (max-width: 1020px) {
+  .layout { grid-template-columns: 1fr; gap: 0; }
+  .side { position: static; margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--rule); overflow-x: auto; }
+  .side ol { flex-direction: row; gap: 24px; white-space: nowrap; }
+  .side a .num { display: none; }
+  .side a.active::after { display: none; }
+  .metabar-inner { grid-template-columns: repeat(2, 1fr); gap: 20px; }
+}
+@media (max-width: 720px) {
+  .hero { padding: 56px 0 64px; }
+  .stats, .sections-grid { grid-template-columns: 1fr; }
+  .next-case { grid-template-columns: 1fr; gap: 24px; }
+}
+</style>
 </head>
 <body>
-  <div class="page-wrapper">
 
-    <nav class="nav">
-      <a href="index.html" class="nav-logo"><img src="assets/logo.png" alt="Pixel and Patches"></a>
-      <ul class="nav-links">
-        <li><a href="index.html" class="nav-link" data-page="work">Work<span class="nav-underline"></span></a></li>
-        <li><a href="#" class="nav-link" data-page="playground">Playground<span class="nav-underline"></span></a></li>
-        <li><a href="#" class="nav-link" data-page="about">About<span class="nav-underline"></span></a></li>
-        <li><a href="#" class="nav-link" data-page="contact">Contact<span class="nav-underline"></span></a></li>
-      </ul>
-    </nav>
-    <div class="nav-rule"></div>
+<div class="page-outer">
+  <nav class="nav" id="topNav">
+    <a href="index.html" class="nav-logo"><img src="assets/logo.png" alt="Pixel and Patches"></a>
+    <ul class="nav-links">
+      <li><a href="index.html" class="nav-link" data-page="work">Work<span class="nav-underline"></span></a></li>
+      <li><a href="#" class="nav-link" data-page="playground">Playground<span class="nav-underline"></span></a></li>
+      <li><a href="#" class="nav-link" data-page="about">About<span class="nav-underline"></span></a></li>
+      <li><a href="mailto:nguyenlandy@gmail.com" class="nav-link" data-page="contact">Contact<span class="nav-underline"></span></a></li>
+    </ul>
+  </nav>
+  <div class="nav-rule"></div>
 
-    <main style="padding-top:64px; padding-bottom:120px;">
+<main>
 
-      <a href="index.html" class="breadcrumb">← Work</a>
+  <section class="hero">
+    <div class="wrap">
+      <div class="eyebrow reveal">Case study · 04 / 04</div>
+      <h1 class="hero-title reveal">My<br>Account<span class="dot">.</span></h1>
+      <p class="hero-sub reveal">11 sections. 2 breakpoints. The first portal with true mobile parity.</p>
+      <div class="hero-pills reveal">
+        <span class="pill"><span class="dot"></span>Desktop &amp; Mobile</span>
+        <span class="pill ink"><span class="dot"></span>Sole Designer</span>
+        <span class="pill peach"><span class="dot"></span>CURE Auto Insurance</span>
+      </div>
+    </div>
+  </section>
 
-      <div class="cs-hero">
-        <div class="cs-hero-images">
-          <div class="cs-placeholder" style="width:460px; height:280px;">[PLACEHOLDER: Full Canvas Overview — all screens across both breakpoints]</div>
-          <div class="cs-placeholder" style="width:220px; height:280px;">[PLACEHOLDER: Mobile breakpoint — Home screen]</div>
+  <section class="metabar" aria-label="Project details">
+    <dl class="metabar-inner">
+      <div><dt>Role</dt><dd>Sole UX/UI Designer</dd></div>
+      <div><dt>Company</dt><dd>CURE Auto Insurance</dd></div>
+      <div><dt>Scope</dt><dd>11 sections, 2 breakpoints</dd></div>
+      <div><dt>Platform</dt><dd>Desktop &amp; Mobile</dd></div>
+      <div><dt>Tools</dt><dd>Figma · Component Library</dd></div>
+    </dl>
+  </section>
+
+  <div class="layout">
+    <aside class="side" aria-label="Section navigation">
+      <ol id="sideNav">
+        <li><a href="#context"     data-target="context"><span class="num">01</span>Context</a></li>
+        <li><a href="#problem"     data-target="problem"><span class="num">02</span>The Problem</a></li>
+        <li><a href="#decisions"   data-target="decisions"><span class="num">03</span>Design Decisions</a></li>
+        <li><a href="#system"      data-target="system"><span class="num">04</span>Design System</a></li>
+        <li><a href="#outcome"     data-target="outcome"><span class="num">05</span>Outcome</a></li>
+        <li><a href="#reflection"  data-target="reflection"><span class="num">06</span>Reflection</a></li>
+      </ol>
+    </aside>
+
+    <div class="col">
+
+      <!-- 01 Context -->
+      <section class="section" id="context">
+        <div class="eyebrow-sm reveal">— 01 / Context</div>
+        <h2 class="h-display reveal">The portal isn't just a feature — <span class="em">it's the product</span>.</h2>
+        <div class="prose reveal">
+          <p class="lede">For policyholders, My Account is where the relationship lives.</p>
+          <p>CURE Auto Insurance's My Account portal is the primary destination for existing customers. It's where they manage their bills, their vehicles, their ID cards, their claims. For a company whose business depends on customer retention, this isn't a utility feature — it's the core product experience.</p>
+          <p>I was brought in as the sole designer to rebuild it across both desktop and mobile breakpoints: <strong>11 distinct sections, two breakpoints, and for the first time in the portal's history — true mobile parity</strong>.</p>
         </div>
-        <div class="cs-meta">
-          <p class="kicker">DESKTOP & MOBILE · 11 SECTIONS · CURE AUTO INSURANCE</p>
-          <h1 class="cs-title">My Account Portal<span class="accent-period">.</span></h1>
-          <p class="cs-summary">Full redesign of CURE's policyholder portal across 11 sections and two breakpoints — the first version with true mobile parity.</p>
-          <div class="pill-row" style="justify-content:center;">
-            <span class="pill">DESKTOP & MOBILE</span>
-            <span class="pill">11 SECTIONS</span>
-            <span class="pill">DESIGN SYSTEM</span>
+
+        <div class="stats reveal">
+          <div class="stat-card blue">
+            <div class="n">11<span class="em">sec.</span></div>
+            <div class="l">Portal sections redesigned — Login, Home, ID Cards, Payment History, Policy Documents, Submit a Request, Add/Replace/Remove Vehicle, Submit a Claim.</div>
+          </div>
+          <div class="stat-card">
+            <div class="n">2<span class="em">bp</span><span class="dot">.</span></div>
+            <div class="l">Breakpoints — desktop and mobile — both fully designed. Not just responsive. Actually designed.</div>
           </div>
         </div>
-      </div>
 
-      <div class="cs-body">
+        <figure class="figure reveal">
+          <div class="fig-stage peach wide">
+            <div class="fig-label">
+              <span class="tag">Full Canvas Overview</span>
+              <span class="desc">Zoomed-out Figma canvas showing all screens across both breakpoints — the full scope of the project at a glance.</span>
+            </div>
+          </div>
+          <figcaption class="fig-cap">11 sections, 2 breakpoints, 1 designer. The full canvas makes the scope visible in a way no summary can.</figcaption>
+        </figure>
+      </section>
 
-        <div class="cs-section">
-          <h2 class="cs-section-heading">Context</h2>
-          <p class="body-text">CURE's existing My Account portal had all three of the classic problems: the experience was costing them money and trust. Navigation was a raw bullet-point list with no visual hierarchy, no icons, no priority. The entire portal had zero mobile design — not responsive, undesigned.</p>
+      <!-- 02 The Problem -->
+      <section class="section" id="problem">
+        <div class="eyebrow-sm reveal">— 02 / The Problem</div>
+        <h2 class="h-display reveal">The classic three problems — and the screenshots <span class="em-ink">told the story clearly</span>.</h2>
+        <div class="prose reveal">
+          <p>Insurance companies redesign customer portals for the same fundamental reasons: the old experience is costing them money and trust. CURE's existing portal had all three of the classic problems.</p>
         </div>
 
-        <div class="cs-image-full">
-          <div class="cs-placeholder" style="height:400px;">[PLACEHOLDER: Before/After — Home dashboard transformation]</div>
+        <div class="compare-table reveal">
+          <div class="row-header">
+            <div class="h">Before</div>
+            <div class="h">After</div>
+          </div>
+          <div class="row">
+            <div class="before">Home: two cramped columns, bullet-point nav list, no hierarchy, no icons. Cartoon mascot in the corner.</div>
+            <div class="after">Home: surfaced critical info — policy status, upcoming payment, quick links to top sections. Scannable, prioritized, clear.</div>
+          </div>
+          <div class="row">
+            <div class="before">Payment History: plain three-column table. No status indicators. A block of instructional text next to it, competing for attention.</div>
+            <div class="after">Payment History: chronological table with clear status indicators. Billing context in the right place. Instantly scannable.</div>
+          </div>
+          <div class="row">
+            <div class="before">ID Cards: a centered table with a download link. No prominence, no mobile consideration, no speed for a time-sensitive action.</div>
+            <div class="after">ID Cards: card surfaced prominently, download/share optimized for mobile, multi-step nav eliminated.</div>
+          </div>
+          <div class="row">
+            <div class="before">Entire portal: zero mobile design. Not responsive — undesigned. Users got a shrunken desktop layout on their phones.</div>
+            <div class="after">Every section fully designed for mobile — not adapted. Designed from the start with mobile behavior in mind.</div>
+          </div>
         </div>
 
-        <div class="cs-section">
-          <h2 class="cs-section-heading">The Challenge</h2>
-          <p class="body-text">Scope and scale. Designing 11 distinct portal sections across two breakpoints required constant context-switching and an obsessive attention to consistency. A sidebar nav that works well on desktop becomes a bottom sheet or hamburger menu on mobile. Form layouts that fit neatly in a two-column desktop grid need to be rethought as single-column stacks on mobile.</p>
+        <div class="hmw reveal">
+          <div class="label">How might we</div>
+          <p class="q">…make a policyholder portal feel like a <em>product worth coming back to</em> — not a form you fill out under stress?</p>
+        </div>
+      </section>
+
+      <!-- 03 Design Decisions -->
+      <section class="section" id="decisions">
+        <div class="eyebrow-sm reveal">— 03 / Design Decisions</div>
+        <h2 class="h-display reveal">Three decisions that <span class="em-ink">shaped the system</span>.</h2>
+        <div class="prose reveal">
+          <p>Designing at this scale as a solo designer, the risk of inconsistency is constant. The decisions that mattered most weren't the flashiest — they were the ones that created coherence across 11 sections and kept the experience from drifting.</p>
         </div>
 
-        <div class="cs-image-full">
-          <div class="cs-placeholder" style="height:400px;">[PLACEHOLDER: Desktop vs. Mobile side-by-side — Home, Claims, Vehicle Management]</div>
+        <article class="decision reveal">
+          <div class="num">Decision 01</div>
+          <h3>Rebuild the Home screen <em>hierarchy from scratch</em>.</h3>
+          <div class="prose">
+            <p>The Home dashboard is what every user sees first, every time. The original version was a two-column layout inside a bordered box — navigation was a raw bullet-point list with no visual hierarchy, no icons, no sense of priority. Users had no way to understand what was most important or what to do first.</p>
+            <p>The redesigned Home surfaces three things immediately: <strong>policy status, upcoming payment, and quick links to the most-used sections</strong>. Navigation was restructured to be scannable and predictable. The hierarchy was rebuilt so users can orient themselves instantly — instead of hunting for what they need.</p>
+          </div>
+          <figure class="figure">
+            <div class="fig-stage peach">
+              <div class="fig-label">
+                <span class="tag">Home Dashboard — Before / After</span>
+                <span class="desc">Annotated hero shot: policy status surfaced, payment upcoming called out, quick-links to top sections prioritized by frequency of use.</span>
+              </div>
+            </div>
+            <figcaption class="fig-cap">The most impactful screen in the portal — not because it's complex, but because it's the one every user sees first.</figcaption>
+          </figure>
+          <div class="pullquote">
+            <span class="mark" aria-hidden="true">"</span>
+            <q>Finding what you need in two taps instead of five isn't flashy. But for someone at a traffic stop, it's everything.</q>
+            <cite>— Reflection on the My Account Portal project</cite>
+          </div>
+        </article>
+
+        <article class="decision reveal">
+          <div class="num">Decision 02</div>
+          <h3>Mobile parity — not just <em>responsive, actually designed</em>.</h3>
+          <div class="prose">
+            <p>The original portal had zero mobile design. Users on mobile got a shrunken desktop layout — not adapted, not considered. This was the most significant structural gap in the entire product.</p>
+            <p>Designing for both breakpoints simultaneously isn't just about resizing layouts. <strong>Information hierarchy, navigation patterns, and interaction models all behave differently across breakpoints.</strong> A sidebar nav that works on desktop becomes a bottom sheet on mobile. A two-column desktop grid becomes a single-column mobile stack. Every one of these decisions was made intentionally — not as an afterthought.</p>
+          </div>
+          <figure class="figure">
+            <div class="fig-stage blue tall">
+              <div class="fig-label">
+                <span class="tag">Desktop vs. Mobile Side-by-Side</span>
+                <span class="desc">Home, Claims, and Vehicle Management shown at both breakpoints — demonstrating how each section adapts without losing coherence.</span>
+              </div>
+            </div>
+            <figcaption class="fig-cap">Mobile parity isn't a checkbox. It's a completely different set of design decisions made in parallel.</figcaption>
+          </figure>
+        </article>
+
+        <article class="decision reveal">
+          <div class="num">Decision 03</div>
+          <h3>Claims as a <em>structured, calm process</em> — not a form under pressure.</h3>
+          <div class="prose">
+            <p>Submit a Claim is the highest-stakes flow in the portal. When a user is filing a claim, they're often stressed, often on a phone, and need absolute clarity above everything else.</p>
+            <p>The original claims flow had a progress bar — the only structured thing in the portal — but the form fields were densely packed with no breathing room. The redesign is step-by-step, calm, with one clear decision at a time. <strong>Clear progress indicators, logical field grouping, and reassuring confirmation screens guide users through the process when they're at their most anxious.</strong></p>
+          </div>
+          <figure class="figure">
+            <div class="fig-stage">
+              <div class="fig-label">
+                <span class="tag">Submit a Claim — Step Sequence</span>
+                <span class="desc">6-step claims flow shown as a sequence — Getting Started, Driver, Vehicle, Loss, Additional Info, Confirm. One thing at a time.</span>
+              </div>
+            </div>
+            <figcaption class="fig-cap">Design for the worst moment — then it works for every moment.</figcaption>
+          </figure>
+        </article>
+      </section>
+
+      <!-- 04 Design System -->
+      <section class="section" id="system">
+        <div class="eyebrow-sm reveal">— 04 / Design System</div>
+        <h2 class="h-display reveal">Consistency at scale is <span class="em">engineered, not accidental</span>.</h2>
+        <div class="prose reveal">
+          <p>Across a project of this scope, a shared component library wasn't optional — it was what made the project possible. I maintained it throughout the redesign, ensuring that buttons, form fields, navigation elements, cards, and status indicators behaved consistently across all 11 sections and both breakpoints.</p>
+          <p>The portal covers a wide range of interaction patterns:</p>
         </div>
 
-        <div class="cs-section">
-          <h2 class="cs-section-heading">Design Decisions</h2>
-          <h3 style="font-family:var(--font-display); font-variation-settings:var(--font-variation); font-size:24px; letter-spacing:-0.24px; margin-bottom:12px;">Home Screen Hierarchy</h3>
-          <p class="body-text">The most important screen in the portal — it's what every user sees first, every time. The redesign focused on surfacing the most critical information immediately: policy status, upcoming payment, quick links to the most-used sections. The hierarchy was rebuilt from the ground up so users can orient themselves instantly rather than hunting for what they need.</p>
+        <div class="sections-grid reveal">
+          <div class="section-chip">
+            <div class="num">Login</div>
+            <div class="name">Authentication Entry</div>
+            <div class="note">Clean credential entry, clear error states, welcoming visual tone.</div>
+          </div>
+          <div class="section-chip">
+            <div class="num">Home</div>
+            <div class="name">Dashboard</div>
+            <div class="note">Policy status, payment, quick links — rebuilt hierarchy.</div>
+          </div>
+          <div class="section-chip">
+            <div class="num">ID Cards</div>
+            <div class="name">High-Frequency Access</div>
+            <div class="note">Surfaced prominently, download/share optimized for mobile speed.</div>
+          </div>
+          <div class="section-chip">
+            <div class="num">Payment</div>
+            <div class="name">Billing History</div>
+            <div class="note">Chronological table, clear status indicators, scannable at a glance.</div>
+          </div>
+          <div class="section-chip">
+            <div class="num">Documents</div>
+            <div class="name">Policy Documents</div>
+            <div class="note">Clean document library — clearly labeled, easy to locate and download.</div>
+          </div>
+          <div class="section-chip">
+            <div class="num">Vehicles</div>
+            <div class="name">Add / Replace / Remove</div>
+            <div class="note">Three distinct flows, each optimized for mobile — confirmation states throughout.</div>
+          </div>
+          <div class="section-chip">
+            <div class="num">Request</div>
+            <div class="name">Submit a Request</div>
+            <div class="note">Structured form flow, logical field grouping, clear confirmation.</div>
+          </div>
+          <div class="section-chip">
+            <div class="num">Claims</div>
+            <div class="name">Submit a Claim</div>
+            <div class="note">Step-by-step, calm, one decision at a time — designed for moments of stress.</div>
+          </div>
         </div>
 
-        <div class="cs-image-full">
-          <div class="cs-placeholder" style="height:400px;">[PLACEHOLDER: Home Screen — annotated hero shot showing hierarchy decisions]</div>
+        <figure class="figure reveal">
+          <div class="fig-stage blue">
+            <div class="fig-label">
+              <span class="tag">Component Library</span>
+              <span class="desc">Buttons, form fields, navigation elements, cards, status indicators — consistent across 11 sections and 2 breakpoints.</span>
+            </div>
+          </div>
+          <figcaption class="fig-cap">A component-first approach isn't just good practice at this scale — it's what made developer handoff possible without a full-time design team supporting it.</figcaption>
+        </figure>
+      </section>
+
+      <!-- 05 Outcome -->
+      <section class="section" id="outcome">
+        <div class="eyebrow-sm reveal">— 05 / Outcome</div>
+        <h2 class="h-display reveal">The most comprehensive project I completed <span class="em-ink">at CURE.</span></h2>
+
+        <ol class="outcome-list reveal">
+          <li><span class="n">01</span><p><strong>Full portal redesigned</strong> across desktop and mobile — 11 sections, two breakpoints, every customer-facing screen rebuilt.</p></li>
+          <li><span class="n">02</span><p>Navigation clarity improved through a <strong>rebuilt Home screen hierarchy</strong> — policy status and payment surfaced immediately.</p></li>
+          <li><span class="n">03</span><p><strong>Mobile parity achieved</strong> — every flow fully designed for mobile users for the first time in the portal's history.</p></li>
+          <li><span class="n">04</span><p>Self-service flows <strong>streamlined for vehicle management and claims submission</strong> — fewer steps, clearer confirmation, less confusion.</p></li>
+          <li><span class="n">05</span><p>Consistent component system maintained throughout — supporting <strong>clean developer handoff</strong> without a supporting design team.</p></li>
+        </ol>
+      </section>
+
+      <!-- 06 Reflection -->
+      <section class="section" id="reflection">
+        <div class="eyebrow-sm reveal">— 06 / Reflection</div>
+        <h2 class="h-display reveal">What designing at scale <span class="em">actually taught me</span>.</h2>
+        <div class="prose reveal">
+          <p>This project taught me what it means to design at scale as a solo designer. With 11 sections across two breakpoints, the risk of inconsistency is real and constant. Staying organized — through a disciplined component library, a clear file structure, and a consistent naming system — wasn't just good practice. It was what made the project possible.</p>
+          <p>I also learned that the most impactful design decisions on a project like this aren't always the most visible ones. Restructuring the Home screen navigation so users can find what they need in two taps instead of five isn't flashy. But for someone trying to pull up their ID card at a traffic stop, <em>it's everything</em>.</p>
+          <p><strong>The job of a designer isn't to make things beautiful. It's to make things work.</strong> When they work beautifully, that's the craft. But work comes first.</p>
         </div>
 
-        <div class="cs-section">
-          <h3 style="font-family:var(--font-display); font-variation-settings:var(--font-variation); font-size:24px; letter-spacing:-0.24px; margin-bottom:12px;">Claims Flow</h3>
-          <p class="body-text">The highest-stakes flow in the portal. When a user is filing a claim, they're often stressed and need clarity above all else. The redesigned claims flow is structured, step-by-step, and designed to reduce cognitive load at a moment when users have none to spare.</p>
-        </div>
+        <a class="next-case reveal" href="tersus.html">
+          <div>
+            <div class="label">Back to case study 01</div>
+            <h3 class="t">A <em>two-sided marketplace</em>, designed end-to-end.</h3>
+          </div>
+          <span class="arrow" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+          </span>
+        </a>
+      </section>
 
-        <div class="cs-image-full">
-          <div class="cs-placeholder" style="height:360px;">[PLACEHOLDER: Submit a Claim — step sequence across 6 screens]</div>
-        </div>
-
-        <div class="cs-section">
-          <h2 class="cs-section-heading">Design System</h2>
-          <p class="body-text">Across a project of this scope, consistency isn't accidental — it's engineered. I maintained a shared component library throughout the redesign, ensuring that buttons, form fields, navigation elements, cards, and status indicators behaved consistently across all 11 sections and both breakpoints.</p>
-        </div>
-
-        <div class="cs-image-full">
-          <div class="cs-placeholder" style="height:300px;">[PLACEHOLDER: Component Library — buttons, form fields, cards, navigation elements]</div>
-        </div>
-
-        <div class="cs-section">
-          <h2 class="cs-section-heading">Outcome</h2>
-          <ul style="padding-left:20px; display:flex; flex-direction:column; gap:8px;" class="body-text">
-            <li>Full portal redesigned across desktop and mobile — 11 sections, two breakpoints</li>
-            <li>Navigation clarity improved through a rebuilt Home screen hierarchy</li>
-            <li>Mobile parity achieved — every flow fully designed for mobile users for the first time</li>
-            <li>Self-service flows streamlined for vehicle management and claims submission</li>
-            <li>Consistent component system maintained throughout, supporting clean developer handoff</li>
-          </ul>
-        </div>
-
-        <div class="cs-section">
-          <h2 class="cs-section-heading">Reflection</h2>
-          <p class="body-text">This project taught me what it means to design at scale as a solo designer. Staying organized — through a disciplined component library, a clear file structure, and a consistent naming system — wasn't just good practice. It was what made the project possible.</p>
-        </div>
-
-        <div class="cs-next">
-          <a href="index.html" class="link-arrow">← Back to all work</a>
-        </div>
-
-      </div>
-    </main>
+    </div>
   </div>
-  <script src="scripts.js"></script>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="index.html">andy<span style="color:var(--peach)">.</span></a>
+      <div>© 2026 Andy Nguyen — designed, coded, cat approved.</div>
+      <div><a href="mailto:nguyenlandy@gmail.com">nguyenlandy@gmail.com</a></div>
+    </div>
+  </footer>
+
+</main>
+
+<script src="scripts.js"></script>
+<script>
+(function () {
+  const links = Array.from(document.querySelectorAll('#sideNav a'));
+  const sections = links.map(a => document.getElementById(a.dataset.target)).filter(Boolean);
+  function setActive(id) { links.forEach(a => a.classList.toggle('active', a.dataset.target === id)); }
+  const io = new IntersectionObserver((entries) => {
+    const visible = entries.filter(e => e.isIntersecting).sort((a,b) => a.boundingClientRect.top - b.boundingClientRect.top);
+    if (visible[0]) setActive(visible[0].target.id);
+  }, { rootMargin: '-25% 0px -60% 0px', threshold: [0, 0.2, 0.6] });
+  sections.forEach(s => io.observe(s));
+  if (sections[0]) setActive(sections[0].id);
+  const nav = document.getElementById('topNav');
+  const onScroll = () => nav.classList.toggle('scrolled', window.scrollY > 8);
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+  const reveal = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); reveal.unobserve(e.target); } });
+  }, { rootMargin: '0px 0px -8% 0px', threshold: 0.05 });
+  document.querySelectorAll('.reveal').forEach(el => reveal.observe(el));
+})();
+</script>
+
+</div><!-- end .page-outer -->
 </body>
 </html>

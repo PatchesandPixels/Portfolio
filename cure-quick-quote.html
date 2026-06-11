@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-P9JER5X15D"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-P9JER5X15D');
+  </script>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Quick Quote — A case study by Andy Nguyen</title>
@@ -58,9 +66,9 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 /* Nav */
 .nav {
   display: flex; align-items: flex-end; justify-content: space-between;
-  padding-top: 45px; position: sticky; top: 0; z-index: 50; background: var(--cream);
+  padding: 12px 0; position: sticky; top: 0; z-index: 50; background: var(--cream);
 }
-.nav-logo { width: 102px; height: 102px; flex-shrink: 0; }
+.nav-logo { width: 60px; height: 60px; flex-shrink: 0; }
 .nav-logo img { width: 100%; height: 100%; object-fit: contain; }
 .nav-links { display: flex; gap: 64px; list-style: none; padding: 0; margin: 0; }
 .nav-link {
@@ -69,8 +77,8 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   letter-spacing: -0.16px; font-variation-settings: "opsz" 144, "SOFT" 0;
   color: var(--ink); white-space: nowrap; text-decoration: none;
 }
-.nav-underline { display: none; height: 4px; width: 100%; background: var(--blue); }
-.nav-link.active .nav-underline { display: block; }
+.nav-underline { height: 4px; width: 100%; background: var(--blue); transform: scaleX(0); transform-origin: left center; transition: transform 260ms cubic-bezier(0.4,0,0.2,1), opacity 260ms ease; opacity: 0; }
+.nav-link:hover .nav-underline, .nav-btn-work:hover .nav-underline { transform: scaleX(1); opacity: 0.4; } .nav-link.active .nav-underline { transform: scaleX(1); opacity: 1; }
 .nav-rule { height: 1px; background: var(--rule-2); }
 
 /* Hero */
@@ -161,6 +169,26 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .fig-label .desc { font-family: var(--sans); font-size: 13px; line-height: 1.5; letter-spacing: 0; text-transform: none; color: var(--ink-soft); }
 .fig-stage.ink .fig-label .desc { color: rgba(252,247,244,0.7); }
 .fig-cap { margin-top: 16px; font-size: 13px; color: var(--ink-soft); font-style: italic; max-width: 70ch; text-wrap: pretty; }
+.fig-stage-phone { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); height: 96%; width: auto; max-width: none; object-fit: contain; object-position: bottom center; display: block; }
+.fig-stage:has(.fig-stage-phone)::before { opacity: 0; }
+
+/* PDF doc figure */
+.fig-stage--pdf { display: block; cursor: pointer; text-decoration: none; }
+.fig-stage-doc { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top left; display: block; border-radius: 0; }
+.fig-stage:has(.fig-stage-doc)::before { opacity: 0; }
+.fig-pdf-hint {
+  position: absolute; bottom: 16px; right: 16px; z-index: 3;
+  display: flex; align-items: center; gap: 6px;
+  background: rgba(255,255,255,0.92); backdrop-filter: blur(6px);
+  border: 1px solid rgba(19,83,190,0.2); border-radius: 100px;
+  padding: 7px 14px; font-family: var(--mono); font-size: 11px; font-weight: 500;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--blue);
+  opacity: 0; transform: translateY(4px);
+  transition: opacity 220ms ease, transform 220ms ease;
+  pointer-events: none;
+}
+.fig-stage--pdf:hover .fig-pdf-hint { opacity: 1; transform: translateY(0); }
+.fig-stage--pdf:hover::after { content: ""; position: absolute; inset: 0; background: rgba(19,83,190,0.06); pointer-events: none; }
 
 /* Flow list */
 .flow-list { list-style: none; padding: 0; margin: 32px 0; border-top: 1px solid var(--rule); }
@@ -221,6 +249,291 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .footer-inner a { color: var(--ink-soft); transition: color 180ms; }
 .footer-inner a:hover { color: var(--ink); }
 
+/* ── Screen Carousel ───────────────────────────────────────────── */
+.carousel-wrap {
+  margin: clamp(36px,5vw,72px) 0;
+  background: linear-gradient(135deg, #fff5f0 0%, #ffe8dc 50%, #ffd4c1 100%);
+  border: 1px solid #ffc4a8;
+  border-radius: 20px;
+  padding: clamp(28px,4vw,48px) 0 clamp(28px,4vw,40px);
+  position: relative;
+}
+.carousel-intro {
+  text-align: center;
+  font-size: 13px;
+  color: var(--ink-soft);
+  font-weight: 400;
+  margin: 0 0 clamp(24px,3vw,36px);
+  padding: 0 24px;
+}
+.carousel-stage {
+  position: relative;
+  overflow: hidden;
+  /* arrows overlay the track edges */
+}
+.carousel-track-wrap {
+  overflow: visible;
+  cursor: grab;
+  position: relative;
+  height: 390px;
+  mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%);
+}
+.carousel-track-wrap:active { cursor: grabbing; }
+.carousel-track {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: transform 420ms cubic-bezier(.25,.8,.25,1);
+  will-change: transform;
+  padding: 20px 0;
+}
+.carousel-slide {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  transition: transform 420ms cubic-bezier(.25,.8,.25,1), opacity 420ms ease;
+}
+.carousel-slide .phone {
+  width: 160px;
+}
+.carousel-slide .phone img {
+  width: 100%;
+  height: auto;
+  display: block;
+  pointer-events: none;
+}
+.carousel-slide .slide-label {
+  text-align: center;
+  transition: opacity 420ms ease;
+}
+.carousel-slide .slide-label strong {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+.carousel-slide .slide-label span {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+}
+
+/* Active slide */
+.carousel-slide.is-active { transform: scale(1.08); }
+.carousel-slide:not(.is-active) { transform: scale(0.86); opacity: 0.35; }
+
+/* Arrows — overlay edges of the track */
+.carousel-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.95);
+  border: none;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.18);
+  display: grid; place-items: center;
+  color: var(--ink);
+  cursor: pointer;
+  transition: box-shadow 200ms, color 200ms, transform 200ms;
+}
+.carousel-arrow--prev { left: 8px; }
+.carousel-arrow--next { right: 8px; }
+.carousel-arrow:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.24); color: var(--peach); transform: translateY(-50%) scale(1.06); }
+
+/* Footer */
+.carousel-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+  padding: 0 8px;
+}
+.carousel-dots {
+  display: flex;
+  gap: 5px;
+  flex-wrap: nowrap;
+  justify-content: center;
+  padding: 4px 2px;
+  max-width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.carousel-dots::-webkit-scrollbar { display: none; }
+.carousel-dot {
+  width: 26px; height: 26px;
+  flex: 0 0 26px;
+  border-radius: 50%;
+  border: none;
+  background: #fff;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.12);
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: all 240ms ease;
+  display: grid; place-items: center;
+  flex: 0 0 auto;
+}
+.carousel-dot.is-active {
+  background: linear-gradient(135deg, #ff9a76, #f49e4f);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(244,158,79,0.45);
+  transform: scale(1.18);
+}
+.carousel-dot:hover:not(.is-active) { background: var(--paper); }
+.carousel-progress-bar {
+  width: 100%;
+  max-width: 320px;
+  height: 4px;
+  background: rgba(0,0,0,0.1);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.carousel-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #ff9a76, #f49e4f);
+  border-radius: 2px;
+  transition: width 320ms cubic-bezier(.25,.8,.25,1);
+}
+
+/* Decision video mockup */
+.fig-video-wrap {
+  border-radius: 20px;
+  overflow: hidden;
+  line-height: 0;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+  margin: clamp(36px,5vw,72px) 0;
+}
+.fig-video-wrap video {
+  width: 100%;
+  display: block;
+}
+
+/* Prototype Fidelity Section */
+.proto-header {
+  display: grid;
+  grid-template-columns: 1fr 1.6fr;
+  gap: clamp(32px, 5vw, 80px);
+  align-items: start;
+  margin-bottom: clamp(48px, 6vw, 80px);
+}
+.proto-header .h-display { margin-bottom: 0; }
+.proto-header .prose p:last-child { margin-bottom: 0; }
+
+.proto-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--blue);
+  font-weight: 500;
+  margin-bottom: 24px;
+  margin-top: 56px;
+}
+.proto-label:first-of-type { margin-top: 0; }
+
+.proto-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+.proto-card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.proto-card-top {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.proto-num {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--blue-soft);
+  color: var(--blue);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 600;
+  flex-shrink: 0;
+  letter-spacing: 0;
+}
+.proto-card-title {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+.proto-card-desc {
+  font-size: 13px;
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+.proto-video {
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+  background: var(--cream-2);
+}
+.proto-video video {
+  width: 100%;
+  display: block;
+}
+
+.proto-proved {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+.proto-proved-item {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.proto-proved-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.proto-proved-icon.blue  { background: var(--blue-soft); color: var(--blue); }
+.proto-proved-icon.peach { background: var(--blue-soft); color: var(--blue); }
+.proto-proved-icon.ink   { background: var(--blue-soft); color: var(--blue); }
+.proto-proved-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1.3;
+}
+.proto-proved-desc {
+  font-size: 13px;
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+
 /* Reveal */
 .reveal { opacity: 0; transform: translateY(14px); transition: opacity 800ms cubic-bezier(.2,.7,.2,1), transform 800ms cubic-bezier(.2,.7,.2,1); }
 .reveal.in { opacity: 1; transform: none; }
@@ -240,17 +553,36 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   .stats { grid-template-columns: 1fr; }
   .next-case { grid-template-columns: 1fr; gap: 24px; }
 }
+
+/* ── Work Dropdown ───────────────────────────────────────────── */
+.nav-item--work { position: relative; }
+.nav-btn-work { background: none; border: 0; padding: 0; cursor: pointer; }
+.nav-dropdown { position: absolute; top: calc(100% + 12px); left: 50%; transform: translateX(-50%) translateY(-6px); background: var(--paper); border: 1px solid var(--rule-2); border-radius: 14px; box-shadow: 0 8px 32px rgba(26,22,18,0.12), 0 2px 8px rgba(26,22,18,0.06); padding: 6px; min-width: 200px; opacity: 0; pointer-events: none; transition: opacity 180ms ease, transform 180ms ease; z-index: 200; }
+.nav-item--work.is-open .nav-dropdown { opacity: 1; pointer-events: auto; transform: translateX(-50%) translateY(0); }
+.nav-dropdown-item { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 8px; font-family: var(--display); font-size: 15px; font-weight: 400; color: var(--ink); text-decoration: none; transition: background 140ms; white-space: nowrap; }
+.nav-dropdown-item:hover { background: var(--cream-2); }
+.nav-dropdown-num { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; color: var(--muted); min-width: 18px; }
 </style>
+  <link rel="stylesheet" href="nav.css">
 </head>
 <body>
 
 <div class="page-outer">
   <nav class="nav" id="topNav">
-    <a href="index.html" class="nav-logo"><img src="assets/logo.png" alt="Pixel and Patches"></a>
+    <a href="index.html" class="nav-logo"><img src="assets/logo.png" alt="Pixel and Patches" loading="lazy"></a>
     <ul class="nav-links">
-      <li><a href="index.html" class="nav-link" data-page="work">Work<span class="nav-underline"></span></a></li>
-      <li><a href="#" class="nav-link" data-page="playground">Playground<span class="nav-underline"></span></a></li>
-      <li><a href="#" class="nav-link" data-page="about">About<span class="nav-underline"></span></a></li>
+      <li class="nav-item--work">
+          <button class="nav-link nav-btn-work" data-page="work" aria-haspopup="true" aria-expanded="false">Work<span class="nav-underline"></span></button>
+          <div class="nav-dropdown" role="menu">
+            <a href="tersus.html" class="nav-dropdown-item" role="menuitem"><span class="nav-dropdown-num">01</span>Tersus</a>
+            <a href="cure-quick-quote.html" class="nav-dropdown-item" role="menuitem"><span class="nav-dropdown-num">02</span>Quick Quote</a>
+            <a href="cure-scan-license.html" class="nav-dropdown-item" role="menuitem"><span class="nav-dropdown-num">03</span>Scan to Insure</a>
+            <a href="cure-my-account.html" class="nav-dropdown-item" role="menuitem"><span class="nav-dropdown-num">04</span>My Account</a>
+          </div>
+        </li>
+      <li><a href="playground.html" class="nav-link" data-page="playground">Playground<span class="nav-underline"></span></a></li>
+      
+      <li><a href="assets/andy-nguyen-resume.pdf" target="_blank" rel="noopener" class="nav-link" data-page="resume">Resume<span class="nav-underline"></span></a></li>
       <li><a href="mailto:nguyenlandy@gmail.com" class="nav-link" data-page="contact">Contact<span class="nav-underline"></span></a></li>
     </ul>
   </nav>
@@ -316,15 +648,33 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
           </div>
         </div>
 
-        <figure class="figure reveal">
-          <div class="fig-stage peach wide">
-            <div class="fig-label">
-              <span class="tag">Full Flow Mosaic</span>
-              <span class="desc">All 10 redesigned screens in sequence — the new visual language at a glance.</span>
+        <!-- ── SCREEN CAROUSEL ──────────────────────────────────── -->
+        <div class="carousel-wrap reveal">
+          <p class="carousel-intro">All 10 redesigned screens in sequence — the new visual language at a glance.</p>
+
+          <div class="carousel-stage" style="position:relative;">
+            <button class="carousel-arrow carousel-arrow--prev" id="cPrev" aria-label="Previous screen">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+            </button>
+
+            <div class="carousel-track-wrap" id="cTrack">
+              <div class="carousel-track">
+                <!-- screens injected by JS -->
+              </div>
             </div>
+
+            <button class="carousel-arrow carousel-arrow--next" id="cNext" aria-label="Next screen">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+            </button>
           </div>
-          <figcaption class="fig-cap">Ten screens, each doing one job. The new flow moves — the old one made users work.</figcaption>
-        </figure>
+
+          <div class="carousel-footer">
+            <div class="carousel-dots" id="cDots"></div>
+            <div class="carousel-progress-bar"><div class="carousel-progress-fill" id="cFill"></div></div>
+          </div>
+
+          <p class="fig-cap" style="text-align:center;margin-top:20px;">Ten screens, each doing one job. The new flow moves — the old one made users work.</p>
+        </div>
       </section>
 
       <!-- 02 The Problem -->
@@ -357,7 +707,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
       <!-- 03 Design Decisions -->
       <section class="section" id="decisions">
         <div class="eyebrow-sm reveal">— 03 / Design Decisions</div>
-        <h2 class="h-display reveal">Three decisions that <span class="em-ink">restructured the experience</span>.</h2>
+        <h2 class="h-display reveal">Two decisions that <span class="em-ink">restructured the experience</span>.</h2>
         <div class="prose reveal">
           <p>Brand constraints meant the visual redesign had to stay close to what users already knew. That constraint pushed the real work onto the structural and interaction layer — fewer decisions per screen, clearer next steps, more consolidation without confusion.</p>
         </div>
@@ -370,11 +720,10 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
             <p>The redesigned <strong>Adjust Your Coverages</strong> screen surfaces both vehicle and policy coverage in a single scrollable view. Each line shows pricing clearly. Users adjust without losing context of the full picture. One design decision, one fewer source of abandonment.</p>
           </div>
           <figure class="figure">
-            <div class="fig-stage peach">
-              <div class="fig-label">
-                <span class="tag">Adjust Your Coverages</span>
-                <span class="desc">Vehicle coverage and policy coverage consolidated into one scrollable view. Pricing visible on every line. No round-trips between screens.</span>
-              </div>
+            <div class="fig-video-wrap">
+              <video autoplay loop muted playsinline>
+                <source src="assets/cure-qq-coverages.mp4" type="video/mp4">
+              </video>
             </div>
             <figcaption class="fig-cap">The most impactful structural decision in the redesign — two previously separate pages, unified.</figcaption>
           </figure>
@@ -393,52 +742,129 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
             <p>The redesigned Quote Summary screen surfaces <strong>pricing prominently and immediately</strong>. Users see their starting quote before making any coverage decisions. The total anchors the experience — by the time they reach coverage adjustments, the number isn't a surprise. It's a reference point they're actively working with.</p>
           </div>
           <figure class="figure">
-            <div class="fig-stage blue">
-              <div class="fig-label">
-                <span class="tag">Quote Summary Screen</span>
-                <span class="desc">Price surfaced first — clear hierarchy, coverage context visible before users commit to any adjustments.</span>
-              </div>
-            </div>
+            <img src="assets/cure-quote-summary.png" alt="CURE Quote Summary screen showing $73.91 starting price with Join Now CTA" style="width:100%; display:block; border-radius:16px;" loading="lazy">
             <figcaption class="fig-cap">Price first, adjustments second. A different sequence that creates a completely different feeling.</figcaption>
           </figure>
         </article>
 
-        <article class="decision reveal">
-          <div class="num">Decision 03</div>
-          <h3>One clear entry point — <em>no ambiguous choices</em> upfront.</h3>
-          <div class="prose">
-            <p>The original Start Quote screen asked users to choose a quote type before they understood what that meant. Two option cards appeared simultaneously selected — a broken state that created confusion before the flow had even begun.</p>
-            <p>The redesigned entry screen collects only what's necessary to begin: one clear action, two paths forward. <strong>No asking users to make a decision they don't yet have context for.</strong></p>
-          </div>
-          <figure class="figure">
-            <div class="fig-stage">
-              <div class="fig-label">
-                <span class="tag">Start Your Quote</span>
-                <span class="desc">Clean entry — minimum required fields, one action, two clearly differentiated paths. No broken multi-select state.</span>
-              </div>
-            </div>
-            <figcaption class="fig-cap">First impressions set trust. The entry screen communicates competence before a word is read.</figcaption>
-          </figure>
-        </article>
       </section>
 
       <!-- 04 Prototype Fidelity -->
       <section class="section" id="prototype">
         <div class="eyebrow-sm reveal">— 04 / Prototype Fidelity</div>
-        <h2 class="h-display reveal">A prototype that felt like <span class="em">the real product</span>.</h2>
-        <div class="prose reveal">
-          <p>This project required a fully functional prototype for CEO and stakeholder review — not static mockups. I built a comprehensive component library using Figma's boolean and variable features for the first time on this project.</p>
-          <p>Every dropdown, toggle, selection state, and interactive element was a live component with real behavior. Leadership could click through the entire quote flow and experience the speed and clarity of the redesigned experience firsthand. <strong>A working prototype made the UX improvements undeniable.</strong></p>
+
+        <!-- Two-column header: headline left, body text right -->
+        <div class="proto-header reveal">
+          <h2 class="h-display">A prototype that felt like <span class="em">the real product</span>.</h2>
+          <div class="prose">
+            <p>This project required a fully functional prototype for CEO and stakeholder review — not static mockups. I built a comprehensive component library using Figma's boolean and variable features for the first time on this project.</p>
+            <p>Every dropdown, toggle, selection state, and interactive element was a live component with real behavior. Leadership could click through the entire quote flow and experience the speed and clarity of the redesigned experience firsthand. <strong>A working prototype made the UX improvements undeniable.</strong></p>
+          </div>
         </div>
-        <figure class="figure reveal">
-          <div class="fig-stage blue tall">
-            <div class="fig-label">
-              <span class="tag">Component Library — Boolean Components</span>
-              <span class="desc">Dropdowns, toggles, selection states, form fields — all built as live Figma components with real behavior using booleans and variables.</span>
+
+        <!-- Component examples grid -->
+        <div class="proto-label reveal">Prototype Examples</div>
+        <div class="proto-grid reveal">
+
+          <div class="proto-card">
+            <div class="proto-card-top">
+              <span class="proto-num">1</span>
+              <div>
+                <div class="proto-card-title">Driver Licensing & Claims</div>
+                <div class="proto-card-desc">Conditional fields appear only when relevant.</div>
+              </div>
+            </div>
+            <div class="proto-video">
+              <video autoplay loop muted playsinline>
+                <source src="assets/cure-qq-comp-driver.mp4" type="video/mp4">
+              </video>
             </div>
           </div>
-          <figcaption class="fig-cap">The prototype didn't just look like the final product — it felt like it. That's what got it approved.</figcaption>
-        </figure>
+
+          <div class="proto-card">
+            <div class="proto-card-top">
+              <span class="proto-num">2</span>
+              <div>
+                <div class="proto-card-title">Coverage Selection</div>
+                <div class="proto-card-desc">Coverage choices reveal related sections and update dynamically.</div>
+              </div>
+            </div>
+            <div class="proto-video">
+              <video autoplay loop muted playsinline>
+                <source src="assets/cure-qq-comp-liability.mp4" type="video/mp4">
+              </video>
+            </div>
+          </div>
+
+          <div class="proto-card">
+            <div class="proto-card-top">
+              <span class="proto-num">3</span>
+              <div>
+                <div class="proto-card-title">View by Vehicle / Coverage</div>
+                <div class="proto-card-desc">Users can switch between two review modes.</div>
+              </div>
+            </div>
+            <div class="proto-video">
+              <video autoplay loop muted playsinline>
+                <source src="assets/cure-qq-comp-coverages-tab.mp4" type="video/mp4">
+              </video>
+            </div>
+          </div>
+
+          <div class="proto-card">
+            <div class="proto-card-top">
+              <span class="proto-num">4</span>
+              <div>
+                <div class="proto-card-title">Edit Vehicle</div>
+                <div class="proto-card-desc">Ownership status changes required coverage fields.</div>
+              </div>
+            </div>
+            <div class="proto-video">
+              <video autoplay loop muted playsinline>
+                <source src="assets/cure-qq-comp-vehicle.mp4" type="video/mp4">
+              </video>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- What this prototype proved -->
+        <div class="proto-label reveal">What This Prototype Proved</div>
+        <div class="proto-proved reveal">
+
+          <div class="proto-proved-item">
+            <div class="proto-proved-icon blue">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="5" rx="1"/><rect x="2" y="10" width="20" height="5" rx="1"/><rect x="2" y="17" width="20" height="5" rx="1"/></svg>
+            </div>
+            <div class="proto-proved-title">Built with reusable components</div>
+            <div class="proto-proved-desc">Interactive elements with real behavior, not static screens.</div>
+          </div>
+
+          <div class="proto-proved-item">
+            <div class="proto-proved-icon blue">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/><circle cx="9" cy="6" r="2" fill="currentColor" stroke="none"/><circle cx="15" cy="12" r="2" fill="currentColor" stroke="none"/><circle cx="9" cy="18" r="2" fill="currentColor" stroke="none"/></svg>
+            </div>
+            <div class="proto-proved-title">Powered by variables & booleans</div>
+            <div class="proto-proved-desc">Dynamic content, conditional logic, and smart defaults.</div>
+          </div>
+
+          <div class="proto-proved-item">
+            <div class="proto-proved-icon ink">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            </div>
+            <div class="proto-proved-title">End-to-end quote flow</div>
+            <div class="proto-proved-desc">Stakeholders experienced the full journey from start to finish.</div>
+          </div>
+
+          <div class="proto-proved-item">
+            <div class="proto-proved-icon peach">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </div>
+            <div class="proto-proved-title">Stakeholder tested</div>
+            <div class="proto-proved-desc">Leadership provided faster, more confident feedback.</div>
+          </div>
+
+        </div>
       </section>
 
       <!-- 05 Outcome -->
@@ -479,17 +905,135 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
     </div>
   </div>
 
-  <footer class="footer">
+    <footer class="footer">
     <div class="footer-inner">
-      <a href="index.html">andy<span style="color:var(--peach)">.</span></a>
+      <a href="index.html" class="brandmark">andy<span class="dot">.</span></a>
       <div>© 2026 Andy Nguyen — designed, coded, cat approved.</div>
-      <div><a href="mailto:nguyenlandy@gmail.com">nguyenlandy@gmail.com</a></div>
+      <div class="footer-links">
+        <a href="mailto:nguyenlandy@gmail.com">nguyenlandy@gmail.com</a>
+        <span class="footer-divider">·</span>
+        <a href="https://www.linkedin.com/in/andylounguyen" target="_blank" rel="noopener">LinkedIn</a>
+        <span class="footer-divider">·</span>
+        <a href="assets/andy-nguyen-resume.pdf" target="_blank" rel="noopener">Resume</a>
+      </div>
     </div>
   </footer>
 
 </main>
 
 <script src="scripts.js"></script>
+<script>
+/* ── Screen Carousel ──────────────────────────────────────────── */
+(function () {
+  const SCREENS = [
+    { label: 'Get Started',       step: '01' },
+    { label: 'Scan License',      step: '02' },
+    { label: 'Add Drivers',       step: '03' },
+    { label: 'Add Vehicles',      step: '04' },
+    { label: 'Select Quote Type', step: '05' },
+    { label: 'Adjust Coverages',  step: '06' },
+    { label: 'Review Coverages',  step: '07' },
+    { label: 'Driver Assignment', step: '08' },
+    { label: 'Add Vehicle Info',  step: '09' },
+    { label: 'Quote Summary',     step: '10' },
+  ];
+
+  const track  = document.querySelector('.carousel-track');
+  const dotsEl = document.getElementById('cDots');
+  const fill   = document.getElementById('cFill');
+  let current  = 0;
+
+  // Build slides
+  SCREENS.forEach((s, i) => {
+    const slide = document.createElement('div');
+    slide.className = 'carousel-slide';
+    slide.innerHTML = `
+      <div class="phone">
+        <img src="assets/cure-screen-${i + 1}.png" alt="${s.label}" loading="lazy">
+      </div>
+      <div class="slide-label">
+        <strong>${s.label}</strong>
+        <span>${s.step}</span>
+      </div>`;
+    track.appendChild(slide);
+  });
+
+  // Build dots
+  SCREENS.forEach((s, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'carousel-dot';
+    btn.textContent = s.step;
+    btn.setAttribute('aria-label', s.label);
+    btn.addEventListener('click', () => goTo(i));
+    dotsEl.appendChild(btn);
+  });
+
+  const slides = Array.from(track.children);
+  const dots   = Array.from(dotsEl.children);
+
+  function goTo(idx) {
+    current = Math.max(0, Math.min(idx, SCREENS.length - 1));
+    render();
+  }
+
+  function render() {
+    slides.forEach((s, i) => s.classList.toggle('is-active', i === current));
+    dots.forEach((d, i)   => d.classList.toggle('is-active', i === current));
+
+    fill.style.width = `${((current + 1) / SCREENS.length) * 100}%`;
+
+    // Centre the active slide in the track-wrap
+    const trackWrap = document.getElementById('cTrack');
+    const wrapW     = trackWrap.offsetWidth;
+    const activeEl  = slides[current];
+    const slideW    = activeEl.offsetWidth;
+    const gap       = 24;
+    // Accumulate offset of the active slide's left edge
+    let leftEdge = 0;
+    for (let i = 0; i < current; i++) leftEdge += slides[i].offsetWidth + gap;
+    // Scroll active dot into center of dots container
+    const dotsContainer = dotsEl;
+    const activeDot = dots[current];
+    if (activeDot && dotsContainer) {
+      const dotCenter = activeDot.offsetLeft + activeDot.offsetWidth / 2;
+      const containerCenter = dotsContainer.offsetWidth / 2;
+      dotsContainer.scrollTo({ left: dotCenter - containerCenter, behavior: 'smooth' });
+    }
+    const offset = leftEdge - (wrapW / 2 - slideW / 2);
+    track.style.transform = `translateX(${-offset}px)`;
+  }
+
+  document.getElementById('cPrev').addEventListener('click', () => goTo(current - 1));
+  document.getElementById('cNext').addEventListener('click', () => goTo(current + 1));
+
+  // Keyboard
+  document.addEventListener('keydown', e => {
+    const wrap = document.querySelector('.carousel-wrap');
+    if (!wrap) return;
+    const rect = wrap.getBoundingClientRect();
+    if (rect.top > window.innerHeight || rect.bottom < 0) return;
+    if (e.key === 'ArrowRight') goTo(current + 1);
+    if (e.key === 'ArrowLeft')  goTo(current - 1);
+  });
+
+  // Drag
+  let dragStart = null, dragDelta = 0;
+  const tw = document.getElementById('cTrack');
+  tw.addEventListener('mousedown',  e => { dragStart = e.clientX; dragDelta = 0; });
+  tw.addEventListener('mousemove',  e => { if (dragStart !== null) dragDelta = e.clientX - dragStart; });
+  tw.addEventListener('mouseup',    () => { if (Math.abs(dragDelta) > 40) goTo(dragDelta < 0 ? current + 1 : current - 1); dragStart = null; });
+  tw.addEventListener('mouseleave', () => { if (dragStart !== null && Math.abs(dragDelta) > 40) goTo(dragDelta < 0 ? current + 1 : current - 1); dragStart = null; });
+
+  // Touch
+  let tx = null;
+  tw.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+  tw.addEventListener('touchend',   e => { if (tx !== null) { const d = e.changedTouches[0].clientX - tx; if (Math.abs(d) > 40) goTo(d < 0 ? current + 1 : current - 1); tx = null; } }, { passive: true });
+
+  // Init after layout
+  requestAnimationFrame(() => requestAnimationFrame(() => { goTo(0); render(); }));
+  window.addEventListener('resize', () => render());
+})();
+</script>
 <script>
 (function () {
   const links = Array.from(document.querySelectorAll('#sideNav a'));
@@ -512,6 +1056,16 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 })();
 </script>
 
+<script>
+(function(){
+  const item = document.querySelector(".nav-item--work");
+  const btn  = item && item.querySelector(".nav-btn-work");
+  if (!btn) return;
+  btn.addEventListener("click", function(e){ e.stopPropagation(); item.classList.toggle("is-open"); btn.setAttribute("aria-expanded", item.classList.contains("is-open")); });
+  document.addEventListener("click", function(){ item.classList.remove("is-open"); btn.setAttribute("aria-expanded","false"); });
+  document.addEventListener("keydown", function(e){ if(e.key==="Escape"){ item.classList.remove("is-open"); btn.setAttribute("aria-expanded","false"); }});
+})();
+</script>
 </div><!-- end .page-outer -->
 </body>
 </html>

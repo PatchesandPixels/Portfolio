@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-P9JER5X15D"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-P9JER5X15D');
+  </script>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>My Account Portal — A case study by Andy Nguyen</title>
@@ -46,13 +54,13 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 var(--gutter); }
 .page-outer { max-width: calc(var(--maxw) + 112px); margin: 0 auto; padding: 0 var(--gutter); }
 
-.nav { display: flex; align-items: flex-end; justify-content: space-between; padding-top: 45px; position: sticky; top: 0; z-index: 50; background: var(--cream); }
-.nav-logo { width: 102px; height: 102px; flex-shrink: 0; }
+.nav { display: flex; align-items: flex-end; justify-content: space-between; padding: 12px 0; position: sticky; top: 0; z-index: 50; background: var(--cream); }
+.nav-logo { width: 60px; height: 60px; flex-shrink: 0; }
 .nav-logo img { width: 100%; height: 100%; object-fit: contain; }
 .nav-links { display: flex; gap: 64px; list-style: none; padding: 0; margin: 0; }
 .nav-link { display: flex; flex-direction: column; gap: 24px; align-items: center; font-family: var(--display); font-weight: 400; font-size: 16px; letter-spacing: -0.16px; font-variation-settings: "opsz" 144, "SOFT" 0; color: var(--ink); white-space: nowrap; text-decoration: none; }
-.nav-underline { display: none; height: 4px; width: 100%; background: var(--blue); }
-.nav-link.active .nav-underline { display: block; }
+.nav-underline { height: 4px; width: 100%; background: var(--blue); transform: scaleX(0); transform-origin: left center; transition: transform 260ms cubic-bezier(0.4,0,0.2,1), opacity 260ms ease; opacity: 0; }
+.nav-link:hover .nav-underline, .nav-btn-work:hover .nav-underline { transform: scaleX(1); opacity: 0.4; } .nav-link.active .nav-underline { transform: scaleX(1); opacity: 1; }
 .nav-rule { height: 1px; background: var(--rule-2); }
 
 .hero { padding: clamp(48px, 8vw, 96px) 0 clamp(60px, 9vw, 120px); text-align: center; }
@@ -121,8 +129,24 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .fig-stage.ink .fig-label .desc { color: rgba(252,247,244,0.7); }
 .fig-cap { margin-top: 16px; font-size: 13px; color: var(--ink-soft); font-style: italic; max-width: 70ch; text-wrap: pretty; }
 
+/* Desktop screenshot fill */
+.fig-stage-desktop { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; border-radius: 0; }
+.fig-stage:has(.fig-stage-desktop)::before { opacity: 0; }
+
+/* Desktop + Mobile side-by-side */
+.fig-stage--duo { display: flex; align-items: flex-start; padding: 24px; gap: 16px; overflow: hidden; }
+.fig-stage--duo::before { opacity: 0; }
+.duo-desktop { flex: 1 1 auto; height: 100%; object-fit: cover; object-position: top left; border-radius: 6px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); min-width: 0; }
+.duo-mobile { flex: 0 0 auto; width: 28%; height: 100%; object-fit: cover; object-position: top center; border-radius: 6px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); }
+
 /* Stats */
 .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 48px 0; }
+
+/* Scope grid */
+.scope-grid { margin: 40px 0; padding: 32px 36px; background: var(--paper); border: 1px solid var(--rule); border-radius: 16px; }
+.scope-grid-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--blue); font-weight: 500; margin-bottom: 20px; }
+.scope-grid-items { display: flex; flex-wrap: wrap; gap: 10px; }
+.scope-item { padding: 8px 16px; background: var(--cream); border: 1px solid var(--rule-2); border-radius: 100px; font-size: 13px; font-weight: 500; color: var(--ink); letter-spacing: -0.01em; }
 .stat-card { padding: 36px 32px; background: var(--paper); border: 1px solid var(--rule); border-radius: 14px; }
 .stat-card .n { font-family: var(--display); font-weight: 320; font-variation-settings: "opsz" 144, "SOFT" 40; font-size: clamp(48px, 7vw, 80px); line-height: 0.9; letter-spacing: -0.035em; color: var(--ink); display: inline-flex; align-items: baseline; flex-wrap: wrap; gap: 4px; }
 .stat-card .n .dot { color: var(--peach); }
@@ -193,17 +217,36 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   .stats, .sections-grid { grid-template-columns: 1fr; }
   .next-case { grid-template-columns: 1fr; gap: 24px; }
 }
+
+/* ── Work Dropdown ───────────────────────────────────────────── */
+.nav-item--work { position: relative; }
+.nav-btn-work { background: none; border: 0; padding: 0; cursor: pointer; }
+.nav-dropdown { position: absolute; top: calc(100% + 12px); left: 50%; transform: translateX(-50%) translateY(-6px); background: var(--paper); border: 1px solid var(--rule-2); border-radius: 14px; box-shadow: 0 8px 32px rgba(26,22,18,0.12), 0 2px 8px rgba(26,22,18,0.06); padding: 6px; min-width: 200px; opacity: 0; pointer-events: none; transition: opacity 180ms ease, transform 180ms ease; z-index: 200; }
+.nav-item--work.is-open .nav-dropdown { opacity: 1; pointer-events: auto; transform: translateX(-50%) translateY(0); }
+.nav-dropdown-item { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 8px; font-family: var(--display); font-size: 15px; font-weight: 400; color: var(--ink); text-decoration: none; transition: background 140ms; white-space: nowrap; }
+.nav-dropdown-item:hover { background: var(--cream-2); }
+.nav-dropdown-num { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; color: var(--muted); min-width: 18px; }
 </style>
+  <link rel="stylesheet" href="nav.css">
 </head>
 <body>
 
 <div class="page-outer">
   <nav class="nav" id="topNav">
-    <a href="index.html" class="nav-logo"><img src="assets/logo.png" alt="Pixel and Patches"></a>
+    <a href="index.html" class="nav-logo"><img src="assets/logo.png" alt="Pixel and Patches" loading="lazy"></a>
     <ul class="nav-links">
-      <li><a href="index.html" class="nav-link" data-page="work">Work<span class="nav-underline"></span></a></li>
-      <li><a href="#" class="nav-link" data-page="playground">Playground<span class="nav-underline"></span></a></li>
-      <li><a href="#" class="nav-link" data-page="about">About<span class="nav-underline"></span></a></li>
+      <li class="nav-item--work">
+          <button class="nav-link nav-btn-work" data-page="work" aria-haspopup="true" aria-expanded="false">Work<span class="nav-underline"></span></button>
+          <div class="nav-dropdown" role="menu">
+            <a href="tersus.html" class="nav-dropdown-item" role="menuitem"><span class="nav-dropdown-num">01</span>Tersus</a>
+            <a href="cure-quick-quote.html" class="nav-dropdown-item" role="menuitem"><span class="nav-dropdown-num">02</span>Quick Quote</a>
+            <a href="cure-scan-license.html" class="nav-dropdown-item" role="menuitem"><span class="nav-dropdown-num">03</span>Scan to Insure</a>
+            <a href="cure-my-account.html" class="nav-dropdown-item" role="menuitem"><span class="nav-dropdown-num">04</span>My Account</a>
+          </div>
+        </li>
+      <li><a href="playground.html" class="nav-link" data-page="playground">Playground<span class="nav-underline"></span></a></li>
+      
+      <li><a href="assets/andy-nguyen-resume.pdf" target="_blank" rel="noopener" class="nav-link" data-page="resume">Resume<span class="nav-underline"></span></a></li>
       <li><a href="mailto:nguyenlandy@gmail.com" class="nav-link" data-page="contact">Contact<span class="nav-underline"></span></a></li>
     </ul>
   </nav>
@@ -260,8 +303,8 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 
         <div class="stats reveal">
           <div class="stat-card blue">
-            <div class="n">11<span class="em">sec.</span></div>
-            <div class="l">Portal sections redesigned — Login, Home, ID Cards, Payment History, Policy Documents, Submit a Request, Add/Replace/Remove Vehicle, Submit a Claim.</div>
+            <div class="n">11<span class="em" style="font-size:0.45em; letter-spacing:-0.01em;"> sections</span></div>
+            <div class="l">Portal sections redesigned from the ground up — desktop and mobile.</div>
           </div>
           <div class="stat-card">
             <div class="n">2<span class="em">bp</span><span class="dot">.</span></div>
@@ -269,15 +312,22 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
           </div>
         </div>
 
-        <figure class="figure reveal">
-          <div class="fig-stage peach wide">
-            <div class="fig-label">
-              <span class="tag">Full Canvas Overview</span>
-              <span class="desc">Zoomed-out Figma canvas showing all screens across both breakpoints — the full scope of the project at a glance.</span>
-            </div>
+        <div class="scope-grid reveal">
+          <div class="scope-grid-label">All 11 sections</div>
+          <div class="scope-grid-items">
+            <span class="scope-item">Login</span>
+            <span class="scope-item">Home</span>
+            <span class="scope-item">ID Cards</span>
+            <span class="scope-item">Payment History</span>
+            <span class="scope-item">Policy Documents</span>
+            <span class="scope-item">Submit a Request</span>
+            <span class="scope-item">Add a Vehicle</span>
+            <span class="scope-item">Replace a Vehicle</span>
+            <span class="scope-item">Remove a Vehicle</span>
+            <span class="scope-item">Submit a Claim</span>
+            <span class="scope-item">Account Settings</span>
           </div>
-          <figcaption class="fig-cap">11 sections, 2 breakpoints, 1 designer. The full canvas makes the scope visible in a way no summary can.</figcaption>
-        </figure>
+        </div>
       </section>
 
       <!-- 02 The Problem -->
@@ -334,10 +384,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
           </div>
           <figure class="figure">
             <div class="fig-stage peach">
-              <div class="fig-label">
-                <span class="tag">Home Dashboard — Before / After</span>
-                <span class="desc">Annotated hero shot: policy status surfaced, payment upcoming called out, quick-links to top sections prioritized by frequency of use.</span>
-              </div>
+              <img src="assets/cure-ma-home-desktop.jpg" alt="CURE My Account redesigned home dashboard — policy status, upcoming payment, and quick links surfaced" class="fig-stage-desktop" loading="lazy">
             </div>
             <figcaption class="fig-cap">The most impactful screen in the portal — not because it's complex, but because it's the one every user sees first.</figcaption>
           </figure>
@@ -356,11 +403,9 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
             <p>Designing for both breakpoints simultaneously isn't just about resizing layouts. <strong>Information hierarchy, navigation patterns, and interaction models all behave differently across breakpoints.</strong> A sidebar nav that works on desktop becomes a bottom sheet on mobile. A two-column desktop grid becomes a single-column mobile stack. Every one of these decisions was made intentionally — not as an afterthought.</p>
           </div>
           <figure class="figure">
-            <div class="fig-stage blue tall">
-              <div class="fig-label">
-                <span class="tag">Desktop vs. Mobile Side-by-Side</span>
-                <span class="desc">Home, Claims, and Vehicle Management shown at both breakpoints — demonstrating how each section adapts without losing coherence.</span>
-              </div>
+            <div class="fig-stage blue tall fig-stage--duo">
+              <img src="assets/cure-ma-home-desktop.jpg" alt="My Account home — desktop" class="duo-desktop" loading="lazy">
+              <img src="assets/cure-ma-home-mobile.jpg" alt="My Account home — mobile" class="duo-mobile" loading="lazy">
             </div>
             <figcaption class="fig-cap">Mobile parity isn't a checkbox. It's a completely different set of design decisions made in parallel.</figcaption>
           </figure>
@@ -375,10 +420,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
           </div>
           <figure class="figure">
             <div class="fig-stage">
-              <div class="fig-label">
-                <span class="tag">Submit a Claim — Step Sequence</span>
-                <span class="desc">6-step claims flow shown as a sequence — Getting Started, Driver, Vehicle, Loss, Additional Info, Confirm. One thing at a time.</span>
-              </div>
+              <img src="assets/cure-ma-claims-desktop.jpg" alt="CURE Submit a Claim — step-by-step flow showing structured calm process" class="fig-stage-desktop" loading="lazy">
             </div>
             <figcaption class="fig-cap">Design for the worst moment — then it works for every moment.</figcaption>
           </figure>
@@ -437,15 +479,6 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
           </div>
         </div>
 
-        <figure class="figure reveal">
-          <div class="fig-stage blue">
-            <div class="fig-label">
-              <span class="tag">Component Library</span>
-              <span class="desc">Buttons, form fields, navigation elements, cards, status indicators — consistent across 11 sections and 2 breakpoints.</span>
-            </div>
-          </div>
-          <figcaption class="fig-cap">A component-first approach isn't just good practice at this scale — it's what made developer handoff possible without a full-time design team supporting it.</figcaption>
-        </figure>
       </section>
 
       <!-- 05 Outcome -->
@@ -486,11 +519,17 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
     </div>
   </div>
 
-  <footer class="footer">
+    <footer class="footer">
     <div class="footer-inner">
-      <a href="index.html">andy<span style="color:var(--peach)">.</span></a>
+      <a href="index.html" class="brandmark">andy<span class="dot">.</span></a>
       <div>© 2026 Andy Nguyen — designed, coded, cat approved.</div>
-      <div><a href="mailto:nguyenlandy@gmail.com">nguyenlandy@gmail.com</a></div>
+      <div class="footer-links">
+        <a href="mailto:nguyenlandy@gmail.com">nguyenlandy@gmail.com</a>
+        <span class="footer-divider">·</span>
+        <a href="https://www.linkedin.com/in/andylounguyen" target="_blank" rel="noopener">LinkedIn</a>
+        <span class="footer-divider">·</span>
+        <a href="assets/andy-nguyen-resume.pdf" target="_blank" rel="noopener">Resume</a>
+      </div>
     </div>
   </footer>
 
@@ -519,6 +558,16 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 })();
 </script>
 
+<script>
+(function(){
+  const item = document.querySelector(".nav-item--work");
+  const btn  = item && item.querySelector(".nav-btn-work");
+  if (!btn) return;
+  btn.addEventListener("click", function(e){ e.stopPropagation(); item.classList.toggle("is-open"); btn.setAttribute("aria-expanded", item.classList.contains("is-open")); });
+  document.addEventListener("click", function(){ item.classList.remove("is-open"); btn.setAttribute("aria-expanded","false"); });
+  document.addEventListener("keydown", function(e){ if(e.key==="Escape"){ item.classList.remove("is-open"); btn.setAttribute("aria-expanded","false"); }});
+})();
+</script>
 </div><!-- end .page-outer -->
 </body>
 </html>

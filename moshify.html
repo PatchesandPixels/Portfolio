@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Moshify — Cloud Hosting for Pros</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="moshify.css" />
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav class="nav">
+  <a href="#" class="nav__logo">
+    <span class="nav__logo-icon">
+      <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+    </span>
+    Moshify
+  </a>
+  <ul class="nav__list">
+    <li class="nav__item"><a href="#">Hosting</a></li>
+    <li class="nav__item"><a href="#">VPS</a></li>
+    <li class="nav__item"><a href="#">Domain</a></li>
+    <li class="nav__item"><a href="#">Pricing</a></li>
+  </ul>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="container">
+    <div class="hero__content">
+      <p class="hero__tagline">Deploy in less than 60 seconds</p>
+      <h1>Cloud Hosting<br>for Pros</h1>
+      <p>Display your website in less than 60 seconds.<br>Build faster with our cloud infrastructure.</p>
+      <a href="#plans" class="btn btn--accent">Get Started</a>
+    </div>
+
+    <div class="hero__image">
+      <div class="iso-wrap">
+        <div class="orbit orbit--1"></div>
+        <div class="orbit orbit--2"></div>
+
+        <div class="iso-server">
+          <div class="iso-rack iso-rack--blue">
+            <span class="iso-rack__dot"></span>
+            <span class="iso-rack__dot orange"></span>
+            <span class="iso-rack__bar"></span>
+          </div>
+          <div class="iso-rack iso-rack--dark">
+            <span class="iso-rack__dot green"></span>
+            <span class="iso-rack__dot"></span>
+            <span class="iso-rack__bar"></span>
+          </div>
+          <div class="iso-rack iso-rack--blue">
+            <span class="iso-rack__dot orange"></span>
+            <span class="iso-rack__dot green"></span>
+            <span class="iso-rack__bar"></span>
+          </div>
+          <div class="iso-rack iso-rack--dark">
+            <span class="iso-rack__dot"></span>
+            <span class="iso-rack__dot orange"></span>
+            <span class="iso-rack__bar"></span>
+          </div>
+          <div class="iso-rack iso-rack--blue">
+            <span class="iso-rack__dot green"></span>
+            <span class="iso-rack__dot"></span>
+            <span class="iso-rack__bar"></span>
+          </div>
+        </div>
+
+        <div class="chip chip--tl"><span class="chip__dot"></span> 99.9% Uptime</div>
+        <div class="chip chip--tr"><span class="chip__dot"></span> SSL Secured</div>
+        <div class="chip chip--bl"><span class="chip__dot"></span> 24/7 Support</div>
+        <div class="chip chip--br"><span class="chip__dot"></span> SSD Storage</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── PRICING SEARCH ── -->
+<section class="pricing-search" id="plans">
+  <div class="container">
+    <h2>The best webhosting starting at per month</h2>
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+    <div class="search-bar">
+      <div class="search-bar__tabs">
+        <button class="price-tab active">$14/mo</button>
+        <button class="price-tab">$24/mo</button>
+        <button class="price-tab">$41/mo</button>
+        <button class="price-tab">$54/mo</button>
+        <button class="price-tab">$96/mo</button>
+        <button class="price-tab">More</button>
+      </div>
+      <button class="search-bar__btn">Search</button>
+    </div>
+  </div>
+</section>
+
+<!-- ── PLANS ── -->
+<section class="plans">
+  <div class="container">
+    <div class="plans__grid">
+
+      <!-- Entry -->
+      <div class="plan">
+        <p class="plan__name">Entry</p>
+        <div class="plan__price"><sup>$</sup>14<sub>/mo</sub></div>
+        <p class="plan__billing">Billed monthly</p>
+        <ul class="plan__features">
+          <li class="plan__feature">Unlimited Websites</li>
+          <li class="plan__feature">Unlimited Bandwidth</li>
+          <li class="plan__feature">100 GB SSD Storage</li>
+          <li class="plan__feature">3 GB RAM</li>
+        </ul>
+        <a href="#" class="btn btn--outline btn--block">Buy Now</a>
+      </div>
+
+      <!-- Popular -->
+      <div class="plan plan--popular">
+        <p class="plan__name">Popular <span class="plan__badge">Best Value</span></p>
+        <div class="plan__price"><sup>$</sup>24<sub>/mo</sub></div>
+        <p class="plan__billing">Billed monthly</p>
+        <ul class="plan__features">
+          <li class="plan__feature">Unlimited Websites</li>
+          <li class="plan__feature">Unlimited Bandwidth</li>
+          <li class="plan__feature">100 GB SSD Storage</li>
+          <li class="plan__feature">3 GB RAM</li>
+          <li class="plan__feature">2 CPU Cores</li>
+        </ul>
+        <a href="#" class="btn btn--secondary btn--block">Buy Now</a>
+      </div>
+
+      <!-- Pro -->
+      <div class="plan">
+        <p class="plan__name">Pro</p>
+        <div class="plan__price"><sup>$</sup>54<sub>/mo</sub></div>
+        <p class="plan__billing">Billed monthly</p>
+        <ul class="plan__features">
+          <li class="plan__feature">Unlimited Websites</li>
+          <li class="plan__feature">Unlimited Bandwidth</li>
+          <li class="plan__feature">100 GB SSD Storage</li>
+          <li class="plan__feature">3 GB RAM</li>
+          <li class="plan__feature">2 CPU Cores</li>
+        </ul>
+        <a href="#" class="btn btn--outline btn--block">Buy Now</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── FEATURES ── -->
+<section class="features section">
+  <div class="container">
+    <div class="section__header">
+      <h2>Host On The Cloud to Keep Growing</h2>
+      <p>Quis lorem ullamcorper donec magna. Enim lorem enim vel exerci sadipscing.</p>
+    </div>
+
+    <!-- Feature 1 -->
+    <div class="feature-row">
+      <div class="feature__image">
+        <div class="dashboard-mock">
+          <div class="dash-header">
+            <span class="dash-dot dash-dot--red"></span>
+            <span class="dash-dot dash-dot--yellow"></span>
+            <span class="dash-dot dash-dot--green"></span>
+            <span class="dash-url"></span>
+          </div>
+          <div class="dash-grid">
+            <div class="dash-card">
+              <div class="dash-card__label">Visitors</div>
+              <div class="dash-card__value">108179</div>
+              <div class="dash-card__sub">↑ 12.4%</div>
+            </div>
+            <div class="dash-card">
+              <div class="dash-card__label">Uptime</div>
+              <div class="dash-card__value">99.9%</div>
+              <div class="dash-card__sub">↑ 0.1%</div>
+            </div>
+            <div class="dash-card">
+              <div class="dash-card__label">Revenue</div>
+              <div class="dash-card__value">$3421</div>
+              <div class="dash-card__sub">↑ 8.3%</div>
+            </div>
+            <div class="dash-card">
+              <div class="dash-card__label">Balance</div>
+              <div class="dash-card__value">$102</div>
+              <div class="dash-card__sub">↓ 1.2%</div>
+            </div>
+            <div class="dash-chart">
+              <div class="dash-card__label">Server Load</div>
+              <div class="dash-bars">
+                <div class="dash-bar" style="height:30%"></div>
+                <div class="dash-bar" style="height:50%"></div>
+                <div class="dash-bar" style="height:40%"></div>
+                <div class="dash-bar active" style="height:80%"></div>
+                <div class="dash-bar" style="height:60%"></div>
+                <div class="dash-bar" style="height:45%"></div>
+                <div class="dash-bar" style="height:70%"></div>
+                <div class="dash-bar active" style="height:90%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="feature__content">
+        <div class="feature__icon">
+          <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+        </div>
+        <h3>Super Easy to Use</h3>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse ultrices gravida. Risus commodo viverra maecenas accumsan lacus vel facilisis.</p>
+        <a href="#" class="feature__link">Learn More</a>
+      </div>
+    </div>
+
+    <!-- Feature 2 -->
+    <div class="feature-row feature-row--reverse">
+      <div class="feature__content">
+        <div class="feature__icon" style="background: var(--color-accent);">
+          <svg viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        </div>
+        <h3>Simply Fast Websites</h3>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse ultrices gravida. Risus commodo viverra maecenas accumsan.</p>
+        <a href="#" class="feature__link">Learn More</a>
+      </div>
+      <div class="feature__image">
+        <div class="line-chart-mock">
+          <div class="lcm-title">Server Response Time (ms)</div>
+          <svg class="lcm-svg" viewBox="0 0 300 100" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="lineGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#2584ff" stop-opacity=".3"/>
+                <stop offset="100%" stop-color="#2584ff" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <path d="M0,80 C30,70 60,30 90,40 C120,50 150,20 180,25 C210,30 240,50 270,45 L300,40 L300,100 L0,100 Z" fill="url(#lineGrad)"/>
+            <path d="M0,80 C30,70 60,30 90,40 C120,50 150,20 180,25 C210,30 240,50 270,45 L300,40" fill="none" stroke="#2584ff" stroke-width="2.5"/>
+            <path d="M0,60 C40,55 80,65 120,58 C160,51 200,45 240,50 L300,48 L300,100 L0,100 Z" fill="none" stroke="#00d9ff" stroke-width="2" stroke-dasharray="4"/>
+          </svg>
+          <div style="display:flex;gap:2rem;margin-top:1rem;font-size:1.2rem;">
+            <span style="color:#2584ff;">● This week</span>
+            <span style="color:#00d9ff;">● Last week</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Feature 3 -->
+    <div class="feature-row">
+      <div class="feature__image">
+        <div class="wp-promo">
+          <span class="wp-promo__tag">10% Cashback</span>
+          <h4>WordPress<br>Made Easy</h4>
+          <p>One-click install, auto-updates,<br>and managed security.</p>
+          <a href="#" class="btn btn--accent btn--sm">Get Started</a>
+          <div class="wp-promo__badge"><span>WP</span>One Click</div>
+        </div>
+      </div>
+      <div class="feature__content">
+        <div class="feature__icon" style="background: #21759b;">
+          <svg viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zM3.8 12c0-1.1.2-2.2.7-3.1L8.7 21C5.8 19.5 3.8 16 3.8 12zm8.2 8.2l-2.5-6.8-.9-2.4c-.3-.8-.5-1.5-.7-2.1.7-.1 1.4-.2 2.1-.2.7 0 1.5.1 2.3.2l-1.6 4.6 2.2 6.6c-1-.2-.9.1-.9.1zm1.2-.3l2.2-6.4 2-5.5c.4.6.7 1.3.9 2.1.2.8.3 1.6.3 2.4 0 3.3-1.8 6.2-5.4 7.4z"/></svg>
+        </div>
+        <h3>WordPress Made Easy</h3>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore. Quis ipsum suspendisse ultrices gravida. Risus commodo viverra maecenas accumsan lacus vel facilisis.</p>
+        <a href="#" class="feature__link">Learn More</a>
+      </div>
+    </div>
+
+    <!-- Feature 4 -->
+    <div class="feature-row feature-row--reverse">
+      <div class="feature__content">
+        <div class="feature__icon" style="background: #ff9800;">
+          <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg>
+        </div>
+        <h3>24/7 Expert Support</h3>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse ultrices gravida.</p>
+        <a href="#" class="feature__link">Learn More</a>
+      </div>
+      <div class="feature__image">
+        <div class="support-mock">
+          <div class="chat-msg">
+            <div class="chat-msg__avatar chat-msg__avatar--agent">S</div>
+            <div class="chat-bubble">Hi! How can I help you today?</div>
+          </div>
+          <div class="chat-msg" style="justify-content:flex-end">
+            <div class="chat-bubble chat-bubble--user">I need help setting up my domain</div>
+            <div class="chat-msg__avatar chat-msg__avatar--user">U</div>
+          </div>
+          <div class="chat-msg">
+            <div class="chat-msg__avatar chat-msg__avatar--agent">S</div>
+            <div class="chat-bubble">Of course! I can walk you through the process right now.</div>
+          </div>
+          <div class="chat-status">Agent online — avg response &lt;2 min</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── CONTROL PANEL ── -->
+<section class="control-panel">
+  <div class="container">
+    <div>
+      <div class="cpanel-mock">
+        <div class="cpanel-mock__header">
+          <span class="cpanel-mock__logo">cPanel</span>
+        </div>
+        <div class="cpanel-mock__body">
+          <div class="cpanel-icons">
+            <div class="cpanel-icon">
+              <div class="cpanel-icon__img" style="background:#e3f2fd;">📧</div>Email
+            </div>
+            <div class="cpanel-icon">
+              <div class="cpanel-icon__img" style="background:#fce4ec;">🗄️</div>Databases
+            </div>
+            <div class="cpanel-icon">
+              <div class="cpanel-icon__img" style="background:#e8f5e9;">📁</div>Files
+            </div>
+            <div class="cpanel-icon">
+              <div class="cpanel-icon__img" style="background:#fff3e0;">🔒</div>Security
+            </div>
+            <div class="cpanel-icon">
+              <div class="cpanel-icon__img" style="background:#f3e5f5;">📊</div>Metrics
+            </div>
+            <div class="cpanel-icon">
+              <div class="cpanel-icon__img" style="background:#e0f7fa;">🌐</div>Domains
+            </div>
+            <div class="cpanel-icon">
+              <div class="cpanel-icon__img" style="background:#fff8e1;">⚙️</div>Software
+            </div>
+            <div class="cpanel-icon">
+              <div class="cpanel-icon__img" style="background:#fbe9e7;">🔧</div>Advanced
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <h2>User-Friendly<br>Control Panel</h2>
+      <p style="margin-bottom:4rem;">Manage your entire hosting environment from one clean, intuitive dashboard.</p>
+
+      <div class="cp-feature">
+        <div class="cp-feature__icon">
+          <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+        </div>
+        <div>
+          <h4>Easy Start & Managed Updates</h4>
+          <p>The cloud panel offers direct integration for new and existing sites and managed WordPress with smart updates.</p>
+        </div>
+      </div>
+
+      <div class="cp-feature">
+        <div class="cp-feature__icon">
+          <svg viewBox="0 0 24 24"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/></svg>
+        </div>
+        <div>
+          <h4>Staging, Git & WP-CLI</h4>
+          <p>Work on your WordPress and WooCommerce development flow easier with a one-command staging, Git, and WP-CLI workflow.</p>
+        </div>
+      </div>
+
+      <div class="cp-feature">
+        <div class="cp-feature__icon">
+          <svg viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        </div>
+        <div>
+          <h4>Dynamic Caching & More</h4>
+          <p>Speed up your WordPress and Woo sites with six 10x performance optimization tools including CDN and Redis caching.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── TESTIMONIALS ── -->
+<section class="testimonials section">
+  <div class="container">
+    <div class="section__header">
+      <h2>What our Customer are Saying</h2>
+      <p>Quis lorem ullamcorper donec magna. Enim lorem enim.</p>
+    </div>
+
+    <div class="testimonial-card">
+      <div class="testimonial-card__image">
+        <div class="person-silhouette"></div>
+        <span class="testimonial-card__quote-icon">"</span>
+      </div>
+      <div class="testimonial-card__content">
+        <p class="testimonial-card__text">
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse ultrices gravida. Risus commodo viverra maecenas accumsan lacus vel facilisis."
+        </p>
+        <p class="testimonial-card__author">— Jhone Lumea</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA ── -->
+<section class="cta">
+  <div class="container">
+    <h2>Ready To Get Started?</h2>
+    <p>Quis lorem ullamcorper donec magna. Enim lorem enim vel. Sed ut perspiciatis unde omnis iste natus error sit voluptatem.</p>
+    <a href="#plans" class="btn btn--accent">Get Started</a>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer__grid">
+      <div class="footer__logo-wrap">
+        <a href="#">
+          <span class="footer__logo-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+          </span>
+          Moshify
+        </a>
+        <p>Cloud hosting solutions designed for professionals who need speed, reliability, and simplicity.</p>
+      </div>
+
+      <div class="footer__col">
+        <h4>Products</h4>
+        <ul class="footer__list">
+          <li><a href="#">Shared Hosting</a></li>
+          <li><a href="#">WordPress</a></li>
+          <li><a href="#">VPS Hosting</a></li>
+          <li><a href="#">Cloud Hosting</a></li>
+          <li><a href="#">WooCommerce</a></li>
+        </ul>
+      </div>
+
+      <div class="footer__col">
+        <h4>Company</h4>
+        <ul class="footer__list">
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Newsroom</a></li>
+          <li><a href="#">Partners</a></li>
+        </ul>
+      </div>
+
+      <div class="footer__col">
+        <h4>Support</h4>
+        <ul class="footer__list">
+          <li><a href="#">Help Center</a></li>
+          <li><a href="#">Community</a></li>
+          <li><a href="#">Status</a></li>
+          <li><a href="#">Contact Us</a></li>
+          <li><a href="#">Tutorials</a></li>
+        </ul>
+      </div>
+
+      <div class="footer__col">
+        <h4>Domains</h4>
+        <ul class="footer__list">
+          <li><a href="#">Register Domain</a></li>
+          <li><a href="#">Transfer Domain</a></li>
+          <li><a href="#">Domain Checker</a></li>
+          <li><a href="#">Pricing</a></li>
+          <li><a href="#">WHOIS Lookup</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer__bottom">
+      <p>© 2026 Moshify. All rights reserved.</p>
+      <p>Privacy Policy · Terms of Service</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+  document.querySelectorAll('.price-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.price-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>

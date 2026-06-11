@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Component Preview</title>
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #fcf7f4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+    p {
+      font-family: sans-serif;
+      font-size: 13px;
+      color: #999;
+      margin: 0;
+    }
+    .video-wrap {
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    }
+    video {
+      display: block;
+      width: 388px;
+      height: auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div style="display:flex; gap:24px; align-items:flex-start;">
+      <div style="display:flex; flex-direction:column; gap:8px; align-items:center;">
+        <p>Driver Licensing & Claims</p>
+        <div class="video-wrap">
+          <video autoplay loop muted playsinline>
+            <source src="assets/cure-qq-comp-driver.mp4" type="video/mp4">
+          </video>
+        </div>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:8px; align-items:center;">
+        <p>Liability Coverage</p>
+        <div class="video-wrap">
+          <video autoplay loop muted playsinline>
+            <source src="assets/cure-qq-comp-liability.mp4" type="video/mp4">
+          </video>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

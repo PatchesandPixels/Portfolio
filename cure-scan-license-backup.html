@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-P9JER5X15D"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-P9JER5X15D');
+  </script>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Scan to Insure — A case study by Andy Nguyen</title>
+<meta name="description" content="CURE Auto Insurance Scan to Insure — a 2-week sprint that cut a 20-screen quote flow to 6. UX/UI case study by Andy Nguyen." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,300..800,0..100&family=Inter:wght@300..700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --cream:   #fcf7f4;
+  --cream-2: #f5ede5;
+  --paper:   #fff9f3;
+  --ink:     #1a1612;
+  --ink-2:   #2a2520;
+  --ink-soft:#6b625a;
+  --muted:   #a39a90;
+  --rule:    #e9dfd2;
+  --rule-2:  #d8ccba;
+  --blue:    #1353be;
+  --blue-soft:#e3ecfb;
+  --peach:   #f49e4f;
+  --peach-soft:#fde2c8;
+
+  --display: "Fraunces", "Times New Roman", serif;
+  --sans:    "Inter", -apple-system, "Helvetica Neue", sans-serif;
+  --mono:    "JetBrains Mono", "SF Mono", Menlo, monospace;
+
+  --maxw: 1240px;
+  --gutter: clamp(20px, 4vw, 56px);
+  --sidebar-w: 220px;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+html, body { margin: 0; padding: 0; background: var(--cream); color: var(--ink); font-family: var(--sans); font-size: 16px; line-height: 1.6; font-feature-settings: "ss01" on, "cv11" on; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+img, svg { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; padding: 0; }
+::selection { background: var(--ink); color: var(--cream); }
+
+.wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 var(--gutter); }
+.page-outer { max-width: calc(var(--maxw) + 112px); margin: 0 auto; padding: 0 var(--gutter); }
+
+.nav { display: flex; align-items: flex-end; justify-content: space-between; padding: 12px 0; position: sticky; top: 0; z-index: 50; background: var(--cream); }
+.nav-logo { width: 60px; height: 60px; flex-shrink: 0; }
+.nav-logo img { width: 100%; height: 100%; object-fit: contain; }
+.nav-links { display: flex; gap: 64px; list-style: none; padding: 0; margin: 0; }
+.nav-link { display: flex; flex-direction: column; gap: 24px; align-items: center; font-family: var(--display); font-weight: 400; font-size: 16px; letter-spacing: -0.16px; font-variation-settings: "opsz" 144, "SOFT" 0; color: var(--ink); white-space: nowrap; text-decoration: none; }
+.nav-underline { height: 4px; width: 100%; background: var(--blue); transform: scaleX(0); transform-origin: left center; transition: transform 260ms cubic-bezier(0.4,0,0.2,1), opacity 260ms ease; opacity: 0; }
+.nav-link:hover .nav-underline, .nav-btn-work:hover .nav-underline { transform: scaleX(1); opacity: 0.4; } .nav-link.active .nav-underline { transform: scaleX(1); opacity: 1; }
+.nav-rule { height: 1px; background: var(--rule-2); }
+
+.hero { padding: clamp(48px, 8vw, 96px) 0 clamp(60px, 9vw, 120px); text-align: center; }
+.hero .eyebrow { font-family: var(--mono); font-size: 11px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--ink-soft); font-weight: 500; display: inline-flex; align-items: center; gap: 14px; margin-bottom: 56px; }
+.hero .eyebrow::before, .hero .eyebrow::after { content: ""; width: 28px; height: 1px; background: var(--rule-2); }
+.hero-title { font-family: var(--display); font-weight: 300; font-variation-settings: "opsz" 144, "SOFT" 30; font-size: clamp(88px, 16vw, 230px); line-height: 0.86; letter-spacing: -0.045em; margin: 0; color: var(--ink); }
+.hero-title .dot { color: var(--peach); }
+.hero-sub { margin: clamp(40px, 6vw, 64px) auto 0; font-family: var(--display); font-weight: 350; font-style: italic; font-variation-settings: "opsz" 36, "SOFT" 50; font-size: clamp(22px, 2.6vw, 32px); line-height: 1.32; letter-spacing: -0.015em; color: var(--ink-2); max-width: 26ch; text-wrap: balance; }
+.hero-pills { margin: 48px auto 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+.pill { padding: 9px 18px; border: 1px solid var(--rule-2); border-radius: 100px; background: var(--paper); font-size: 12px; font-weight: 500; letter-spacing: 0.04em; color: var(--ink); display: inline-flex; align-items: center; gap: 8px; }
+.pill .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--blue); }
+.pill.peach .dot { background: var(--peach); }
+.pill.ink .dot { background: var(--ink); }
+
+.metabar { border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); background: var(--paper); }
+.metabar-inner { max-width: var(--maxw); margin: 0 auto; padding: 24px var(--gutter); display: grid; grid-template-columns: repeat(5, 1fr); gap: 28px; align-items: center; }
+.metabar dt { font-family: var(--mono); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-soft); font-weight: 500; margin-bottom: 6px; }
+.metabar dd { margin: 0; font-size: 14px; font-weight: 500; color: var(--ink); line-height: 1.4; }
+
+.layout { max-width: var(--maxw); margin: 0 auto; padding: clamp(80px, 10vw, 140px) var(--gutter) 80px; display: grid; grid-template-columns: var(--sidebar-w) 1fr; gap: clamp(40px, 6vw, 96px); align-items: start; }
+.side { position: sticky; top: 120px; align-self: start; }
+.side ol { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 18px; }
+.side a { display: inline-flex; align-items: center; gap: 14px; font-size: 14px; font-weight: 500; color: var(--muted); transition: color 220ms ease; line-height: 1.3; }
+.side a .num { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; color: var(--rule-2); width: 22px; flex: none; transition: color 220ms ease; }
+.side a:hover { color: var(--ink-soft); }
+.side a:hover .num { color: var(--ink-soft); }
+.side a.active { color: var(--ink); }
+.side a.active .num { color: var(--blue); }
+.side a.active::after { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--blue); margin-left: auto; }
+.col { min-width: 0; }
+.section { padding: clamp(48px, 7vw, 96px) 0; scroll-margin-top: 96px; }
+.section:first-of-type { padding-top: 0; }
+.section + .section { border-top: 1px solid var(--rule); }
+
+.eyebrow-sm { font-family: var(--mono); font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-soft); font-weight: 500; margin-bottom: 28px; }
+.h-display { font-family: var(--display); font-weight: 380; font-variation-settings: "opsz" 144, "SOFT" 30; font-size: clamp(36px, 4.6vw, 60px); line-height: 1.04; letter-spacing: -0.025em; color: var(--ink); margin: 0 0 32px; text-wrap: balance; }
+.h-display .em { font-style: italic; font-weight: 350; color: var(--blue); }
+.h-display .em-ink { font-style: italic; font-weight: 350; }
+
+.prose p { font-size: 17px; line-height: 1.72; color: var(--ink-2); margin: 0 0 22px; max-width: 62ch; text-wrap: pretty; }
+.prose p strong { color: var(--ink); font-weight: 600; }
+.prose p em { font-style: italic; }
+.prose .lede { font-family: var(--display); font-weight: 360; font-variation-settings: "opsz" 36; font-size: clamp(20px, 2vw, 24px); line-height: 1.42; letter-spacing: -0.01em; color: var(--ink); max-width: 38ch; margin-bottom: 28px; }
+
+/* Split layout (before/after) */
+.split { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 48px 0 24px; }
+.split .fig-stage { aspect-ratio: 4 / 5; border-radius: 12px; }
+.split-card { padding: 24px; background: var(--paper); border: 1px solid var(--rule); border-radius: 12px; margin-top: 14px; }
+.split-card .who { font-family: var(--mono); font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--blue); font-weight: 500; margin-bottom: 12px; }
+.split-card .lead { font-family: var(--display); font-weight: 400; font-size: 22px; line-height: 1.25; letter-spacing: -0.01em; color: var(--ink); margin: 0 0 8px; }
+.split-card p { font-size: 14px; line-height: 1.55; color: var(--ink-soft); margin: 0; }
+
+.figure { margin: clamp(36px, 5vw, 72px) 0; border-radius: 16px; overflow: hidden; }
+.fig-stage { position: relative; background: var(--cream-2); border: 1px solid var(--rule); border-radius: 16px; aspect-ratio: 16 / 10; display: grid; place-items: center; overflow: hidden; }
+.fig-stage.peach { background: var(--peach-soft); border-color: #f0c89a; }
+.fig-stage.blue  { background: var(--blue-soft); border-color: #c7d6f3; }
+.fig-stage.ink   { background: var(--ink); border-color: var(--ink); }
+.fig-stage.tall  { aspect-ratio: 4 / 3; }
+.fig-stage.wide  { aspect-ratio: 21 / 9; }
+.fig-stage::before { content: ""; position: absolute; inset: 0; background-image: repeating-linear-gradient(135deg, transparent 0 22px, rgba(26,22,18,0.035) 22px 23px); pointer-events: none; }
+.fig-stage.ink::before { background-image: repeating-linear-gradient(135deg, transparent 0 22px, rgba(252,247,244,0.06) 22px 23px); }
+.fig-label { position: relative; z-index: 2; font-family: var(--mono); font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-soft); display: inline-flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; max-width: 38ch; padding: 0 24px; }
+.fig-stage.ink .fig-label { color: rgba(252,247,244,0.7); }
+.fig-label .tag { padding: 6px 12px; background: var(--paper); border: 1px solid var(--rule-2); border-radius: 100px; letter-spacing: 0.16em; }
+.fig-stage.ink .fig-label .tag { background: rgba(252,247,244,0.06); border-color: rgba(252,247,244,0.18); color: var(--cream); }
+.fig-label .desc { font-family: var(--sans); font-size: 13px; line-height: 1.5; letter-spacing: 0; text-transform: none; color: var(--ink-soft); }
+.fig-stage.ink .fig-label .desc { color: rgba(252,247,244,0.7); }
+.fig-cap { margin-top: 16px; font-size: 13px; color: var(--ink-soft); font-style: italic; max-width: 70ch; text-wrap: pretty; }
+.fig-stage-phone { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); height: 96%; width: auto; max-width: none; object-fit: contain; object-position: bottom center; display: block; }
+.fig-stage:has(.fig-stage-phone)::before { opacity: 0; }
+
+/* Field list (what scan captures) */
+.field-list { list-style: none; padding: 0; margin: 28px 0; display: flex; flex-direction: column; gap: 0; border-top: 1px solid var(--rule); }
+.field-list li { display: grid; grid-template-columns: 24px 1fr; gap: 16px; padding: 12px 4px; border-bottom: 1px solid var(--rule); align-items: center; }
+.field-list li .check { color: var(--blue); font-size: 16px; }
+.field-list li span { font-size: 15px; color: var(--ink); }
+
+/* Stats */
+.stats { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 48px 0; }
+.stat-card { padding: 36px 32px; background: var(--paper); border: 1px solid var(--rule); border-radius: 14px; }
+.stat-card .n { font-family: var(--display); font-weight: 320; font-variation-settings: "opsz" 144, "SOFT" 40; font-size: clamp(48px, 7vw, 80px); line-height: 0.9; letter-spacing: -0.035em; color: var(--ink); display: inline-flex; align-items: baseline; flex-wrap: wrap; gap: 4px; }
+.stat-card .n .dot { color: var(--peach); }
+.stat-card .n .em { font-style: italic; color: var(--blue); font-weight: 320; font-size: 0.65em; }
+.stat-card .l { margin-top: 14px; font-size: 14px; line-height: 1.45; color: var(--ink-soft); max-width: 32ch; }
+.stat-card.blue { background: var(--blue); color: var(--cream); border-color: var(--blue); }
+.stat-card.blue .n { color: var(--cream); }
+.stat-card.blue .n .em { color: var(--peach); }
+.stat-card.blue .l { color: rgba(252,247,244,0.78); }
+
+.decision { padding: 56px 0; }
+.decision + .decision { border-top: 1px solid var(--rule); }
+.decision .num { font-family: var(--mono); font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--blue); font-weight: 500; margin-bottom: 18px; display: inline-flex; align-items: center; gap: 10px; }
+.decision .num::before { content: ""; width: 18px; height: 1px; background: var(--blue); }
+.decision h3 { font-family: var(--display); font-weight: 380; font-size: clamp(30px, 3.4vw, 42px); line-height: 1.08; letter-spacing: -0.02em; margin: 0 0 24px; text-wrap: balance; max-width: 22ch; color: var(--ink); }
+.decision h3 em { font-style: italic; font-weight: 360; color: var(--blue); }
+
+.pullquote { margin: 40px 0 8px; padding: 36px 40px; background: var(--ink); color: var(--cream); border-radius: 16px; position: relative; }
+.pullquote .mark { font-family: var(--display); font-weight: 400; font-size: 56px; line-height: 1; color: var(--peach); position: absolute; top: 12px; left: 20px; }
+.pullquote q { display: block; font-family: var(--display); font-weight: 360; font-style: italic; font-size: clamp(22px, 2.4vw, 30px); line-height: 1.32; letter-spacing: -0.01em; margin: 12px 0 18px; max-width: 38ch; quotes: none; }
+.pullquote q::before, .pullquote q::after { content: ""; }
+.pullquote cite { font-family: var(--mono); font-style: normal; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(252,247,244,0.6); }
+
+.hmw { margin: 48px 0; border-radius: 16px; background: var(--peach-soft); border: 1px solid #f0c89a; padding: clamp(48px, 6vw, 80px) clamp(36px, 5vw, 60px); text-align: center; }
+.hmw .label { font-family: var(--mono); font-size: 11px; letter-spacing: 0.22em; color: var(--ink-soft); text-transform: uppercase; font-weight: 500; margin-bottom: 18px; }
+.hmw .q { font-family: var(--display); font-weight: 360; font-size: clamp(24px, 3vw, 36px); line-height: 1.18; letter-spacing: -0.015em; max-width: 28ch; margin: 0 auto; color: var(--ink); }
+.hmw .q em { font-style: italic; color: var(--blue); }
+
+.outcome-list { list-style: none; padding: 0; margin: 32px 0 0; border-top: 1px solid var(--rule); }
+.outcome-list li { display: grid; grid-template-columns: 40px 1fr; gap: 24px; padding: 22px 0; border-bottom: 1px solid var(--rule); align-items: baseline; }
+.outcome-list li .n { font-family: var(--mono); font-size: 11px; letter-spacing: 0.18em; color: var(--blue); font-weight: 500; }
+.outcome-list li p { font-size: 17px; line-height: 1.55; color: var(--ink); margin: 0; max-width: 60ch; }
+
+.next-case { margin: 60px 0 0; padding: clamp(48px, 6vw, 80px) clamp(36px, 5vw, 60px); background: var(--ink); color: var(--cream); border-radius: 18px; display: grid; grid-template-columns: 1fr auto; gap: 32px; align-items: end; }
+.next-case .label { font-family: var(--mono); font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--peach); font-weight: 500; margin-bottom: 14px; }
+.next-case .t { font-family: var(--display); font-weight: 360; font-size: clamp(32px, 4.6vw, 56px); line-height: 1.05; letter-spacing: -0.02em; margin: 0; max-width: 18ch; }
+.next-case .t em { font-style: italic; color: var(--peach); font-weight: 360; }
+.next-case .arrow { width: 64px; height: 64px; border-radius: 50%; background: var(--cream); color: var(--ink); display: grid; place-items: center; transition: transform 240ms cubic-bezier(.2,.7,.2,1); }
+.next-case:hover .arrow { transform: rotate(-12deg) scale(1.06); }
+
+.footer { margin-top: 80px; border-top: 1px solid var(--rule); }
+.footer-inner { max-width: var(--maxw); margin: 0 auto; padding: 40px var(--gutter); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; font-size: 13px; color: var(--ink-soft); }
+.footer-inner a { color: var(--ink-soft); transition: color 180ms; }
+.footer-inner a:hover { color: var(--ink); }
+
+/* ── Screen Carousel ─────────────────────────────────────────── */
+.carousel-wrap {
+  margin: clamp(36px,5vw,72px) 0;
+  background: linear-gradient(135deg, #fff5f0 0%, #ffe8dc 50%, #ffd4c1 100%);
+  border: 1px solid #ffc4a8;
+  border-radius: 20px;
+  padding: clamp(28px,4vw,48px) 0 clamp(28px,4vw,40px);
+  position: relative;
+}
+.carousel-intro { text-align: center; font-size: 13px; color: var(--ink-soft); font-weight: 400; margin: 0 0 clamp(24px,3vw,36px); padding: 0 24px; }
+.carousel-stage { position: relative; }
+.carousel-track-wrap {
+  overflow: visible; cursor: grab; position: relative; height: 620px;
+  mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%);
+}
+.carousel-track-wrap:active { cursor: grabbing; }
+.carousel-track { display: flex; align-items: flex-start; gap: 24px; position: absolute; top: 0; left: 0; transition: transform 420ms cubic-bezier(.25,.8,.25,1); will-change: transform; padding: 20px 0; }
+.carousel-slide { flex: 0 0 auto; display: flex; flex-direction: column; align-items: center; gap: 10px; transition: transform 420ms cubic-bezier(.25,.8,.25,1), opacity 420ms ease; }
+.carousel-slide .phone { width: 180px; }
+.carousel-slide .phone img { width: 100%; height: auto; display: block; pointer-events: none; border-radius: 18px; box-shadow: 0 8px 28px rgba(0,0,0,0.18); }
+.carousel-slide .slide-label { text-align: center; transition: opacity 420ms ease; }
+.carousel-slide .slide-label strong { display: block; font-size: 11px; font-weight: 600; color: var(--ink); letter-spacing: -0.01em; }
+.carousel-slide .slide-label span { font-family: var(--mono); font-size: 9px; color: var(--muted); letter-spacing: 0.1em; }
+.carousel-slide.is-active { transform: scale(1.08); }
+.carousel-slide:not(.is-active) { transform: scale(0.86); opacity: 0.35; }
+.carousel-arrow { position: absolute; top: 50%; transform: translateY(-50%); z-index: 10; width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.95); border: none; box-shadow: 0 2px 10px rgba(0,0,0,0.18); display: grid; place-items: center; color: var(--ink); cursor: pointer; transition: box-shadow 200ms, color 200ms, transform 200ms; }
+.carousel-arrow--prev { left: 8px; }
+.carousel-arrow--next { right: 8px; }
+.carousel-arrow:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.24); color: var(--peach); transform: translateY(-50%) scale(1.06); }
+.carousel-footer { display: flex; flex-direction: column; align-items: center; gap: 12px; margin-top: 16px; padding: 0 8px; }
+.carousel-dots { display: flex; gap: 5px; flex-wrap: nowrap; justify-content: center; padding: 4px 2px; max-width: 100%; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; }
+.carousel-dots::-webkit-scrollbar { display: none; }
+.carousel-dot { width: 26px; height: 26px; flex: 0 0 26px; border-radius: 50%; border: none; background: #fff; box-shadow: 0 1px 6px rgba(0,0,0,0.12); font-family: var(--mono); font-size: 9px; font-weight: 600; letter-spacing: 0.04em; color: var(--ink-soft); cursor: pointer; transition: all 240ms ease; display: grid; place-items: center; }
+.carousel-dot.is-active { background: linear-gradient(135deg, #ff9a76, #f49e4f); color: #fff; box-shadow: 0 4px 14px rgba(244,158,79,0.45); transform: scale(1.18); }
+.carousel-dot:hover:not(.is-active) { background: var(--paper); }
+.carousel-progress-bar { width: 100%; max-width: 320px; height: 4px; background: rgba(0,0,0,0.1); border-radius: 2px; overflow: hidden; }
+.carousel-progress-fill { height: 100%; background: linear-gradient(90deg, #ff9a76, #f49e4f); border-radius: 2px; transition: width 320ms cubic-bezier(.25,.8,.25,1); }
+
+/* Phone video mockup */
+.phone-video-wrap {
+  display: flex;
+  justify-content: center;
+  padding: clamp(36px, 5vw, 72px) 0;
+  background: var(--peach-soft);
+  border-radius: 20px;
+  margin: clamp(36px, 5vw, 72px) 0;
+}
+.phone-video-mockup {
+  position: relative;
+  width: 280px;
+  background: #000;
+  border-radius: 44px;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.35), inset 0 0 0 1.5px rgba(255,255,255,0.12);
+  overflow: hidden;
+  aspect-ratio: 9/19.5;
+}
+.phone-video-mockup::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 100px; height: 28px;
+  background: #000;
+  border-radius: 0 0 18px 18px;
+  z-index: 2;
+}
+.phone-video-screen {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.reveal { opacity: 0; transform: translateY(14px); transition: opacity 800ms cubic-bezier(.2,.7,.2,1), transform 800ms cubic-bezier(.2,.7,.2,1); }
+.reveal.in { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; } .reveal { opacity: 1; transform: none; } html { scroll-behavior: auto; } }
+
+@media (max-width: 1020px) {
+  .layout { grid-template-columns: 1fr; gap: 0; }
+  .side { position: static; margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--rule); overflow-x: auto; }
+  .side ol { flex-direction: row; gap: 24px; white-space: nowrap; }
+  .side a .num { display: none; }
+  .side a.active::after { display: none; }
+  .metabar-inner { grid-template-columns: repeat(2, 1fr); gap: 20px; }
+}
+@media (max-width: 720px) {
+  .hero { padding: 56px 0 64px; }
+  .split, .stats { grid-template-columns: 1fr; }
+  .next-case { grid-template-columns: 1fr; gap: 24px; }
+}
+
+/* ── Work Dropdown ───────────────────────────────────────────── */
+.nav-item--work { position: relative; }
+.nav-btn-work { background: none; border: 0; padding: 0; cursor: pointer; }
+.nav-dropdown { position: absolute; top: calc(100% + 12px); left: 50%; transform: translateX(-50%) translateY(-6px); background: var(--paper); border: 1px solid var(--rule-2); border-radius: 14px; box-shadow: 0 8px 32px rgba(26,22,18,0.12), 0 2px 8px rgba(26,22,18,0.06); padding: 6px; min-width: 200px; opacity: 0; pointer-events: none; transition: opacity 180ms ease, transform 180ms ease; z-index: 200; }
+.nav-item--work.is-open .nav-dropdown { opacity: 1; pointer-events: auto; transform: translateX(-50%) translateY(0); }
+.nav-dropdown-item { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 8px; font-family: var(--display); font-size: 15px; font-weight: 400; color: var(--ink); text-decoration: none; transition: background 140ms; white-space: nowrap; }
+.nav-dropdown-item:hover { background: var(--cream-2); }
+.nav-dropdown-num { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; color: var(--muted); min-width: 18px; }
+</style>
+  <link rel="stylesheet" href="nav.css">
+</head>
+<body>
+
+<div class="page-outer">
+  <nav class="nav" id="topNav">
+    <a href="index.html" class="nav-logo"><img src="assets/logo.png" alt="Pixel and Patches" loading="lazy"></a>
+    <ul class="nav-links">
+      <li class="nav-item--work">
+          <button class="nav-link nav-btn-work" data-page="work" aria-haspopup="true" aria-expanded="false">Work<span class="nav-underline"></span></button>
+          <div class="nav-dropdown" role="menu">
+            <a href="tersus.html" class="nav-dropdown-item" role="menuitem"><span class="nav-dropdown-num">01</span>Tersus</a>
+            <a href="cure-quick-quote.html" class="nav-dropdown-item" role="menuitem"><span class="nav-dropdown-num">02</span>Quick Quote</a>
+            <a href="cure-scan-license.html" class="nav-dropdown-item" role="menuitem"><span class="nav-dropdown-num">03</span>Scan to Insure</a>
+            <a href="cure-my-account.html" class="nav-dropdown-item" role="menuitem"><span class="nav-dropdown-num">04</span>My Account</a>
+          </div>
+        </li>
+      <li><a href="playground.html" class="nav-link" data-page="playground">Playground<span class="nav-underline"></span></a></li>
+      
+      <li><a href="assets/andy-nguyen-resume.pdf" target="_blank" rel="noopener" class="nav-link" data-page="resume">Resume<span class="nav-underline"></span></a></li>
+      <li><a href="mailto:nguyenlandy@gmail.com" class="nav-link" data-page="contact">Contact<span class="nav-underline"></span></a></li>
+    </ul>
+  </nav>
+  <div class="nav-rule"></div>
+
+<main>
+
+  <section class="hero">
+    <div class="wrap">
+      <div class="eyebrow reveal">Case study · 03 / 04</div>
+      <h1 class="hero-title reveal">Scan to<br>Insure<span class="dot">.</span></h1>
+      <p class="hero-sub reveal">20 screens. 6 screens. A 2-week sprint — and immediate stakeholder approval.</p>
+      <div class="hero-pills reveal">
+        <span class="pill"><span class="dot"></span>Mobile-First</span>
+        <span class="pill ink"><span class="dot"></span>Sole Designer</span>
+        <span class="pill peach"><span class="dot"></span>CURE Auto Insurance</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="metabar" aria-label="Project details">
+    <dl class="metabar-inner">
+      <div><dt>Role</dt><dd>Sole UX/UI Designer</dd></div>
+      <div><dt>Company</dt><dd>CURE Auto Insurance</dd></div>
+      <div><dt>Timeline</dt><dd>2-Week Design Sprint</dd></div>
+      <div><dt>Platform</dt><dd>Mobile-First</dd></div>
+      <div><dt>Tools</dt><dd>Figma · High-Fi Prototyping</dd></div>
+    </dl>
+  </section>
+
+  <div class="layout">
+    <aside class="side" aria-label="Section navigation">
+      <ol id="sideNav">
+        <li><a href="#context"    data-target="context"><span class="num">01</span>Context</a></li>
+        <li><a href="#problem"    data-target="problem"><span class="num">02</span>The Problem</a></li>
+        <li><a href="#process"    data-target="process"><span class="num">03</span>Design Process</a></li>
+        <li><a href="#decisions"  data-target="decisions"><span class="num">04</span>Key Decisions</a></li>
+        <li><a href="#outcome"    data-target="outcome"><span class="num">05</span>Outcome</a></li>
+        <li><a href="#reflection" data-target="reflection"><span class="num">06</span>Reflection</a></li>
+      </ol>
+    </aside>
+
+    <div class="col">
+
+      <!-- 01 Context -->
+      <section class="section" id="context">
+        <div class="eyebrow-sm reveal">— 01 / Context</div>
+        <h2 class="h-display reveal">A quote flow rebuilt around <span class="em">the fastest possible path</span> to a price.</h2>
+        <div class="prose reveal">
+          <p class="lede">Every extra screen is a drop-off opportunity. CURE had twenty of them.</p>
+          <p>CURE Auto Insurance was investing in a Driver's License Scan feature as a differentiator — a capability that let users capture their personal information automatically rather than typing it manually. My job was to design an experience that made this feature feel fast, intuitive, and trustworthy.</p>
+          <p>But a new feature dropped into an old, broken flow wouldn't deliver its full value. <strong>The experience around it needed to be rebuilt to match the ambition of the feature itself.</strong></p>
+        </div>
+
+        <div class="stats reveal">
+          <div class="stat-card blue">
+            <div class="n">20<span class="em">→6</span></div>
+            <div class="l">Screens in the redesigned flow — a 70% reduction achieved in a 2-week design sprint.</div>
+          </div>
+          <div class="stat-card">
+            <div class="n">2<span class="em">wks</span><span class="dot">.</span></div>
+            <div class="l">From kickoff to immediate stakeholder approval — then greenlit for development.</div>
+          </div>
+        </div>
+
+
+      </section>
+
+      <!-- 02 The Problem -->
+      <section class="section" id="problem">
+        <div class="eyebrow-sm reveal">— 02 / The Problem</div>
+        <h2 class="h-display reveal">Filling out a form at a DMV, not <span class="em-ink">signing up for a modern product</span>.</h2>
+        <div class="prose reveal">
+          <p>The existing Quick Quote flow required users to input every piece of personal information by hand — name, date of birth, address, license number, vehicle details — spread across a fragmented, outdated interface.</p>
+          <p>CURE's Customer Experience team had already validated the problem through internal research before I joined the project: <strong>the information entry phase was the highest point of user drop-off in the entire funnel.</strong> The directive was clear — reduce the number of screens, reduce friction, and modernize the experience.</p>
+        </div>
+
+        <!-- Screen Carousel -->
+        <figure class="figure reveal">
+          <div class="phone-video-wrap">
+            <div class="phone-video-mockup">
+              <video autoplay loop muted playsinline class="phone-video-screen">
+                <source src="assets/cure-scan-license-video.mp4" type="video/mp4">
+              </video>
+            </div>
+          </div>
+          <figcaption class="fig-cap" style="text-align:center;">Six screens, each doing one job. Scan your license, confirm your info, get your quote.</figcaption>
+        </figure>
+
+        <div class="hmw reveal">
+          <div class="label">How might we</div>
+          <p class="q">…make scanning a driver's license feel like the <em>natural, obvious</em> way to start a quote?</p>
+        </div>
+      </section>
+
+      <!-- 03 Design Process -->
+      <section class="section" id="process">
+        <div class="eyebrow-sm reveal">— 03 / Design Process</div>
+        <h2 class="h-display reveal">Start with the scan — <span class="em">work backwards</span> from what it eliminates.</h2>
+        <div class="prose reveal">
+          <p>The Driver's License Scan was the key unlock. I started by mapping exactly what data a scanned license could capture, then designed the remaining flow around only what was left.</p>
+        </div>
+
+        <div class="prose reveal">
+          <p><strong>What the scan captures automatically:</strong></p>
+        </div>
+        <ul class="field-list reveal">
+          <li><span class="check">→</span><span>First Name, Middle Initial, Last Name</span></li>
+          <li><span class="check">→</span><span>Gender</span></li>
+          <li><span class="check">→</span><span>Date of Birth</span></li>
+          <li><span class="check">→</span><span>Address &amp; Zip Code</span></li>
+          <li><span class="check">→</span><span>Driver's License Number &amp; Status</span></li>
+        </ul>
+
+        <div class="prose reveal" style="margin-top: 32px;">
+          <p>The remaining fields — phone number, marital status, email, and vehicle information — were grouped logically into a streamlined set of remaining inputs. What previously required 6+ dedicated screens collapsed into one confirmation and one continuation.</p>
+          <p>The most significant structural decision was consolidating <strong>Drivers, Vehicles, and Policy Coverage into a single screen</strong>. Previously, users had to navigate back and forth between separate sections. One screen, full context, no round-trips.</p>
+        </div>
+
+      </section>
+
+      <!-- 04 Key Decisions -->
+      <section class="section" id="decisions">
+        <div class="eyebrow-sm reveal">— 04 / Key Decisions</div>
+        <h2 class="h-display reveal">Evolution, not <span class="em">reinvention</span>.</h2>
+        <div class="prose reveal">
+          <p>Early prototypes pushed too far outside CURE's visual identity. Stakeholder feedback was clear: the product should feel improved, not unrecognizable. Rather than fighting that constraint, I focused on structural improvements — how information was grouped, how many decisions users faced per screen, how clearly the interface communicated progress.</p>
+        </div>
+
+        <article class="decision reveal">
+          <div class="num">Decision 01</div>
+          <h3>Make the scan the <em>obvious path</em>, not an option.</h3>
+          <div class="prose">
+            <p>The original flow treated the scan feature as an afterthought — a secondary button below the primary "Continue Manually" action. Users would default to typing because typing was what the design was asking them to do.</p>
+            <p>The redesigned entry screen <strong>leads with the scan</strong>. It's described, it's prominent, and the manual path is clearly secondary. The hierarchy communicates the recommendation without hiding the alternative.</p>
+          </div>
+          <figure class="figure">
+            <div class="fig-stage peach">
+              <img class="fig-stage-phone" src="assets/cure-scan-screen-1.jpg" alt="CURE Scan to Insure entry screen — Start Scan as the primary action" loading="lazy">
+            </div>
+            <figcaption class="fig-cap">Design hierarchy is a recommendation. Leading with the scan makes the faster path the obvious one.</figcaption>
+          </figure>
+        </article>
+
+        <article class="decision reveal">
+          <div class="num">Decision 02</div>
+          <h3>One screen for <em>drivers, vehicles, and coverage</em>.</h3>
+          <div class="prose">
+            <p>In the original flow, users managed drivers, vehicles, and coverage in separate sections — navigating back and forth to make changes, losing context with every transition.</p>
+            <p>The consolidated screen surfaces all three simultaneously. Users can review their full quote setup in one place — reducing both the number of taps and the mental overhead of managing multiple views simultaneously.</p>
+          </div>
+          <figure class="figure">
+            <div class="fig-stage peach">
+              <img class="fig-stage-phone" src="assets/cure-scan-screen-3.jpg" alt="CURE consolidated quote screen — Drivers, Vehicles, and Policy Coverage in one view" loading="lazy">
+            </div>
+            <figcaption class="fig-cap">The most significant structural decision — previously three separate navigational destinations, now one.</figcaption>
+          </figure>
+          <div class="pullquote">
+            <span class="mark" aria-hidden="true">"</span>
+            <q>The best UX work often happens within constraints, not in spite of them.</q>
+            <cite>— Reflection on the Scan to Insure project</cite>
+          </div>
+        </article>
+
+        <article class="decision reveal">
+          <div class="num">Decision 03</div>
+          <h3>A quote summary with <em>hierarchy</em>, not a wall of text.</h3>
+          <div class="prose">
+            <p>The old quote summary page was a wall of undifferentiated text — dense, flat, and hard to parse. There was no clear focal point. Users couldn't tell at a glance what their quote actually was.</p>
+            <p>The redesigned summary page treats pricing as the hero. It's surfaced prominently, at the top, before anything else. Coverage details are organized into scannable sections. <strong>The quote feels like a product, not a printout.</strong></p>
+          </div>
+          <figure class="figure">
+            <div class="fig-stage peach">
+              <img class="fig-stage-phone" src="assets/cure-scan-screen-2.jpg" alt="CURE quote summary screen — pricing surfaced as the hero with payment breakdown" loading="lazy">
+            </div>
+            <figcaption class="fig-cap">Visual hierarchy is not decoration — it's the difference between a user understanding their quote and abandoning it.</figcaption>
+          </figure>
+        </article>
+      </section>
+
+      <!-- 05 Outcome -->
+      <section class="section" id="outcome">
+        <div class="eyebrow-sm reveal">— 05 / Outcome</div>
+        <h2 class="h-display reveal">Immediate approval. <span class="em-ink">Greenlit for development.</span></h2>
+
+        <ol class="outcome-list reveal">
+          <li><span class="n">01</span><p><strong>Eliminated manual entry</strong> for all fields obtainable via Driver's License Scan — name, DOB, address, license number and status.</p></li>
+          <li><span class="n">02</span><p><strong>20 screens reduced to 6</strong> — a 70% reduction in the number of steps users need to reach a quote.</p></li>
+          <li><span class="n">03</span><p>Drivers, Vehicles, and Coverage <strong>consolidated onto a single screen</strong> — full quote context without multi-screen navigation.</p></li>
+          <li><span class="n">04</span><p>Quote summary redesigned with <strong>clear hierarchy and interactive controls</strong> — pricing surfaced as the hero, not buried in text.</p></li>
+          <li><span class="n">05</span><p>Delivered within a <strong>2-week design sprint</strong> — received immediate stakeholder approval and was greenlit for development.</p></li>
+        </ol>
+      </section>
+
+      <!-- 06 Reflection -->
+      <section class="section" id="reflection">
+        <div class="eyebrow-sm reveal">— 06 / Reflection</div>
+        <h2 class="h-display reveal">The best work happens <span class="em">within constraints</span>, not in spite of them.</h2>
+        <div class="prose reveal">
+          <p>Being pushed back toward CURE's visual language didn't limit the design — it forced me to find improvements that were structural and behavioral, not just aesthetic. The end result was something that genuinely served users better without requiring them to learn a new product.</p>
+          <p>Working within a 2-week sprint also taught me how to make fast, confident structural decisions. When the timeline is tight, you learn which problems are actually worth solving first — and the answer is almost always: eliminate the biggest source of friction, then work outward from there.</p>
+          <p>If I were to continue iterating, I'd explore surfacing the scan feature even earlier in the flow — potentially as the primary entry point rather than an option — and run usability testing to measure actual completion rate improvements post-launch.</p>
+        </div>
+
+        <a class="next-case reveal" href="cure-my-account.html">
+          <div>
+            <div class="label">Next case study</div>
+            <h3 class="t">Redesigning the portal that <em>keeps policyholders</em>.</h3>
+          </div>
+          <span class="arrow" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+          </span>
+        </a>
+      </section>
+
+    </div>
+  </div>
+
+    <footer class="footer">
+    <div class="footer-inner">
+      <a href="index.html" class="brandmark">andy<span class="dot">.</span></a>
+      <div>© 2026 Andy Nguyen — designed, coded, cat approved.</div>
+      <div class="footer-links">
+        <a href="mailto:nguyenlandy@gmail.com">nguyenlandy@gmail.com</a>
+        <span class="footer-divider">·</span>
+        <a href="https://www.linkedin.com/in/andylounguyen" target="_blank" rel="noopener">LinkedIn</a>
+        <span class="footer-divider">·</span>
+        <a href="assets/andy-nguyen-resume.pdf" target="_blank" rel="noopener">Resume</a>
+      </div>
+    </div>
+  </footer>
+
+</main>
+
+<script src="scripts.js"></script>
+<script>
+/* ── Screen Carousel ─────────────────────────────────────────── */
+(function () {
+  const SCREENS = [
+    { label: 'Start & Scan',              step: '01', src: 'assets/cure-scan-screen-1.jpg' },
+    { label: 'Auto Quote',                step: '02', src: 'assets/cure-scan-screen-2.jpg' },
+    { label: 'Drivers, Vehicles, Policy', step: '03', src: 'assets/cure-scan-screen-3.jpg' },
+    { label: 'Household Members',         step: '04', src: 'assets/cure-scan-screen-4.jpg' },
+    { label: 'Know You Better',           step: '05', src: 'assets/cure-scan-screen-6.jpg' },
+    { label: 'Contact Information',       step: '06', src: 'assets/cure-scan-screen-5.jpg' },
+  ];
+
+  const track  = document.querySelector('.carousel-track');
+  const dotsEl = document.getElementById('cDots');
+  const fill   = document.getElementById('cFill');
+  let current  = 0;
+
+  SCREENS.forEach((s, i) => {
+    const slide = document.createElement('div');
+    slide.className = 'carousel-slide';
+    slide.innerHTML = `
+      <div class="phone"><img src="${s.src}" alt="${s.label}" loading="lazy"></div>
+      <div class="slide-label"><strong>${s.label}</strong><span>${s.step}</span></div>`;
+    track.appendChild(slide);
+  });
+
+  SCREENS.forEach((s, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'carousel-dot';
+    btn.textContent = s.step;
+    btn.setAttribute('aria-label', s.label);
+    btn.addEventListener('click', () => goTo(i));
+    dotsEl.appendChild(btn);
+  });
+
+  const slides = Array.from(track.children);
+  const dots   = Array.from(dotsEl.children);
+
+  function goTo(idx) {
+    current = Math.max(0, Math.min(idx, SCREENS.length - 1));
+    render();
+  }
+
+  function render() {
+    slides.forEach((s, i) => s.classList.toggle('is-active', i === current));
+    dots.forEach((d, i)   => d.classList.toggle('is-active', i === current));
+    fill.style.width = `${((current + 1) / SCREENS.length) * 100}%`;
+    const trackWrap = document.getElementById('cTrack');
+    const wrapW     = trackWrap.offsetWidth;
+    const activeEl  = slides[current];
+    const slideW    = activeEl.offsetWidth;
+    const gap       = 24;
+    let leftEdge = 0;
+    for (let i = 0; i < current; i++) leftEdge += slides[i].offsetWidth + gap;
+    const activeDot = dots[current];
+    if (activeDot && dotsEl) {
+      const dotCenter = activeDot.offsetLeft + activeDot.offsetWidth / 2;
+      dotsEl.scrollTo({ left: dotCenter - dotsEl.offsetWidth / 2, behavior: 'smooth' });
+    }
+    track.style.transform = `translateX(${-(leftEdge - (wrapW / 2 - slideW / 2))}px)`;
+  }
+
+  document.getElementById('cPrev').addEventListener('click', () => goTo(current - 1));
+  document.getElementById('cNext').addEventListener('click', () => goTo(current + 1));
+
+  document.addEventListener('keydown', e => {
+    const wrap = document.querySelector('.carousel-wrap');
+    if (!wrap) return;
+    const rect = wrap.getBoundingClientRect();
+    if (rect.top > window.innerHeight || rect.bottom < 0) return;
+    if (e.key === 'ArrowRight') goTo(current + 1);
+    if (e.key === 'ArrowLeft')  goTo(current - 1);
+  });
+
+  let dragStart = null, dragDelta = 0;
+  const tw = document.getElementById('cTrack');
+  tw.addEventListener('mousedown',  e => { dragStart = e.clientX; dragDelta = 0; });
+  tw.addEventListener('mousemove',  e => { if (dragStart !== null) dragDelta = e.clientX - dragStart; });
+  tw.addEventListener('mouseup',    () => { if (Math.abs(dragDelta) > 40) goTo(dragDelta < 0 ? current + 1 : current - 1); dragStart = null; });
+  tw.addEventListener('mouseleave', () => { if (dragStart !== null && Math.abs(dragDelta) > 40) goTo(dragDelta < 0 ? current + 1 : current - 1); dragStart = null; });
+  let tx = null;
+  tw.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+  tw.addEventListener('touchend',   e => { if (tx !== null) { const d = e.changedTouches[0].clientX - tx; if (Math.abs(d) > 40) goTo(d < 0 ? current + 1 : current - 1); tx = null; } }, { passive: true });
+
+  requestAnimationFrame(() => requestAnimationFrame(() => { goTo(0); render(); }));
+  window.addEventListener('resize', () => render());
+})();
+</script>
+<script>
+(function () {
+  const links = Array.from(document.querySelectorAll('#sideNav a'));
+  const sections = links.map(a => document.getElementById(a.dataset.target)).filter(Boolean);
+  function setActive(id) { links.forEach(a => a.classList.toggle('active', a.dataset.target === id)); }
+  const io = new IntersectionObserver((entries) => {
+    const visible = entries.filter(e => e.isIntersecting).sort((a,b) => a.boundingClientRect.top - b.boundingClientRect.top);
+    if (visible[0]) setActive(visible[0].target.id);
+  }, { rootMargin: '-25% 0px -60% 0px', threshold: [0, 0.2, 0.6] });
+  sections.forEach(s => io.observe(s));
+  if (sections[0]) setActive(sections[0].id);
+  const nav = document.getElementById('topNav');
+  const onScroll = () => nav.classList.toggle('scrolled', window.scrollY > 8);
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+  const reveal = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); reveal.unobserve(e.target); } });
+  }, { rootMargin: '0px 0px -8% 0px', threshold: 0.05 });
+  document.querySelectorAll('.reveal').forEach(el => reveal.observe(el));
+})();
+</script>
+
+<script>
+(function(){
+  const item = document.querySelector(".nav-item--work");
+  const btn  = item && item.querySelector(".nav-btn-work");
+  if (!btn) return;
+  btn.addEventListener("click", function(e){ e.stopPropagation(); item.classList.toggle("is-open"); btn.setAttribute("aria-expanded", item.classList.contains("is-open")); });
+  document.addEventListener("click", function(){ item.classList.remove("is-open"); btn.setAttribute("aria-expanded","false"); });
+  document.addEventListener("keydown", function(e){ if(e.key==="Escape"){ item.classList.remove("is-open"); btn.setAttribute("aria-expanded","false"); }});
+})();
+</script>
+</div><!-- end .page-outer -->
+</body>
+</html>

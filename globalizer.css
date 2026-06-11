@@ -1,0 +1,303 @@
+/* ─── GLOBALIZER SHOWCASE PAGE ─────────────────────────────────── */
+
+.gl-body {
+  background: #f5f4f0;
+  min-height: 100vh;
+}
+
+/* ─── TOP BAR ─────────────────────────────────────────────────── */
+.gl-topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 48px;
+  background: rgba(245, 244, 240, 0.88);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+
+.gl-back-link {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: -0.2px;
+  color: rgba(0,0,0,0.45);
+  text-decoration: none;
+  transition: color 0.2s;
+  min-width: 120px;
+}
+
+.gl-back-link:hover {
+  color: rgba(0,0,0,0.9);
+}
+
+.gl-topbar-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.gl-topbar-title {
+  font-family: 'Fraunces', serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: rgba(0,0,0,0.8);
+}
+
+.gl-topbar-tags {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: rgba(0,0,0,0.35);
+}
+
+.gl-topbar-tools {
+  display: flex;
+  gap: 8px;
+  min-width: 120px;
+  justify-content: flex-end;
+}
+
+.gl-topbar-tool {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: rgba(0,0,0,0.4);
+  border: 1px solid rgba(0,0,0,0.14);
+  border-radius: 4px;
+  padding: 3px 8px;
+}
+
+/* ─── MAIN CONTENT ────────────────────────────────────────────── */
+.gl-main {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 120px 48px 96px;
+  display: flex;
+  flex-direction: column;
+  gap: 80px;
+}
+
+/* ─── HERO ────────────────────────────────────────────────────── */
+.gl-hero {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+}
+
+.gl-hero-kicker {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: rgba(0,0,0,0.4);
+}
+
+.gl-hero-title {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(28px, 3.5vw, 48px);
+  font-weight: 300;
+  line-height: 1.2;
+  color: #1a1a1a;
+  max-width: 800px;
+}
+
+/* ─── SECTIONS ────────────────────────────────────────────────── */
+.gl-section {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.gl-section-label {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+
+.gl-label-text {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: rgba(0,0,0,0.4);
+  white-space: nowrap;
+}
+
+.gl-label-rule {
+  flex: 1;
+  height: 1px;
+  background: rgba(0,0,0,0.1);
+}
+
+/* ─── IMAGE LAYOUTS ───────────────────────────────────────────── */
+
+/* Hero — full width */
+.gl-img-hero {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.gl-img-hero img {
+  width: 100%;
+  display: block;
+  border-radius: 16px;
+  box-shadow: 0 4px 32px rgba(0,0,0,0.10);
+}
+
+/* Pair — two equal columns */
+.gl-img-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+/* Trio — three equal columns */
+.gl-img-trio {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+}
+
+.gl-img-item {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.gl-img-item img {
+  width: 100%;
+  display: block;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.09);
+}
+
+/* ─── CAPTIONS ────────────────────────────────────────────────── */
+.gl-caption {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 0 2px;
+}
+
+.gl-caption--offset {
+  margin-top: -8px;
+}
+
+.gl-caption-title {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(0,0,0,0.75);
+  letter-spacing: -0.2px;
+}
+
+.gl-caption-sub {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  color: rgba(0,0,0,0.4);
+}
+
+/* ─── SCRATCHTOPIA ────────────────────────────────────────────── */
+.gl-scratchtopia {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+/* Mobile portrait — fixed width */
+.gl-scratchtopia__mobile {
+  flex: 0 0 240px;
+}
+
+.gl-scratchtopia__mobile img {
+  width: 100%;
+  display: block;
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+}
+
+/* Desktop — fills remaining space */
+.gl-scratchtopia__desktop {
+  flex: 1;
+}
+
+.gl-scratchtopia__desktop img {
+  width: 100%;
+  display: block;
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.14);
+}
+
+/* ─── FLAT PETS + SUMMER CONTEST ──────────────────────────────── */
+.gl-pets-pair {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+/* Flat pets fills the remaining horizontal space */
+.gl-pets-pair__main {
+  flex: 1;
+}
+
+.gl-pets-pair__main img {
+  width: 100%;
+  display: block;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.09);
+}
+
+/* Banner is fixed-width matching a 300x600 aspect ratio */
+.gl-pets-pair__banner {
+  flex: 0 0 auto;
+  width: 220px;
+}
+
+.gl-pets-pair__banner img {
+  width: 100%;
+  display: block;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.09);
+}
+
+/* ─── BADGES GRID ─────────────────────────────────────────────── */
+.gl-badges-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.gl-badges-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 16px;
+  align-items: center;
+}
+
+/* Fixed square container — clips every badge to the same circle */
+.gl-badge-item {
+  aspect-ratio: 1;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.12);
+}
+
+.gl-badge-item img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}

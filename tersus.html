@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-P9JER5X15D"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-P9JER5X15D');
+  </script>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Tersus — A case study by Andy Nguyen</title>
@@ -73,7 +81,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  padding-top: 45px;
+  padding: 12px 0;
   position: sticky;
   top: 0;
   z-index: 50;
@@ -384,12 +392,73 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 }
 .fig-stage.ink .fig-label .desc { color: rgba(252,247,244,0.7); }
 
+.fig-stage-phone {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  height: 96%;
+  width: auto;
+  max-width: none;
+  object-fit: contain;
+  object-position: bottom center;
+  display: block;
+  border-radius: 0;
+}
+/* When a real phone media is present: hide stripe */
+.fig-stage:has(.fig-stage-phone)::before {
+  opacity: 0;
+}
+
 .fig-cap {
   margin-top: 16px;
   font-size: 13px; color: var(--ink-soft);
   font-style: italic;
   max-width: 70ch;
   text-wrap: pretty;
+}
+
+/* ----- Flow mosaic image + PDF link ----- */
+.fig-img {
+  width: 100%;
+  display: block;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.09);
+}
+.flow-pdf-link {
+  display: block;
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  cursor: zoom-in;
+}
+.flow-pdf-link::after {
+  content: '↗ View full PDF';
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  padding: 6px 12px;
+  border-radius: 100px;
+  border: 1px solid rgba(0,0,0,0.1);
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  pointer-events: none;
+}
+.flow-pdf-link:hover::after {
+  opacity: 1;
+  transform: translateY(0);
+}
+.flow-pdf-link:hover .fig-img {
+  box-shadow: 0 8px 40px rgba(0,0,0,0.14);
+  transition: box-shadow 0.2s ease;
 }
 
 /* ----- "Two users" split figure (the challenge) ----- */
@@ -513,6 +582,41 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   color: var(--ink);
 }
 .decision h3 em { font-style: italic; font-weight: 360; color: var(--blue); }
+
+/* 2-column decision layout: text left, phone image right */
+.decision-twocol {
+  display: grid;
+  grid-template-columns: 342px 1fr;
+  gap: 28px;
+  align-items: start;
+  margin: 40px 0 0;
+}
+.decision-twocol-text h3 {
+  font-family: var(--display);
+  font-weight: 380;
+  font-size: clamp(26px, 2.8vw, 36px);
+  line-height: 1.1; letter-spacing: -0.02em;
+  margin: 0 0 20px;
+  color: var(--ink);
+}
+.decision-twocol-text h3 em { font-style: italic; font-weight: 360; color: var(--blue); }
+.decision-twocol-fig {
+  border-radius: 20px;
+  background: var(--cream-2);
+  padding: 48px 32px 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  overflow: hidden;
+  min-height: 400px;
+}
+.decision-twocol-fig img {
+  display: block;
+  max-width: 260px;
+  width: 100%;
+  height: auto;
+  border-radius: 12px 12px 0 0;
+}
 
 .pullquote {
   margin: 40px 0 8px;
@@ -697,20 +801,150 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   .research-table .row { grid-template-columns: 48px 1fr; }
   .research-table .pp { grid-column: 2; text-align: left; padding-top: 4px; }
   .outcome-list li { grid-template-columns: 32px 1fr; gap: 14px; }
+  .decision-twocol { grid-template-columns: 1fr; }
+  .decision-twocol-fig { min-height: 280px; padding: 32px 24px 0; }
 }
+
+/* ── Phone Fan Carousel ── */
+.pfc-outer {
+  width: 100%;
+  overflow: hidden;
+  border-radius: 16px;
+  box-shadow: 0 2px 32px rgba(0,0,0,0.09);
+  background: #fff;
+}
+.pfc {
+  display: flex;
+  gap: 28px;
+  align-items: flex-start;
+  background: #fff;
+  padding: 40px 40px 40px 40px;
+  width: 1085px;
+  transform-origin: top left;
+}
+/* Left step list */
+.pfc-steps {
+  width: 314px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-top: 8px;
+}
+.pfc-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 14px 16px;
+  border-radius: 10px;
+  border: 1.5px solid transparent;
+  cursor: pointer;
+  background: transparent;
+  text-align: left;
+  transition: background 0.2s, border-color 0.2s;
+  width: 100%;
+  appearance: none;
+  -webkit-appearance: none;
+}
+.pfc-step:hover { background: rgba(90,200,189,0.06); }
+.pfc-step.is-active {
+  background: #edfffd;
+  border-color: #5ac8bd;
+}
+.pfc-step-badge {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: #d0d0d0;
+  color: #fff;
+  font-size: 12px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  font-family: var(--mono);
+  transition: background 0.2s;
+  line-height: 1;
+}
+.pfc-step.is-active .pfc-step-badge { background: #5ec5bb; }
+.pfc-step-body {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.pfc-step-title {
+  font-family: var(--body);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1.3;
+}
+.pfc-step-desc {
+  font-family: var(--body);
+  font-size: 12px;
+  color: var(--ink-soft);
+  line-height: 1.45;
+  margin: 0;
+}
+/* Right fan */
+.pfc-fan {
+  position: relative;
+  width: 743px;
+  height: 529px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.pfc-card {
+  position: absolute;
+  top: 0; left: 0;
+  background: transparent;
+  will-change: transform, opacity;
+  transition:
+    left    0.7s ease-in-out,
+    top     0.7s ease-in-out,
+    width   0.7s ease-in-out,
+    height  0.7s ease-in-out,
+    transform 0.7s ease-in-out,
+    opacity 0.7s ease-in-out;
+}
+.pfc-card img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  pointer-events: none;
+}
+
+
+/* ── Work Dropdown ───────────────────────────────────────────── */
+.nav-item--work { position: relative; }
+.nav-btn-work { background: none; border: 0; padding: 0; cursor: pointer; }
+.nav-dropdown { position: absolute; top: calc(100% + 12px); left: 50%; transform: translateX(-50%) translateY(-6px); background: var(--paper); border: 1px solid var(--rule-2); border-radius: 14px; box-shadow: 0 8px 32px rgba(26,22,18,0.12), 0 2px 8px rgba(26,22,18,0.06); padding: 6px; min-width: 200px; opacity: 0; pointer-events: none; transition: opacity 180ms ease, transform 180ms ease; z-index: 200; }
+.nav-item--work.is-open .nav-dropdown { opacity: 1; pointer-events: auto; transform: translateX(-50%) translateY(0); }
+.nav-dropdown-item { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 8px; font-family: var(--display); font-size: 15px; font-weight: 400; color: var(--ink); text-decoration: none; transition: background 140ms; white-space: nowrap; }
+.nav-dropdown-item:hover { background: var(--cream-2); }
+.nav-dropdown-num { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; color: var(--muted); min-width: 18px; }
 </style>
+  <link rel="stylesheet" href="nav.css">
 </head>
 <body>
 
 <div class="page-outer">
   <nav class="nav" id="topNav">
     <a href="index.html" class="nav-logo">
-      <img src="assets/logo.png" alt="Pixel and Patches">
+      <img src="assets/logo.png" alt="Pixel and Patches" loading="lazy">
     </a>
     <ul class="nav-links">
-      <li><a href="index.html" class="nav-link" data-page="work">Work<span class="nav-underline"></span></a></li>
-      <li><a href="#" class="nav-link" data-page="playground">Playground<span class="nav-underline"></span></a></li>
-      <li><a href="#" class="nav-link" data-page="about">About<span class="nav-underline"></span></a></li>
+      <li class="nav-item--work">
+          <button class="nav-link nav-btn-work" data-page="work" aria-haspopup="true" aria-expanded="false">Work<span class="nav-underline"></span></button>
+          <div class="nav-dropdown" role="menu">
+            <a href="tersus.html" class="nav-dropdown-item" role="menuitem"><span class="nav-dropdown-num">01</span>Tersus</a>
+            <a href="cure-quick-quote.html" class="nav-dropdown-item" role="menuitem"><span class="nav-dropdown-num">02</span>Quick Quote</a>
+            <a href="cure-scan-license.html" class="nav-dropdown-item" role="menuitem"><span class="nav-dropdown-num">03</span>Scan to Insure</a>
+            <a href="cure-my-account.html" class="nav-dropdown-item" role="menuitem"><span class="nav-dropdown-num">04</span>My Account</a>
+          </div>
+        </li>
+      <li><a href="playground.html" class="nav-link" data-page="playground">Playground<span class="nav-underline"></span></a></li>
+      
+      <li><a href="assets/andy-nguyen-resume.pdf" target="_blank" rel="noopener" class="nav-link" data-page="resume">Resume<span class="nav-underline"></span></a></li>
       <li><a href="mailto:nguyenlandy@gmail.com" class="nav-link" data-page="contact">Contact<span class="nav-underline"></span></a></li>
     </ul>
   </nav>
@@ -772,12 +1006,9 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
         </div>
 
         <figure class="figure reveal">
-          <div class="fig-stage peach wide">
-            <div class="fig-label">
-              <span class="tag">Hero · Full Flow Mosaic</span>
-              <span class="desc">Zoomed-out Figma canvas showing the customer flow (left) and cleaner flow (right) side by side — establishing the scope of the system.</span>
-            </div>
-          </div>
+          <a href="assets/tersus-user-flow.pdf" target="_blank" rel="noopener" class="flow-pdf-link">
+            <img src="assets/tersus-user-flow.jpg" alt="Tersus full user flow — customer and cleaner journeys side by side" class="fig-img" loading="lazy">
+          </a>
           <figcaption class="fig-cap">Two products, one design language. Customer-facing flows on the left, cleaner-facing flows on the right — every screen on one side has a counterpart on the other.</figcaption>
         </figure>
       </section>
@@ -793,10 +1024,9 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
         <div class="split reveal">
           <div>
             <div class="fig-stage peach">
-              <div class="fig-label">
-                <span class="tag">Customer · Final Quote</span>
-                <span class="desc">Booking confirmation screen — itemized pricing breakdown, transparent total.</span>
-              </div>
+              <video class="fig-stage-phone" autoplay loop muted playsinline>
+                <source src="assets/tersus-single-unit-flow.mp4" type="video/mp4">
+              </video>
             </div>
             <div class="split-card">
               <div class="who">The Customer</div>
@@ -806,10 +1036,9 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
           </div>
           <div>
             <div class="fig-stage blue">
-              <div class="fig-label">
-                <span class="tag">Cleaner · Current Job</span>
-                <span class="desc">Active job screen with timer, checklist, and customer instructions.</span>
-              </div>
+              <video class="fig-stage-phone" autoplay loop muted playsinline>
+                <source src="assets/tersus-cleaner-flow.mp4" type="video/mp4">
+              </video>
             </div>
             <div class="split-card">
               <div class="who">The Cleaner</div>
@@ -829,7 +1058,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
         <div class="eyebrow-sm reveal">— 03 / Research</div>
         <h2 class="h-display reveal">Five rounds of usability testing — <span class="em">on a rolling cycle</span>, while development kept going.</h2>
         <div class="prose reveal">
-          <p>Findings fed directly back into the product. Some scope was added late based on what testing surfaced — a hard rhythm to manage in a mostly-waterfall handoff, but it kept research <em>useful</em> instead of decorative.</p>
+          <p>Findings fed directly back into the product. Some scope was added late based on what testing surfaced — keeping research <em>useful</em> instead of decorative.</p>
         </div>
 
         <div class="stats reveal">
@@ -875,9 +1104,9 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
       <!-- 04 — Design Decisions -->
       <section class="section" id="decisions">
         <div class="eyebrow-sm reveal">— 04 / Design Decisions</div>
-        <h2 class="h-display reveal">Three decisions that <span class="em-ink">shaped the product</span>.</h2>
+        <h2 class="h-display reveal">Four decisions that <span class="em-ink">shaped the product</span>.</h2>
         <div class="prose reveal">
-          <p>Each one started in research, hit resistance somewhere in the build, and made it to production because the evidence was undeniable.</p>
+          <p>Three came out of research. One came from a stakeholder request that turned into a real design challenge. All four hit resistance somewhere in the build — and made it to production anyway.</p>
         </div>
 
         <!-- Decision 01 -->
@@ -885,15 +1114,58 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
           <div class="num">Decision 01</div>
           <h3>Bringing pricing <em>to the surface</em>.</h3>
           <div class="prose">
-            <p>The client wanted pricing hidden until the end of the flow — worried that showing cost too early would scare users off. Research told a different story. Users who hit a surprise total at checkout without context lost trust in the product. Several disengaged entirely.</p>
-            <p>Pricing surfaced earlier and more transparently — individual room prices, base costs, and premium add-ons shown as users built their booking. By the time they reached the Final Quote screen, the total <strong>wasn't a surprise — it was a confirmation</strong>.</p>
+            <p>The client wanted pricing hidden until the end of the flow. Research told a different story. Pricing surfaced earlier and more transparently — by the time users reached the Final Quote screen, the total was a confirmation, not a surprise.</p>
           </div>
 
           <figure class="figure">
-            <div class="fig-stage peach">
-              <div class="fig-label">
-                <span class="tag">Booking Flow · Customer side</span>
-                <span class="desc">Pricing visible at every step — itemized rooms, base costs, premium add-ons — culminating in a Final Quote screen that confirms, not surprises.</span>
+            <div class="pfc-outer" role="region" aria-label="Booking flow walkthrough">
+              <div class="pfc" id="pfcRoot">
+                <!-- Left: step list -->
+                <div class="pfc-steps">
+                  <button class="pfc-step is-active" data-step="1">
+                    <span class="pfc-step-badge">1</span>
+                    <div class="pfc-step-body">
+                      <span class="pfc-step-title">Unit Information</span>
+                      <p class="pfc-step-desc">Select property type and configure room counts.</p>
+                    </div>
+                  </button>
+                  <button class="pfc-step" data-step="2">
+                    <span class="pfc-step-badge">2</span>
+                    <div class="pfc-step-body">
+                      <span class="pfc-step-title">Service Selection</span>
+                      <p class="pfc-step-desc">Choose base services and premium add-ons.</p>
+                    </div>
+                  </button>
+                  <button class="pfc-step" data-step="3">
+                    <span class="pfc-step-badge">3</span>
+                    <div class="pfc-step-body">
+                      <span class="pfc-step-title">Final Quote</span>
+                      <p class="pfc-step-desc">Itemized pricing breakdown before checkout.</p>
+                    </div>
+                  </button>
+                  <button class="pfc-step" data-step="4">
+                    <span class="pfc-step-badge">4</span>
+                    <div class="pfc-step-body">
+                      <span class="pfc-step-title">Order Confirmation</span>
+                      <p class="pfc-step-desc">Summary, timing, and receipt sent instantly.</p>
+                    </div>
+                  </button>
+                </div>
+                <!-- Right: phone fan -->
+                <div class="pfc-fan" id="pfcFan">
+                  <div class="pfc-card" data-phone="1">
+                    <img src="assets/phone-screen-1.png" alt="Unit Information" loading="lazy">
+                  </div>
+                  <div class="pfc-card" data-phone="2">
+                    <img src="assets/phone-screen-2.png" alt="Service Selection" loading="lazy">
+                  </div>
+                  <div class="pfc-card" data-phone="3">
+                    <img src="assets/phone-screen-3.png" alt="Final Quote" loading="lazy">
+                  </div>
+                  <div class="pfc-card" data-phone="4">
+                    <img src="assets/phone-screen-4.png" alt="Order Confirmation" loading="lazy">
+                  </div>
+                </div>
               </div>
             </div>
             <figcaption class="fig-cap">Final Quote screen showing itemized pricing breakdown.</figcaption>
@@ -909,42 +1181,76 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
         <!-- Decision 02 -->
         <article class="decision reveal">
           <div class="num">Decision 02</div>
-          <h3>Building a guide for <em>the actual clean</em>.</h3>
-          <div class="prose">
-            <p>Once a cleaner accepted a job and arrived at the property, the app had nothing for them. No checklist. No timer. No way to see what the customer expected, or how to reach support.</p>
-            <p>A service checklist and progress timer were added to the active job screen — <strong>not in the original scope</strong>, identified entirely through research. Cleaners track rooms as they go, see elapsed time, access pre-job customer instructions, and reach support directly from the job.</p>
-          </div>
 
-          <figure class="figure">
-            <div class="fig-stage blue tall">
-              <div class="fig-label">
-                <span class="tag">Cleaner side · Current Job</span>
-                <span class="desc">Active-job screen with timer, room checklist, and customer info card.</span>
+          <div class="decision-twocol">
+            <div class="decision-twocol-text">
+              <h3>Building a guide for the <em>actual clean</em>.</h3>
+              <div class="prose">
+                <p>Once a cleaner accepted a job and arrived at the property, the app had nothing for them. A service checklist and progress timer were added to the active job screen — not in the original scope, identified entirely through research.</p>
+                <p>Cleaners track rooms as they go, see elapsed time, access pre-job customer instructions, and reach support directly from the job.</p>
               </div>
             </div>
-            <figcaption class="fig-cap">Cleaner side — finding, starting, and completing a job. The active screen gave structure to the work itself, not just the process of finding it.</figcaption>
-          </figure>
+            <div class="decision-twocol-fig" style="background: var(--peach-soft);">
+              <img src="assets/tersus-cleaner-current-job.jpg" alt="Cleaner Job in Progress screen with timer, service checklist, and room-by-room tracking" loading="lazy">
+            </div>
+          </div>
         </article>
 
         <!-- Decision 03 -->
         <article class="decision reveal">
           <div class="num">Decision 03</div>
-          <h3>Giving cleaners <em>control over their work area</em>.</h3>
-          <div class="prose">
-            <p>Cleaners had no way to define where they wanted to work. The job feed showed everything available regardless of distance — creating friction for cleaners who only wanted jobs nearby, and reducing match quality for customers.</p>
-            <p>A dedicated Cleaning Area screen let cleaners set a preferred location — by address, or by drawing a radius directly on the map. A custom radius slider gave precise control over distance. The result: a feed that felt relevant, and customers matched to cleaners <strong>genuinely available nearby</strong>.</p>
-          </div>
 
-          <figure class="figure">
-            <div class="fig-stage">
-              <div class="fig-label">
-                <span class="tag">Cleaner side · Cleaning Area</span>
-                <span class="desc">Map with teal radius circle and a custom radius slider. One of the most positively received additions in later testing rounds.</span>
+          <div class="decision-twocol">
+            <div class="decision-twocol-text">
+              <h3>Giving cleaners control over <em>their work area</em>.</h3>
+              <div class="prose">
+                <p>Cleaners had no way to define where they wanted to work. A dedicated Cleaning Area screen let cleaners set a preferred location — by address, or by drawing a radius directly on the map.</p>
+                <p>A custom radius slider gave precise control over distance. The result: a feed that felt relevant, and customers matched to cleaners genuinely available nearby.</p>
               </div>
             </div>
-            <figcaption class="fig-cap">Geographic control, straight from research — not in the original brief.</figcaption>
-          </figure>
+            <div class="decision-twocol-fig" style="background: var(--blue-soft);">
+              <img src="assets/tersus-cleaner-map-screen.jpg" alt="Cleaning Area screen with map, teal radius circle and custom radius slider" loading="lazy">
+            </div>
+          </div>
+          <p class="fig-cap" style="margin-top: 16px;">Geographic control, straight from research — not in the original brief.</p>
         </article>
+
+        <!-- Decision 04 -->
+        <article class="decision reveal">
+          <div class="num">Decision 04</div>
+
+          <div class="decision-twocol">
+            <div class="decision-twocol-text">
+              <h3>An ASAP job that <em>actually means something</em>.</h3>
+              <div class="prose">
+                <p>The stakeholder wanted an ASAP option. The brief was simple. The design question was harder: how do you give customers urgency without setting expectations the system can't reliably meet?</p>
+                <p><strong>The decision: transparency over speed.</strong> Rather than a vague "ASAP — we'll handle it" label, the Schedule Clean Time screen explains the entire 5-step process before the customer confirms anything. They know upfront that a cleaner will propose a time, that they can accept it or suggest a new one, and that the cleaner confirms the final window. No surprises mid-flow.</p>
+                <p>A secondary toggle — Within Business Hours or Anytime — gives customers meaningful control over the urgency window. Most ASAP features skip this entirely. It was a deliberate choice to treat the customer as someone who has constraints too, not just the cleaner.</p>
+                <p>This required designing both sides of the exchange: the customer-facing ASAP flow with its negotiation model, and a new bid submission screen on the cleaner side that hadn't existed before.</p>
+              </div>
+            </div>
+            <div class="decision-twocol-fig" style="background: var(--ink); min-height: 460px; padding: 40px 32px; justify-content: flex-start; align-items: flex-start; flex-direction: column; gap: 20px;">
+              <div style="font-family: var(--mono); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(252,247,244,0.5); margin-bottom: 4px;">ASAP flow — both sides</div>
+              <div style="display: flex; flex-direction: column; gap: 12px; width: 100%;">
+                <div style="background: rgba(252,247,244,0.06); border: 1px solid rgba(252,247,244,0.12); border-radius: 10px; padding: 16px 18px;">
+                  <div style="font-family: var(--mono); font-size: 10px; letter-spacing: 0.16em; color: var(--peach); text-transform: uppercase; margin-bottom: 6px;">Customer</div>
+                  <div style="font-family: var(--sans); font-size: 13px; color: rgba(252,247,244,0.85); line-height: 1.5;">Checks ASAP at booking → job posts for 24 hrs</div>
+                </div>
+                <div style="display: flex; justify-content: center; color: rgba(252,247,244,0.3); font-size: 18px;">↓</div>
+                <div style="background: rgba(252,247,244,0.06); border: 1px solid rgba(252,247,244,0.12); border-radius: 10px; padding: 16px 18px;">
+                  <div style="font-family: var(--mono); font-size: 10px; letter-spacing: 0.16em; color: #5ec5bb; text-transform: uppercase; margin-bottom: 6px;">Cleaner</div>
+                  <div style="font-family: var(--sans); font-size: 13px; color: rgba(252,247,244,0.85); line-height: 1.5;">Sees ASAP badge → submits soonest available bid</div>
+                </div>
+                <div style="display: flex; justify-content: center; color: rgba(252,247,244,0.3); font-size: 18px;">↓</div>
+                <div style="background: rgba(252,247,244,0.06); border: 1px solid rgba(252,247,244,0.12); border-radius: 10px; padding: 16px 18px;">
+                  <div style="font-family: var(--mono); font-size: 10px; letter-spacing: 0.16em; color: var(--peach); text-transform: uppercase; margin-bottom: 6px;">Customer</div>
+                  <div style="font-family: var(--sans); font-size: 13px; color: rgba(252,247,244,0.85); line-height: 1.5;">Reviews bids → accepts a real window → confirmed</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
       </section>
 
       <!-- 05 — Outcome -->
@@ -959,11 +1265,11 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
           </li>
           <li>
             <span class="n">02</span>
-            <p><strong>8+ screens</strong> added to scope mid-build, driven entirely by research findings — features that wouldn't exist without usability testing.</p>
+            <p>8+ screens added to scope mid-build — some driven by research findings, others by stakeholder requests that became real design problems. The ASAP job flow alone required a full new bid experience on the cleaner side.</p>
           </li>
           <li>
             <span class="n">03</span>
-            <p>Rolling handoff to developers across the full year — annotated Figma files, interaction notes, and component specs updated continuously as the product evolved.</p>
+            <p>Rolling handoff to developers across the full year — annotated Figma files, interaction notes, and component specs updated continuously.</p>
           </li>
           <li>
             <span class="n">04</span>
@@ -981,10 +1287,10 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
         <div class="eyebrow-sm reveal">— 06 / Reflection</div>
         <h2 class="h-display reveal">What I'd <span class="em">do differently</span>.</h2>
         <div class="prose reveal">
-          <p>Tersus was my first real UX/UI project at this scale, and looking back, it shows in how it started. I didn't know about design systems when I began — I jumped straight into designing screens because the project was moving fast and there was pressure to keep up with development.</p>
-          <p>The component library came later, assembled from work that was already done rather than built as a foundation. <strong>If I were doing this again, I'd slow down the first two weeks significantly and build the system before touching a single screen.</strong> That upfront investment would have saved far more time than it cost.</p>
+          <p>Tersus was my first real UX/UI project at this scale, and looking back, it shows in how it started. I didn't know about design systems when I began — I jumped straight into designing screens because the project was moving fast.</p>
+          <p>The component library came later, assembled from work that was already done rather than built as a foundation. If I were doing this again, I'd slow down the first two weeks significantly and build the system before touching a single screen.</p>
           <p>The process was also largely waterfall — designs were handed off to development, and when problems surfaced after build, the work came back upstream for revision. On a project this size, with both sides of a platform running simultaneously, that created real pressure. It taught me how much more effective a closer, more iterative collaboration with engineering is compared to a clean handoff model.</p>
-          <p>Most of all, this project taught me how to <em>learn on the job at speed</em>. I grew significantly as a designer across this year — in systems thinking, in how to run and apply research, and in how to make decisions with incomplete information under a deadline. The things I'd do differently aren't failures. They're exactly what this project gave me.</p>
+          <p>Most of all, this project taught me how to learn on the job at speed. I grew significantly as a designer across this year — in systems thinking, in how to run and apply research, and in how to make decisions with incomplete information under a deadline.</p>
         </div>
 
         <a class="next-case reveal" href="cure-quick-quote.html">
@@ -1001,12 +1307,16 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
     </div>
   </div>
 
-  <footer class="footer">
+    <footer class="footer">
     <div class="footer-inner">
       <a href="index.html" class="brandmark">andy<span class="dot">.</span></a>
       <div>© 2026 Andy Nguyen — designed, coded, cat approved.</div>
-      <div>
+      <div class="footer-links">
         <a href="mailto:nguyenlandy@gmail.com">nguyenlandy@gmail.com</a>
+        <span class="footer-divider">·</span>
+        <a href="https://www.linkedin.com/in/andylounguyen" target="_blank" rel="noopener">LinkedIn</a>
+        <span class="footer-divider">·</span>
+        <a href="assets/andy-nguyen-resume.pdf" target="_blank" rel="noopener">Resume</a>
       </div>
     </div>
   </footer>
@@ -1015,6 +1325,73 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 
 <script src="scripts.js"></script>
 <script>
+(function () {
+  // ── Phone Fan Carousel ──────────────────────────────────
+  (function () {
+    const stackPositions = [
+      { left: 0,      top: 0,      rotation: -6.58, width: 309.679, height: 535.76  },
+      { left: 130.63, top: 15.6,   rotation:  8.87, width: 326.364, height: 529.1   },
+      { left: 192.66, top: 63.5,   rotation: 17.62, width: 388.724, height: 541.56  },
+      { left: 272.98, top: 129.17, rotation: 30,    width: 470.017, height: 553.051 },
+    ];
+
+    const cards    = Array.from(document.querySelectorAll('.pfc-card'));
+    const stepBtns = Array.from(document.querySelectorAll('.pfc-step'));
+    let activeStep = 1;
+
+    function applyPositions(animate) {
+      cards.forEach(card => {
+        if (!animate) card.style.transition = 'none';
+        const step         = parseInt(card.dataset.phone);
+        const posInFan     = step - activeStep;
+        const shouldShow   = posInFan >= 0;
+        const pos          = stackPositions[Math.max(0, posInFan)] ?? stackPositions[0];
+        const zIdx         = shouldShow ? (4 - posInFan) : 0;
+
+        card.style.left      = pos.left   + 'px';
+        card.style.top       = pos.top    + 'px';
+        card.style.width     = pos.width  + 'px';
+        card.style.height    = pos.height + 'px';
+        card.style.transform = `rotate(${pos.rotation}deg)`;
+        card.style.opacity   = shouldShow ? '1' : '0';
+        card.style.zIndex    = zIdx;
+        card.style.pointerEvents = shouldShow && posInFan === 0 ? 'auto' : 'none';
+      });
+    }
+
+    // Initial render — no transition so cards snap to start position
+    applyPositions(false);
+    // Re-enable transitions after one frame
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      cards.forEach(c => c.style.transition = '');
+    }));
+
+    stepBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        activeStep = parseInt(btn.dataset.step);
+        stepBtns.forEach(b => b.classList.toggle('is-active', b === btn));
+        applyPositions(true);
+      });
+    });
+
+    // Scale PFC to fit its outer container
+    const pfcOuter = document.querySelector('.pfc-outer');
+    const pfcRoot  = document.getElementById('pfcRoot');
+    const PFC_NATURAL_W = 1085 + 80; // content + 2×40px padding
+
+    function scalePfc() {
+      const avail = pfcOuter.clientWidth;
+      const scale = Math.min(1, avail / PFC_NATURAL_W);
+      pfcRoot.style.transform = `scale(${scale})`;
+      // Collapse the outer to the scaled height so no gap appears
+      const naturalH = 529 + 80; // fan height + padding
+      pfcOuter.style.height = (naturalH * scale) + 'px';
+    }
+    scalePfc();
+    window.addEventListener('resize', scalePfc);
+  }());
+})();
+
 (function () {
   // Scrollspy for sticky side nav
   const links = Array.from(document.querySelectorAll('#sideNav a'));
@@ -1054,6 +1431,16 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 })();
 </script>
 
+<script>
+(function(){
+  const item = document.querySelector(".nav-item--work");
+  const btn  = item && item.querySelector(".nav-btn-work");
+  if (!btn) return;
+  btn.addEventListener("click", function(e){ e.stopPropagation(); item.classList.toggle("is-open"); btn.setAttribute("aria-expanded", item.classList.contains("is-open")); });
+  document.addEventListener("click", function(){ item.classList.remove("is-open"); btn.setAttribute("aria-expanded","false"); });
+  document.addEventListener("keydown", function(e){ if(e.key==="Escape"){ item.classList.remove("is-open"); btn.setAttribute("aria-expanded","false"); }});
+})();
+</script>
 </div><!-- end .page-outer -->
 </body>
 </html>

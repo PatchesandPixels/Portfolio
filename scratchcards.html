@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-P9JER5X15D"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-P9JER5X15D');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scratchcard Designs — Andy Nguyen</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Inter:wght@400;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="scratchcards.css">
+</head>
+<body class="sc-body">
+
+  <!-- BACK NAV -->
+  <div class="sc-topbar">
+    <a href="playground.html" class="sc-back-link">← Playground</a>
+    <div class="sc-info">
+      <span class="sc-info-title">Scratchcard Art Direction</span>
+      <span class="sc-info-count">62 designs</span>
+    </div>
+    <div class="sc-hint">Drag to explore &nbsp;·&nbsp; Click to expand</div>
+  </div>
+
+  <!-- LOADING SCREEN -->
+  <div class="sc-loader" id="scLoader">
+    <div class="sc-loader-inner">
+      <p class="sc-loader-kicker">LOTTERY GAMING &nbsp;·&nbsp; ART DIRECTION</p>
+      <h1 class="sc-loader-title">Scratchcard<br>Collection</h1>
+      <div class="sc-loader-progress-wrap">
+        <div class="sc-loader-bar-track">
+          <div class="sc-loader-bar" id="scLoaderBar"></div>
+        </div>
+        <p class="sc-loader-count" id="scLoaderCount">Loading 0 / 62</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- CANVAS -->
+  <div class="sc-canvas" id="scCanvas"></div>
+
+  <!-- EXPANDED OVERLAY -->
+  <div class="sc-expanded" id="scExpanded">
+    <div class="sc-expanded-backdrop" id="scBackdrop"></div>
+    <div class="sc-expanded-card">
+      <button class="sc-close" id="scClose" aria-label="Close">×</button>
+      <img class="sc-expanded-img" id="scExpandedImg" src="" alt="">
+    </div>
+  </div>
+
+  <script src="scratchcards.js"></script>
+</body>
+</html>

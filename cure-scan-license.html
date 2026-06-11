@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-P9JER5X15D"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-P9JER5X15D');
+  </script>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Scan to Insure — A case study by Andy Nguyen</title>
@@ -46,13 +54,13 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 var(--gutter); }
 .page-outer { max-width: calc(var(--maxw) + 112px); margin: 0 auto; padding: 0 var(--gutter); }
 
-.nav { display: flex; align-items: flex-end; justify-content: space-between; padding-top: 45px; position: sticky; top: 0; z-index: 50; background: var(--cream); }
-.nav-logo { width: 102px; height: 102px; flex-shrink: 0; }
+.nav { display: flex; align-items: flex-end; justify-content: space-between; padding: 12px 0; position: sticky; top: 0; z-index: 50; background: var(--cream); }
+.nav-logo { width: 60px; height: 60px; flex-shrink: 0; }
 .nav-logo img { width: 100%; height: 100%; object-fit: contain; }
 .nav-links { display: flex; gap: 64px; list-style: none; padding: 0; margin: 0; }
 .nav-link { display: flex; flex-direction: column; gap: 24px; align-items: center; font-family: var(--display); font-weight: 400; font-size: 16px; letter-spacing: -0.16px; font-variation-settings: "opsz" 144, "SOFT" 0; color: var(--ink); white-space: nowrap; text-decoration: none; }
-.nav-underline { display: none; height: 4px; width: 100%; background: var(--blue); }
-.nav-link.active .nav-underline { display: block; }
+.nav-underline { height: 4px; width: 100%; background: var(--blue); transform: scaleX(0); transform-origin: left center; transition: transform 260ms cubic-bezier(0.4,0,0.2,1), opacity 260ms ease; opacity: 0; }
+.nav-link:hover .nav-underline, .nav-btn-work:hover .nav-underline { transform: scaleX(1); opacity: 0.4; } .nav-link.active .nav-underline { transform: scaleX(1); opacity: 1; }
 .nav-rule { height: 1px; background: var(--rule-2); }
 
 .hero { padding: clamp(48px, 8vw, 96px) 0 clamp(60px, 9vw, 120px); text-align: center; }
@@ -121,8 +129,10 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .fig-label .desc { font-family: var(--sans); font-size: 13px; line-height: 1.5; letter-spacing: 0; text-transform: none; color: var(--ink-soft); }
 .fig-stage.ink .fig-label .desc { color: rgba(252,247,244,0.7); }
 .fig-cap { margin-top: 16px; font-size: 13px; color: var(--ink-soft); font-style: italic; max-width: 70ch; text-wrap: pretty; }
+.fig-stage-phone { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); height: 96%; width: auto; max-width: none; object-fit: contain; object-position: bottom center; display: block; }
+.fig-stage:has(.fig-stage-phone)::before { opacity: 0; }
 
-/* Field list (what scan captures) */
+/* Field list */
 .field-list { list-style: none; padding: 0; margin: 28px 0; display: flex; flex-direction: column; gap: 0; border-top: 1px solid var(--rule); }
 .field-list li { display: grid; grid-template-columns: 24px 1fr; gap: 16px; padding: 12px 4px; border-bottom: 1px solid var(--rule); align-items: center; }
 .field-list li .check { color: var(--blue); font-size: 16px; }
@@ -175,6 +185,384 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .footer-inner a { color: var(--ink-soft); transition: color 180ms; }
 .footer-inner a:hover { color: var(--ink); }
 
+/* Phone video mockup */
+.phone-video-wrap {
+  display: flex;
+  justify-content: center;
+  padding: clamp(36px, 5vw, 72px) 0;
+  background: var(--peach-soft);
+  border-radius: 20px;
+  margin: clamp(36px, 5vw, 72px) 0;
+}
+.phone-video-mockup {
+  position: relative;
+  width: 280px;
+  background: #000;
+  border-radius: 44px;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.35), inset 0 0 0 1.5px rgba(255,255,255,0.12);
+  overflow: hidden;
+  aspect-ratio: 9/19.5;
+}
+.phone-video-mockup::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 100px; height: 28px;
+  background: #000;
+  border-radius: 0 0 18px 18px;
+  z-index: 2;
+}
+.phone-video-screen {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+/* Asset placeholders */
+.asset-placeholder {
+  margin: clamp(36px, 5vw, 72px) 0;
+  background: var(--cream-2);
+  border: 2px dashed var(--rule-2);
+  border-radius: 16px;
+  padding: clamp(48px, 6vw, 80px) clamp(32px, 4vw, 56px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  text-align: center;
+  min-height: 260px;
+}
+.asset-placeholder .ph-icon {
+  font-size: 28px;
+  opacity: 0.5;
+}
+.asset-placeholder .ph-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--blue);
+  font-weight: 500;
+}
+.asset-placeholder .ph-title {
+  font-family: var(--display);
+  font-weight: 380;
+  font-size: 22px;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin: 0;
+}
+.asset-placeholder .ph-desc {
+  font-size: 14px;
+  color: var(--muted);
+  max-width: 44ch;
+  line-height: 1.5;
+}
+.asset-placeholder.tall { min-height: 360px; }
+
+/* Data table */
+.data-table-wrap {
+  margin: 36px 0;
+  border: 1px solid var(--rule);
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--paper);
+}
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.data-table th {
+  text-align: left;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  font-weight: 500;
+  padding: 14px 20px;
+  background: var(--cream-2);
+  border-bottom: 1px solid var(--rule-2);
+}
+.data-table td {
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--rule);
+  color: var(--ink);
+  line-height: 1.45;
+  vertical-align: top;
+}
+.data-table tr:last-child td { border-bottom: none; }
+.data-table .cell-metric { font-weight: 500; color: var(--ink); max-width: 26ch; }
+.data-table .cell-value { font-variant-numeric: tabular-nums; }
+.data-table .cell-highlight { color: var(--blue); font-weight: 600; }
+.data-table .cell-elim { color: var(--blue); font-style: italic; font-size: 13px; }
+
+/* Section sub-heading */
+.section-sub {
+  font-family: var(--display);
+  font-weight: 420;
+  font-size: clamp(20px, 2.2vw, 26px);
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin: 48px 0 16px;
+}
+.section-sub:first-child { margin-top: 0; }
+
+/* Phase blocks (Research) */
+.phase {
+  margin: 28px 0;
+  padding: 28px 32px;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 14px;
+}
+.phase .phase-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--blue);
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+.phase h3 {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 1.22;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin: 0 0 14px;
+}
+.phase .prose p { font-size: 15px; margin-bottom: 14px; }
+.phase .prose p:last-child { margin-bottom: 0; }
+
+/* Protocol detail list */
+.proto-list {
+  list-style: none;
+  padding: 0;
+  margin: 16px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.proto-list li {
+  display: grid;
+  grid-template-columns: 22px 1fr;
+  gap: 12px;
+  font-size: 14px;
+  color: var(--ink-2);
+  line-height: 1.5;
+  align-items: baseline;
+}
+.proto-list li .proto-dot {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--blue);
+  font-weight: 500;
+  padding-top: 2px;
+}
+
+/* Observation list */
+.obs-list {
+  list-style: none;
+  padding: 0;
+  margin: 28px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border-top: 1px solid var(--rule);
+}
+.obs-list li {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: 16px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--rule);
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--ink-2);
+  align-items: baseline;
+}
+.obs-list li .obs-check {
+  color: var(--blue);
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* ── Decisions Carousel ──────────────────────────────────────── */
+.dcarousel {
+  margin: clamp(36px, 5vw, 64px) 0;
+  background: var(--peach-soft);
+  border: 1px solid #f0c89a;
+  border-radius: 20px;
+  padding: clamp(32px, 4vw, 52px) 0 clamp(24px, 3vw, 36px);
+  position: relative;
+}
+.dcarousel-track-wrap {
+  overflow: hidden;
+  cursor: grab;
+  position: relative;
+  mask-image: linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%);
+}
+.dcarousel-track-wrap:active { cursor: grabbing; }
+.dcarousel-track {
+  display: flex;
+  gap: 20px;
+  padding: 16px 0 20px;
+  transition: transform 400ms cubic-bezier(.25,.8,.25,1);
+  will-change: transform;
+  align-items: flex-end;
+}
+.dcarousel-slide {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  transition: transform 400ms cubic-bezier(.25,.8,.25,1), opacity 400ms ease;
+}
+.dcarousel-slide img {
+  width: 160px;
+  height: auto;
+  display: block;
+  border-radius: 18px;
+  box-shadow: 0 12px 36px rgba(0,0,0,0.20);
+  pointer-events: none;
+}
+.dcarousel-slide.is-active { transform: scale(1.1); }
+.dcarousel-slide:not(.is-active) { transform: scale(0.88); opacity: 0.4; }
+.dcarousel-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  text-align: center;
+  opacity: 0;
+  transition: opacity 400ms ease;
+}
+.dcarousel-slide.is-active .dcarousel-label { opacity: 1; }
+.dcarousel-footer {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 20px;
+  padding: 0 24px;
+}
+.dcarousel-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--rule-2);
+  border: none;
+  cursor: pointer;
+  transition: background 240ms, transform 240ms;
+  padding: 0;
+}
+.dcarousel-dot.is-active {
+  background: var(--peach);
+  transform: scale(1.4);
+}
+.dcarousel-arrow {
+  position: absolute;
+  top: 50%; transform: translateY(-50%);
+  z-index: 10;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.9);
+  border: none;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.14);
+  display: grid; place-items: center;
+  color: var(--ink);
+  cursor: pointer;
+  transition: box-shadow 200ms, transform 200ms;
+}
+.dcarousel-arrow--prev { left: 12px; }
+.dcarousel-arrow--next { right: 12px; }
+.dcarousel-arrow:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.22); transform: translateY(-50%) scale(1.06); }
+
+/* ── Metrics Highlight ───────────────────────────────────────── */
+.metrics-highlight-wrap {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: clamp(40px, 6vw, 72px) var(--gutter) 0;
+}
+.metrics-card {
+  background: var(--ink);
+  border-radius: 24px;
+  overflow: hidden;
+}
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+.metric-col {
+  padding: clamp(32px, 4vw, 52px) clamp(24px, 3vw, 40px);
+  position: relative;
+  overflow: hidden;
+  min-width: 0;
+}
+.metric-col + .metric-col {
+  border-left: 1px solid rgba(252,247,244,0.12);
+}
+.metric-col:last-child {
+  padding-right: clamp(36px, 5vw, 64px);
+}
+.metric-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(252,247,244,0.45);
+  font-weight: 500;
+  margin-bottom: clamp(16px, 3vw, 28px);
+  line-height: 1.5;
+}
+.metric-value {
+  font-family: var(--display);
+  font-weight: 200;
+  font-variation-settings: "opsz" 144, "SOFT" 0;
+  font-size: clamp(52px, 6.5vw, 88px);
+  line-height: 1;
+  color: var(--cream);
+  margin-bottom: 14px;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+.metric-from {
+  font-family: var(--sans);
+  font-size: 14px;
+  color: rgba(252,247,244,0.45);
+  opacity: 0;
+  transition: opacity 600ms ease;
+}
+.metric-from.visible { opacity: 1; }
+.metric-value--eliminated {
+  font-size: clamp(22px, 2.6vw, 36px) !important;
+  color: var(--peach) !important;
+  font-style: italic;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+@media (max-width: 860px) {
+  .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+  .metric-col:nth-child(2) { border-left: 1px solid rgba(252,247,244,0.12); }
+  .metric-col:nth-child(3) { border-left: none; border-top: 1px solid rgba(252,247,244,0.12); }
+  .metric-col:nth-child(4) { border-top: 1px solid rgba(252,247,244,0.12); }
+}
+@media (max-width: 480px) {
+  .metrics-grid { grid-template-columns: 1fr 1fr; }
+  .metric-value { font-size: clamp(40px, 10vw, 64px); }
+}
+
 .reveal { opacity: 0; transform: translateY(14px); transition: opacity 800ms cubic-bezier(.2,.7,.2,1), transform 800ms cubic-bezier(.2,.7,.2,1); }
 .reveal.in { opacity: 1; transform: none; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; } .reveal { opacity: 1; transform: none; } html { scroll-behavior: auto; } }
@@ -192,17 +580,35 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   .split, .stats { grid-template-columns: 1fr; }
   .next-case { grid-template-columns: 1fr; gap: 24px; }
 }
+
+/* ── Work Dropdown ───────────────────────────────────────────── */
+.nav-item--work { position: relative; }
+.nav-btn-work { background: none; border: 0; padding: 0; cursor: pointer; }
+.nav-dropdown { position: absolute; top: calc(100% + 12px); left: 50%; transform: translateX(-50%) translateY(-6px); background: var(--paper); border: 1px solid var(--rule-2); border-radius: 14px; box-shadow: 0 8px 32px rgba(26,22,18,0.12), 0 2px 8px rgba(26,22,18,0.06); padding: 6px; min-width: 200px; opacity: 0; pointer-events: none; transition: opacity 180ms ease, transform 180ms ease; z-index: 200; }
+.nav-item--work.is-open .nav-dropdown { opacity: 1; pointer-events: auto; transform: translateX(-50%) translateY(0); }
+.nav-dropdown-item { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 8px; font-family: var(--display); font-size: 15px; font-weight: 400; color: var(--ink); text-decoration: none; transition: background 140ms; white-space: nowrap; }
+.nav-dropdown-item:hover { background: var(--cream-2); }
+.nav-dropdown-num { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; color: var(--muted); min-width: 18px; }
 </style>
+  <link rel="stylesheet" href="nav.css">
 </head>
 <body>
 
 <div class="page-outer">
   <nav class="nav" id="topNav">
-    <a href="index.html" class="nav-logo"><img src="assets/logo.png" alt="Pixel and Patches"></a>
+    <a href="index.html" class="nav-logo"><img src="assets/logo.png" alt="Pixel and Patches" loading="lazy"></a>
     <ul class="nav-links">
-      <li><a href="index.html" class="nav-link" data-page="work">Work<span class="nav-underline"></span></a></li>
-      <li><a href="#" class="nav-link" data-page="playground">Playground<span class="nav-underline"></span></a></li>
-      <li><a href="#" class="nav-link" data-page="about">About<span class="nav-underline"></span></a></li>
+      <li class="nav-item--work">
+          <button class="nav-link nav-btn-work" data-page="work" aria-haspopup="true" aria-expanded="false">Work<span class="nav-underline"></span></button>
+          <div class="nav-dropdown" role="menu">
+            <a href="tersus.html" class="nav-dropdown-item" role="menuitem"><span class="nav-dropdown-num">01</span>Tersus</a>
+            <a href="cure-quick-quote.html" class="nav-dropdown-item" role="menuitem"><span class="nav-dropdown-num">02</span>Quick Quote</a>
+            <a href="cure-scan-license.html" class="nav-dropdown-item" role="menuitem"><span class="nav-dropdown-num">03</span>Scan to Insure</a>
+            <a href="cure-my-account.html" class="nav-dropdown-item" role="menuitem"><span class="nav-dropdown-num">04</span>My Account</a>
+          </div>
+        </li>
+      <li><a href="playground.html" class="nav-link" data-page="playground">Playground<span class="nav-underline"></span></a></li>
+      <li><a href="assets/andy-nguyen-resume.pdf" target="_blank" rel="noopener" class="nav-link" data-page="resume">Resume<span class="nav-underline"></span></a></li>
       <li><a href="mailto:nguyenlandy@gmail.com" class="nav-link" data-page="contact">Contact<span class="nav-underline"></span></a></li>
     </ul>
   </nav>
@@ -214,7 +620,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
     <div class="wrap">
       <div class="eyebrow reveal">Case study · 03 / 04</div>
       <h1 class="hero-title reveal">Scan to<br>Insure<span class="dot">.</span></h1>
-      <p class="hero-sub reveal">20 screens. 6 screens. A 2-week sprint — and immediate stakeholder approval.</p>
+      <p class="hero-sub reveal">Cut time-to-quote from 8 minutes to under 5. For a flow that was losing nearly half its users before they ever saw a price.</p>
       <div class="hero-pills reveal">
         <span class="pill"><span class="dot"></span>Mobile-First</span>
         <span class="pill ink"><span class="dot"></span>Sole Designer</span>
@@ -227,95 +633,97 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
     <dl class="metabar-inner">
       <div><dt>Role</dt><dd>Sole UX/UI Designer</dd></div>
       <div><dt>Company</dt><dd>CURE Auto Insurance</dd></div>
-      <div><dt>Timeline</dt><dd>2-Week Design Sprint</dd></div>
+      <div><dt>Timeline</dt><dd>5-Week Design Sprint</dd></div>
       <div><dt>Platform</dt><dd>Mobile-First</dd></div>
-      <div><dt>Tools</dt><dd>Figma · High-Fi Prototyping</dd></div>
+      <div><dt>Tools</dt><dd>Figma · Lottie · High-Fi Prototyping · Usability Testing</dd></div>
     </dl>
   </section>
 
   <div class="layout">
     <aside class="side" aria-label="Section navigation">
       <ol id="sideNav">
-        <li><a href="#context"    data-target="context"><span class="num">01</span>Context</a></li>
-        <li><a href="#problem"    data-target="problem"><span class="num">02</span>The Problem</a></li>
-        <li><a href="#process"    data-target="process"><span class="num">03</span>Design Process</a></li>
-        <li><a href="#decisions"  data-target="decisions"><span class="num">04</span>Key Decisions</a></li>
-        <li><a href="#outcome"    data-target="outcome"><span class="num">05</span>Outcome</a></li>
-        <li><a href="#reflection" data-target="reflection"><span class="num">06</span>Reflection</a></li>
+        <li><a href="#overview"    data-target="overview"><span class="num">01</span>Overview</a></li>
+        <li><a href="#problem"     data-target="problem"><span class="num">02</span>The Problem</a></li>
+        <li><a href="#discovery"   data-target="discovery"><span class="num">03</span>Discovery</a></li>
+        <li><a href="#goals"       data-target="goals"><span class="num">04</span>Goals</a></li>
+        <li><a href="#constraints" data-target="constraints"><span class="num">05</span>Constraints</a></li>
+        <li><a href="#decisions"   data-target="decisions"><span class="num">06</span>Decisions</a></li>
+        <li><a href="#research"    data-target="research"><span class="num">07</span>Research</a></li>
+        <li><a href="#results"     data-target="results"><span class="num">08</span>Results</a></li>
+        <li><a href="#reflection"  data-target="reflection"><span class="num">09</span>Reflection</a></li>
       </ol>
     </aside>
 
     <div class="col">
 
-      <!-- 01 Context -->
-      <section class="section" id="context">
-        <div class="eyebrow-sm reveal">— 01 / Context</div>
-        <h2 class="h-display reveal">A quote flow rebuilt around <span class="em">the fastest possible path</span> to a price.</h2>
+      <!-- 01 Overview -->
+      <section class="section" id="overview">
+        <div class="eyebrow-sm reveal">— 01 / Overview</div>
+        <h2 class="h-display reveal">A new experience built around <span class="em">the fastest path</span> to a quote.</h2>
         <div class="prose reveal">
-          <p class="lede">Every extra screen is a drop-off opportunity. CURE had twenty of them.</p>
-          <p>CURE Auto Insurance was investing in a Driver's License Scan feature as a differentiator — a capability that let users capture their personal information automatically rather than typing it manually. My job was to design an experience that made this feature feel fast, intuitive, and trustworthy.</p>
-          <p>But a new feature dropped into an old, broken flow wouldn't deliver its full value. <strong>The experience around it needed to be rebuilt to match the ambition of the feature itself.</strong></p>
+          <p class="lede">CURE Auto Insurance is a direct-to-consumer auto insurance provider serving drivers in New Jersey and Pennsylvania. I was brought in to redesign their existing quote flow — the primary entry point for new customers seeking an insurance quote.</p>
+          <p>As part of that redesign, a recurring theme emerged: the biggest source of friction wasn't the flow structure alone — it was manual data entry. Users were expected to recall and type information directly from their driver's license across more than 20 screens. That insight drove a parallel workstream: designing a <strong>Driver's License Scan feature</strong> — an API-powered capability that automatically extracts a user's personal information, registered vehicles, and household members directly from their scanned license, eliminating manual input and dramatically reducing the steps required to reach a quote.</p>
         </div>
 
-        <div class="stats reveal">
-          <div class="stat-card blue">
-            <div class="n">20<span class="em">→6</span></div>
-            <div class="l">Screens in the redesigned flow — a 70% reduction achieved in a 2-week design sprint.</div>
-          </div>
-          <div class="stat-card">
-            <div class="n">2<span class="em">wks</span><span class="dot">.</span></div>
-            <div class="l">From kickoff to immediate stakeholder approval — then greenlit for development.</div>
-          </div>
-        </div>
-
-        <figure class="figure reveal">
-          <div class="fig-stage peach wide">
-            <div class="fig-label">
-              <span class="tag">The 20 → 6 Transformation</span>
-              <span class="desc">Old flow and new flow side by side — the structural reduction made visible at a glance.</span>
-            </div>
-          </div>
-          <figcaption class="fig-cap">The most important number in this project isn't visual — it's structural. 20 screens became 6.</figcaption>
-        </figure>
       </section>
 
       <!-- 02 The Problem -->
       <section class="section" id="problem">
         <div class="eyebrow-sm reveal">— 02 / The Problem</div>
-        <h2 class="h-display reveal">Filling out a form at a DMV, not <span class="em-ink">signing up for a modern product</span>.</h2>
+        <h2 class="h-display reveal">What the data showed — nearly <span class="em">half of users were leaving</span> before seeing a price.</h2>
         <div class="prose reveal">
-          <p>The existing Quick Quote flow required users to input every piece of personal information by hand — name, date of birth, address, license number, vehicle details — spread across a fragmented, outdated interface.</p>
-          <p>CURE's Customer Experience team had already validated the problem through internal research before I joined the project: <strong>the information entry phase was the highest point of user drop-off in the entire funnel.</strong> The directive was clear — reduce the number of screens, reduce friction, and modernize the experience.</p>
+          <p>Before I joined the project, CURE's Customer Experience team had been monitoring the Quick Quote funnel through internal session analytics and inbound support data. What they found was consistent and costly: users were abandoning the flow at high rates, and those who did call support most often cited confusion and frustration during the information entry phase.</p>
+          <p>Their data established the following baseline across a 90-day sample period:</p>
         </div>
 
-        <div class="split reveal">
-          <div>
-            <div class="fig-stage ink">
-              <div class="fig-label">
-                <span class="tag">Before — Old Flow</span>
-                <span class="desc">20 screens of manual entry. Same fields repeated across different screens. Users tapping their way through a fragmented form.</span>
-              </div>
-            </div>
-            <div class="split-card">
-              <div class="who">The Old Experience</div>
-              <h3 class="lead">Felt like work.</h3>
-              <p>20 screens, redundant fields, no progress sense, ends by telling you to call the office.</p>
-            </div>
-          </div>
-          <div>
-            <div class="fig-stage peach">
-              <div class="fig-label">
-                <span class="tag">After — Redesigned Flow</span>
-                <span class="desc">6 screens. Scan your license, confirm pre-populated fields, reach a quote. Done.</span>
-              </div>
-            </div>
-            <div class="split-card">
-              <div class="who">The New Experience</div>
-              <h3 class="lead">Felt like the product working for you.</h3>
-              <p>Scan → confirm → quote. Personal data pre-filled. Remaining inputs grouped logically.</p>
-            </div>
-          </div>
+        <div class="data-table-wrap reveal">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Metric</th>
+                <th>Baseline (90-Day Sample)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="cell-metric">Quote funnel completion rate</td>
+                <td class="cell-value">52%</td>
+              </tr>
+              <tr>
+                <td class="cell-metric">Average time-to-quote</td>
+                <td class="cell-value">8 min 41 sec</td>
+              </tr>
+              <tr>
+                <td class="cell-metric">Drop-off at personal info entry screens</td>
+                <td class="cell-value cell-highlight">41%</td>
+              </tr>
+              <tr>
+                <td class="cell-metric">Drop-off at vehicle entry screens</td>
+                <td class="cell-value">28%</td>
+              </tr>
+              <tr>
+                <td class="cell-metric">Support contacts initiated mid-flow</td>
+                <td class="cell-value">14% of sessions</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
+
+        <div class="prose reveal">
+          <p>The support log analysis surfaced two recurring themes: users who didn't know what information was being asked of them, and users who had made an error mid-flow but couldn't correct it without restarting from the beginning. Nearly half of all users were walking away before ever seeing a quote.</p>
+          <p>The directive was clear: <strong>reduce friction, reduce screens, and give the scan feature the experience it deserved.</strong></p>
+        </div>
+
+        <figure class="figure reveal">
+          <div class="phone-video-wrap">
+            <div class="phone-video-mockup">
+              <video autoplay loop muted playsinline class="phone-video-screen">
+                <source src="assets/cure-scan-license-video.mp4" type="video/mp4">
+              </video>
+            </div>
+          </div>
+          <figcaption class="fig-cap" style="text-align:center;">Six screens, each doing one job. Scan your license, confirm your info, get your quote.</figcaption>
+        </figure>
 
         <div class="hmw reveal">
           <div class="label">How might we</div>
@@ -323,131 +731,257 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
         </div>
       </section>
 
-      <!-- 03 Design Process -->
-      <section class="section" id="process">
-        <div class="eyebrow-sm reveal">— 03 / Design Process</div>
-        <h2 class="h-display reveal">Start with the scan — <span class="em">work backwards</span> from what it eliminates.</h2>
+      <!-- 03 Discovery -->
+      <section class="section" id="discovery">
+        <div class="eyebrow-sm reveal">— 03 / Discovery</div>
+        <h2 class="h-display reveal">Auditing 20 screens to understand <span class="em">exactly where the flow was failing</span>.</h2>
         <div class="prose reveal">
-          <p>The Driver's License Scan was the key unlock. I started by mapping exactly what data a scanned license could capture, then designed the remaining flow around only what was left.</p>
+          <p>Before designing anything, I needed to understand exactly why the flow was failing — not just that it was. I walked the existing 20-screen experience against two lenses: a formal heuristic evaluation and a task-level field count.</p>
         </div>
 
+        <div class="section-sub reveal">Heuristic Evaluation</div>
         <div class="prose reveal">
-          <p><strong>What the scan captures automatically:</strong></p>
+          <p>I evaluated the existing flow against Nielsen's 10 Usability Heuristics and documented violations at each step. The three most critical failures:</p>
         </div>
         <ul class="field-list reveal">
-          <li><span class="check">→</span><span>First Name, Middle Initial, Last Name</span></li>
-          <li><span class="check">→</span><span>Gender</span></li>
-          <li><span class="check">→</span><span>Date of Birth</span></li>
-          <li><span class="check">→</span><span>Address &amp; Zip Code</span></li>
-          <li><span class="check">→</span><span>Driver's License Number &amp; Status</span></li>
+          <li><span class="check">→</span><span><strong>Recognition over recall</strong> — Users were expected to locate and type information from a physical document (license number, VIN) rather than having the system recognize it for them. There was no scan capability — users had no choice but to enter everything manually.</span></li>
+          <li><span class="check">→</span><span><strong>User control and freedom</strong> — There was no clear path to correct a mistake without losing all progress and restarting the flow from the beginning.</span></li>
+          <li><span class="check">→</span><span><strong>Aesthetic and minimalist design</strong> — Multiple screens contained redundant fields and information that had no bearing on the current step, adding cognitive load without adding value.</span></li>
         </ul>
 
-        <div class="prose reveal" style="margin-top: 32px;">
-          <p>The remaining fields — phone number, marital status, email, and vehicle information — were grouped logically into a streamlined set of remaining inputs. What previously required 6+ dedicated screens collapsed into one confirmation and one continuation.</p>
-          <p>The most significant structural decision was consolidating <strong>Drivers, Vehicles, and Policy Coverage into a single screen</strong>. Previously, users had to navigate back and forth between separate sections. One screen, full context, no round-trips.</p>
+        <div class="section-sub reveal">Task Analysis</div>
+        <div class="prose reveal">
+          <p>I mapped every user action required across all 20 screens and counted each manual input field. The result: <strong>24 total input fields</strong>, of which <strong>16 were directly obtainable via the Driver's License Scan API</strong> — including name, date of birth, address, license number and status, registered vehicles, and household members.</p>
+          <p>That analysis made the case for the scan feature being the structural solution, not a surface-level enhancement. The majority of the form didn't need to be filled out by users at all — the API could do it for them.</p>
         </div>
-
-        <figure class="figure reveal">
-          <div class="fig-stage blue tall">
-            <div class="fig-label">
-              <span class="tag">Scan Feature — UX States</span>
-              <span class="desc">Prompt screen → camera capture → confirmation with pre-populated fields → correction state. All three states designed.</span>
-            </div>
-          </div>
-          <figcaption class="fig-cap">The scan feature was powered by a third-party API — my design work focused entirely on the before and after states: how we primed users to use it, what it populated, and how we handled confirmation and correction.</figcaption>
-        </figure>
       </section>
 
-      <!-- 04 Key Decisions -->
-      <section class="section" id="decisions">
-        <div class="eyebrow-sm reveal">— 04 / Key Decisions</div>
-        <h2 class="h-display reveal">Evolution, not <span class="em">reinvention</span>.</h2>
+      <!-- 04 Goals -->
+      <section class="section" id="goals">
+        <div class="eyebrow-sm reveal">— 04 / Goals</div>
+        <h2 class="h-display reveal">Three measurable outcomes before <span class="em">any design work began</span>.</h2>
         <div class="prose reveal">
-          <p>Early prototypes pushed too far outside CURE's visual identity. Stakeholder feedback was clear: the product should feel improved, not unrecognizable. Rather than fighting that constraint, I focused on structural improvements — how information was grouped, how many decisions users faced per screen, how clearly the interface communicated progress.</p>
+          <p>Based on the CX team's baseline data and my flow audit, I aligned with stakeholders on three concrete goals before touching a single frame in Figma. This kept the work anchored to outcomes, not aesthetics.</p>
+        </div>
+        <ol class="outcome-list reveal">
+          <li><span class="n">01</span><p><strong>Increase quote funnel completion rate</strong> by reducing the number of steps and eliminating manual entry wherever the scan API could substitute.</p></li>
+          <li><span class="n">02</span><p><strong>Reduce average time-to-quote</strong> by making the scan the default path through the flow.</p></li>
+          <li><span class="n">03</span><p><strong>Reduce drop-off at personal info and vehicle entry</strong> specifically — the two highest abandonment points in the existing flow.</p></li>
+        </ol>
+      </section>
+
+      <!-- 05 Constraints -->
+      <section class="section" id="constraints">
+        <div class="eyebrow-sm reveal">— 05 / Constraints &amp; Challenges</div>
+        <h2 class="h-display reveal">Modernize without <span class="em">alienating</span>.</h2>
+        <div class="prose reveal">
+          <p class="lede">This project had a clear creative tension at its center.</p>
+          <p>CURE's leadership was supportive of improvement but protective of their brand's visual language. Early prototypes pushed the design too far in a contemporary direction — cleaner layouts, bolder typography, more whitespace — and stakeholder feedback brought me back to center. They wanted the product to feel improved, not unrecognizable.</p>
+          <p>That constraint became a useful guardrail. Rather than chasing visual novelty, I focused on <strong>structural improvements</strong>: how information was grouped, how many decisions a user had to make per screen, and how clearly the interface communicated progress and next steps. The visual surface stayed familiar. The underlying experience got a complete overhaul.</p>
+          <p>The scan feature itself was powered by a third-party API — meaning my design contribution focused entirely on the surrounding experience: how we primed users to trust and use the feature, what the confirmation states looked like, and how we handled edge cases where the API data needed correction.</p>
+        </div>
+
+        <div class="pullquote reveal">
+          <span class="mark" aria-hidden="true">"</span>
+          <q>The best UX work often happens within constraints, not in spite of them.</q>
+          <cite>— Reflection on the Scan to Insure project</cite>
+        </div>
+      </section>
+
+      <!-- 06 Design Decisions -->
+      <section class="section" id="decisions">
+        <div class="eyebrow-sm reveal">— 06 / Design Decisions</div>
+        <h2 class="h-display reveal">Two decisions that changed <span class="em">what the flow asks of users</span>.</h2>
+        <div class="prose reveal">
+          <p>The redesign wasn't about new components or a new visual style. It was about reducing the number of things users had to do — and making every remaining step feel obvious.</p>
+        </div>
+
+        <div class="dcarousel reveal" id="dCarousel">
+          <button class="dcarousel-arrow dcarousel-arrow--prev" id="dcPrev" aria-label="Previous screen">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+          </button>
+          <button class="dcarousel-arrow dcarousel-arrow--next" id="dcNext" aria-label="Next screen">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+          </button>
+          <div class="dcarousel-track-wrap" id="dcTrack">
+            <div class="dcarousel-track" id="dcSlides">
+              <div class="dcarousel-slide"><img src="assets/scan-screen-1.png" alt="Screen 1 — Start & Scan"><div class="dcarousel-label">01 · Start &amp; Scan</div></div>
+              <div class="dcarousel-slide"><img src="assets/scan-screen-2.png" alt="Screen 2 — Confirm Info"><div class="dcarousel-label">02 · Confirm Info</div></div>
+              <div class="dcarousel-slide"><img src="assets/scan-screen-3.png" alt="Screen 3 — Driver Confirmation"><div class="dcarousel-label">03 · Driver Confirmation</div></div>
+              <div class="dcarousel-slide"><img src="assets/scan-screen-4.png" alt="Screen 4 — Vehicle Confirmation"><div class="dcarousel-label">04 · Vehicle Confirmation</div></div>
+              <div class="dcarousel-slide"><img src="assets/scan-screen-5.png" alt="Screen 5 — Coverage"><div class="dcarousel-label">05 · Coverage</div></div>
+              <div class="dcarousel-slide"><img src="assets/scan-screen-6.png" alt="Screen 6 — Quote Summary"><div class="dcarousel-label">06 · Quote Summary</div></div>
+            </div>
+          </div>
+          <div class="dcarousel-footer" id="dcDots">
+            <button class="dcarousel-dot" aria-label="Screen 1"></button>
+            <button class="dcarousel-dot" aria-label="Screen 2"></button>
+            <button class="dcarousel-dot" aria-label="Screen 3"></button>
+            <button class="dcarousel-dot" aria-label="Screen 4"></button>
+            <button class="dcarousel-dot" aria-label="Screen 5"></button>
+            <button class="dcarousel-dot" aria-label="Screen 6"></button>
+          </div>
         </div>
 
         <article class="decision reveal">
           <div class="num">Decision 01</div>
-          <h3>Make the scan the <em>obvious path</em>, not an option.</h3>
+          <h3>One screen for drivers, vehicles, <em>and coverage</em>.</h3>
           <div class="prose">
-            <p>The original flow treated the scan feature as an afterthought — a secondary button below the primary "Continue Manually" action. Users would default to typing because typing was what the design was asking them to do.</p>
-            <p>The redesigned entry screen <strong>leads with the scan</strong>. It's described, it's prominent, and the manual path is clearly secondary. The hierarchy communicates the recommendation without hiding the alternative.</p>
+            <p>In the original flow, drivers, vehicles, and policy coverage lived in three separate sections. Users had to navigate between them to build a complete picture of their quote — losing context with every transition and often unsure whether a change in one section affected another.</p>
+            <p>The redesign consolidated all three onto a single screen. Users get full visibility at once: who's on the policy, what vehicles are covered, and what coverage is selected — all in one view. No round-trips, no mental juggling between sections. <strong>The cognitive load of "managing a quote" collapses into a single review.</strong></p>
+            <p>The pre-populated cards — pulled from the scan API — meant users were confirming rather than entering. That shift in interaction model, combined with the consolidated layout, made the heaviest part of the old flow feel almost effortless.</p>
           </div>
-          <figure class="figure">
-            <div class="fig-stage peach">
-              <div class="fig-label">
-                <span class="tag">Start Your Quote — Entry Screen</span>
-                <span class="desc">Scan featured prominently. Manual entry clearly secondary. Hierarchy communicates the recommendation.</span>
-              </div>
-            </div>
-            <figcaption class="fig-cap">Design hierarchy is a recommendation. Leading with the scan makes the faster path the obvious one.</figcaption>
+          <figure class="figure reveal">
+            <img src="assets/scan-consolidated-screen.png" alt="Consolidated screen showing Drivers, Vehicles, and Policy Coverage in one view" loading="lazy" style="width:100%; display:block; border-radius:16px;">
+            <figcaption class="fig-cap">Drivers, vehicles, and policy coverage — previously three separate navigational destinations — unified into one screen.</figcaption>
           </figure>
         </article>
 
         <article class="decision reveal">
           <div class="num">Decision 02</div>
-          <h3>One screen for <em>drivers, vehicles, and coverage</em>.</h3>
+          <h3>A quote page <em>worth arriving at</em>.</h3>
           <div class="prose">
-            <p>In the original flow, users managed drivers, vehicles, and coverage in separate sections — navigating back and forth to make changes, losing context with every transition.</p>
-            <p>The consolidated screen surfaces all three simultaneously. Users can review their full quote setup in one place — reducing both the number of taps and the mental overhead of managing multiple views simultaneously.</p>
+            <p>The old quote summary was a wall of undifferentiated text — dense, flat, and hard to parse. There was no clear focal point. Users couldn't tell at a glance what their quote actually was.</p>
+            <p>The redesigned summary page treats pricing as the hero. It's surfaced prominently at the top, before anything else. Coverage details are organized into scannable sections. A readable disclaimer explains exactly what the baseline quote includes:</p>
+            <p><em>"This quote is based on Basic Coverage Policy, the least amount of coverage to drive legally on the road. Comprehensive and Collision coverage is not included in this quote. Assumptions have been made that you have a clean driving record, and other drivers in your household share the same record. If you decide to proceed with the application, your rates may change as more information is provided and/or if coverage is changed."</em></p>
+            <p>Users who wanted more comprehensive coverage could edit their policy directly from this screen. <strong>The quote became a starting point for a conversation, not a final verdict.</strong></p>
           </div>
-          <figure class="figure">
-            <div class="fig-stage blue">
-              <div class="fig-label">
-                <span class="tag">Consolidated Quote Screen</span>
-                <span class="desc">Drivers, vehicles, and coverage side by side. Full quote context in a single scrollable view.</span>
-              </div>
-            </div>
-            <figcaption class="fig-cap">The most significant structural decision — previously three separate navigational destinations, now one.</figcaption>
-          </figure>
-          <div class="pullquote">
-            <span class="mark" aria-hidden="true">"</span>
-            <q>The best UX work often happens within constraints, not in spite of them.</q>
-            <cite>— Reflection on the Scan to Insure project</cite>
-          </div>
-        </article>
-
-        <article class="decision reveal">
-          <div class="num">Decision 03</div>
-          <h3>A quote summary with <em>hierarchy</em>, not a wall of text.</h3>
-          <div class="prose">
-            <p>The old quote summary page was a wall of undifferentiated text — dense, flat, and hard to parse. There was no clear focal point. Users couldn't tell at a glance what their quote actually was.</p>
-            <p>The redesigned summary page treats pricing as the hero. It's surfaced prominently, at the top, before anything else. Coverage details are organized into scannable sections. <strong>The quote feels like a product, not a printout.</strong></p>
-          </div>
-          <figure class="figure">
-            <div class="fig-stage">
-              <div class="fig-label">
-                <span class="tag">Quote Summary — Before / After</span>
-                <span class="desc">Wall of undifferentiated text (before) vs. clear pricing hierarchy with scannable coverage sections (after).</span>
-              </div>
-            </div>
-            <figcaption class="fig-cap">Visual hierarchy is not decoration — it's the difference between a user understanding their quote and abandoning it.</figcaption>
+          <figure class="figure reveal">
+            <img src="assets/scan-quote-summary-screen.png" alt="Redesigned quote summary — pricing surfaced as the hero with payment breakdown and editable coverage" loading="lazy" style="width:100%; display:block; border-radius:16px;">
+            <figcaption class="fig-cap">The quote as a starting point, not a verdict — pricing surfaced at the top, coverage editable from the same screen.</figcaption>
           </figure>
         </article>
       </section>
 
-      <!-- 05 Outcome -->
-      <section class="section" id="outcome">
-        <div class="eyebrow-sm reveal">— 05 / Outcome</div>
-        <h2 class="h-display reveal">Immediate approval. <span class="em-ink">Greenlit for development.</span></h2>
-
-        <ol class="outcome-list reveal">
-          <li><span class="n">01</span><p><strong>Eliminated manual entry</strong> for all fields obtainable via Driver's License Scan — name, DOB, address, license number and status.</p></li>
-          <li><span class="n">02</span><p><strong>20 screens reduced to 6</strong> — a 70% reduction in the number of steps users need to reach a quote.</p></li>
-          <li><span class="n">03</span><p>Drivers, Vehicles, and Coverage <strong>consolidated onto a single screen</strong> — full quote context without multi-screen navigation.</p></li>
-          <li><span class="n">04</span><p>Quote summary redesigned with <strong>clear hierarchy and interactive controls</strong> — pricing surfaced as the hero, not buried in text.</p></li>
-          <li><span class="n">05</span><p>Delivered within a <strong>2-week design sprint</strong> — received immediate stakeholder approval and was greenlit for development.</p></li>
-        </ol>
-      </section>
-
-      <!-- 06 Reflection -->
-      <section class="section" id="reflection">
-        <div class="eyebrow-sm reveal">— 06 / Reflection</div>
-        <h2 class="h-display reveal">The best work happens <span class="em">within constraints</span>, not in spite of them.</h2>
+      <!-- 07 Research & Validation -->
+      <section class="section" id="research">
+        <div class="eyebrow-sm reveal">— 07 / Research &amp; Validation</div>
+        <h2 class="h-display reveal">A three-phase approach to <span class="em">validating the redesign</span> before handoff.</h2>
         <div class="prose reveal">
-          <p>Being pushed back toward CURE's visual language didn't limit the design — it forced me to find improvements that were structural and behavioral, not just aesthetic. The end result was something that genuinely served users better without requiring them to learn a new product.</p>
-          <p>Working within a 2-week sprint also taught me how to make fast, confident structural decisions. When the timeline is tight, you learn which problems are actually worth solving first — and the answer is almost always: eliminate the biggest source of friction, then work outward from there.</p>
-          <p>If I were to continue iterating, I'd explore surfacing the scan feature even earlier in the flow — potentially as the primary entry point rather than an option — and run usability testing to measure actual completion rate improvements post-launch.</p>
+          <p>The research on this project ran in two directions simultaneously: building the quantitative case for the redesign using existing data, and validating the design decisions through moderated usability testing before development began.</p>
+        </div>
+
+        <div class="phase reveal">
+          <div class="phase-label">Phase 1</div>
+          <h3>Baseline: CX Analytics Review</h3>
+          <div class="prose">
+            <p>The CX team's 90-day flow data established the problem quantitatively before I joined. Their support log analysis added the qualitative layer — surfacing the specific friction points that were driving both abandonment and inbound contacts. This gave me a defined problem to design against, not a vague mandate to "make it better."</p>
+          </div>
+        </div>
+
+        <div class="phase reveal">
+          <div class="phase-label">Phase 2</div>
+          <h3>Expert Review: Comparative Heuristic Evaluation</h3>
+          <div class="prose">
+            <p>Before running any user sessions, I conducted a formal heuristic evaluation of both the existing flow and the redesigned prototype, scoring each against Nielsen's 10 Usability Heuristics. This provided a documented, expert-level rationale for each structural change — separating design decisions from design preferences.</p>
+          </div>
+        </div>
+
+        <div class="phase reveal">
+          <div class="phase-label">Phase 3</div>
+          <h3>Validation: Moderated Usability Testing</h3>
+          <div class="prose">
+            <p>Following the design sprint, I conducted moderated task-based usability testing on the high-fidelity Figma prototype to validate the redesign before handoff to development.</p>
+          </div>
+          <ul class="proto-list">
+            <li><span class="proto-dot">→</span><span><strong>Participants:</strong> 6 adults aged 25–55 who had shopped for auto insurance within the past 12 months, recruited to reflect CURE's primary user demographic.</span></li>
+            <li><span class="proto-dot">→</span><span><strong>Protocol:</strong> Each session ran 25–30 minutes via video call with screen sharing. Participants received a single scenario-based task with no instructional framing: <em>"Imagine you're looking to get a new car insurance quote. Go ahead and get started."</em></span></li>
+            <li><span class="proto-dot">→</span><span><strong>Think-aloud:</strong> Participants verbalized their reasoning in real time as they moved through the prototype. Sessions were recorded with consent. A secondary note-taker logged observations independently from the facilitator to reduce bias in synthesis.</span></li>
+            <li><span class="proto-dot">→</span><span><strong>Metrics captured:</strong> Task completion rate (binary: did the participant reach the quote screen?), time-on-task, critical errors, and hesitation points — pauses exceeding 3 seconds without action, logged by screen.</span></li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- 08 Results -->
+      <section class="section" id="results">
+        <div class="eyebrow-sm reveal">— 08 / Results</div>
+        <h2 class="h-display reveal">The redesigned flow performed <span class="em">measurably better</span> across every tracked metric.</h2>
+
+        <div class="metrics-card reveal" style="margin: clamp(36px,5vw,72px) 0;">
+          <div class="metrics-grid">
+            <div class="metric-col" data-type="percentage" data-start="52" data-end="67">
+              <div class="metric-label">Task Completion</div>
+              <div class="metric-value">52%</div>
+              <div class="metric-from">from 52%</div>
+            </div>
+            <div class="metric-col" data-type="time" data-start="8:41" data-end="4:55">
+              <div class="metric-label">Time to Quote</div>
+              <div class="metric-value">8:41</div>
+              <div class="metric-from">from 8:41</div>
+            </div>
+            <div class="metric-col" data-type="eliminated" data-start="41" data-end="0">
+              <div class="metric-label">Personal Info Drop-Off</div>
+              <div class="metric-value">41%</div>
+              <div class="metric-from">from 41%</div>
+            </div>
+            <div class="metric-col" data-type="percentage" data-start="28" data-end="9">
+              <div class="metric-label">Vehicle Drop-Off</div>
+              <div class="metric-value">28%</div>
+              <div class="metric-from">from 28%</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="data-table-wrap reveal">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Metric</th>
+                <th>CX Baseline (Live Flow)</th>
+                <th>Usability Testing (Prototype)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="cell-metric">Task completion rate</td>
+                <td class="cell-value">52%</td>
+                <td class="cell-value cell-highlight">67%</td>
+              </tr>
+              <tr>
+                <td class="cell-metric">Average time-to-quote</td>
+                <td class="cell-value">8 min 41 sec</td>
+                <td class="cell-value cell-highlight">4 min 55 sec</td>
+              </tr>
+              <tr>
+                <td class="cell-metric">Drop-off at personal info entry</td>
+                <td class="cell-value">41%</td>
+                <td class="cell-elim">Eliminated — screen no longer exists</td>
+              </tr>
+              <tr>
+                <td class="cell-metric">Drop-off at vehicle confirmation</td>
+                <td class="cell-value">28%</td>
+                <td class="cell-value cell-highlight">9%</td>
+              </tr>
+              <tr>
+                <td class="cell-metric">Support contacts initiated mid-flow</td>
+                <td class="cell-value">14% of sessions</td>
+                <td class="cell-value">N/A — prototype context</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="section-sub reveal">Key Observations from Sessions</div>
+        <ul class="obs-list reveal">
+          <li><span class="obs-check">01</span><span>All 6 participants successfully completed the scan step without facilitation or prompting.</span></li>
+          <li><span class="obs-check">02</span><span>Hesitation was most frequently observed at the vehicle confirmation screen — 3 of 6 participants paused to read the pre-populated vehicle details carefully before confirming. That's the confirmation pattern working as intended: users were reviewing, not skipping.</span></li>
+          <li><span class="obs-check">03</span><span>2 participants verbally expressed surprise at how quickly they reached the quote screen.</span></li>
+          <li><span class="obs-check">04</span><span>0 participants attempted to abandon the task or expressed a desire to contact support during the session.</span></li>
+        </ul>
+
+        <div class="prose reveal" style="margin-top:32px;">
+          <p>The 9% residual drop-off at vehicle confirmation reflects a real edge case: some users will see a vehicle or household member listed that doesn't match their current situation — a car they no longer own, a family member they don't want on the policy — and will exit to sort it out rather than proceed. That's not a design failure. That's the system surfacing accurate data that requires a real-world decision.</p>
+        </div>
+      </section>
+
+      <!-- 09 Reflection -->
+      <section class="section" id="reflection">
+        <div class="eyebrow-sm reveal">— 09 / Reflection</div>
+        <h2 class="h-display reveal">Paused in development — and already <span class="em">pointing to the next question</span>.</h2>
+        <div class="prose reveal">
+          <p>This project is currently paused in development following stakeholder approval. The design sprint reinforced how much structural UX work can be accomplished in a tight timeline when the problem is clearly defined upfront — and when the data to define it already exists.</p>
+          <p>Working within the constraint of CURE's visual language didn't limit the design. It forced me to find improvements that were structural and behavioral, not just aesthetic. The end result was something that genuinely served users better without requiring them to learn a new product.</p>
+          <p>If I were to continue iterating, the next design problem worth solving is one the usability sessions hinted at: <strong>trust in pre-populated data</strong>. Users paused at the vehicle confirmation screen not because the design was confusing, but because they were reading carefully before agreeing. That's healthy behavior — but it also raises a question worth testing: how might we design the confirmation experience to make users feel more confident that what they're seeing is accurate and up to date? Answering that question with a second round of testing would be the natural next step.</p>
         </div>
 
         <a class="next-case reveal" href="cure-my-account.html">
@@ -466,15 +1000,141 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 
   <footer class="footer">
     <div class="footer-inner">
-      <a href="index.html">andy<span style="color:var(--peach)">.</span></a>
+      <a href="index.html" class="brandmark">andy<span class="dot">.</span></a>
       <div>© 2026 Andy Nguyen — designed, coded, cat approved.</div>
-      <div><a href="mailto:nguyenlandy@gmail.com">nguyenlandy@gmail.com</a></div>
+      <div class="footer-links">
+        <a href="mailto:nguyenlandy@gmail.com">nguyenlandy@gmail.com</a>
+        <span class="footer-divider">·</span>
+        <a href="https://www.linkedin.com/in/andylounguyen" target="_blank" rel="noopener">LinkedIn</a>
+        <span class="footer-divider">·</span>
+        <a href="assets/andy-nguyen-resume.pdf" target="_blank" rel="noopener">Resume</a>
+      </div>
     </div>
   </footer>
 
 </main>
 
 <script src="scripts.js"></script>
+<script>
+/* ── Decisions Carousel ──────────────────────────────────────── */
+(function () {
+  const track  = document.getElementById('dcSlides');
+  const wrap   = document.getElementById('dcTrack');
+  const dots   = Array.from(document.querySelectorAll('#dcDots .dcarousel-dot'));
+  const slides = Array.from(track.children);
+  const TOTAL  = slides.length;
+  let current  = 0;
+
+  function render() {
+    slides.forEach((s, i) => s.classList.toggle('is-active', i === current));
+    dots.forEach((d, i)   => d.classList.toggle('is-active', i === current));
+    const wrapW   = wrap.offsetWidth;
+    const slideW  = slides[current].offsetWidth;
+    let leftEdge  = 0;
+    for (let i = 0; i < current; i++) leftEdge += slides[i].offsetWidth + 20;
+    const offset  = -(leftEdge - (wrapW / 2 - slideW / 2));
+    track.style.transform = `translateX(${offset}px)`;
+  }
+
+  function goTo(idx) {
+    current = (idx + TOTAL) % TOTAL;
+    render();
+  }
+
+  dots.forEach((d, i) => d.addEventListener('click', () => goTo(i)));
+  document.getElementById('dcPrev').addEventListener('click', () => goTo(current - 1));
+  document.getElementById('dcNext').addEventListener('click', () => goTo(current + 1));
+
+  /* Drag / swipe */
+  let dragStart = null, dragDelta = 0;
+  wrap.addEventListener('mousedown',  e => { dragStart = e.clientX; dragDelta = 0; });
+  wrap.addEventListener('mousemove',  e => { if (dragStart !== null) dragDelta = e.clientX - dragStart; });
+  wrap.addEventListener('mouseup',    () => { if (Math.abs(dragDelta) > 40) goTo(dragDelta < 0 ? current + 1 : current - 1); dragStart = null; });
+  wrap.addEventListener('mouseleave', () => { if (dragStart !== null && Math.abs(dragDelta) > 40) goTo(dragDelta < 0 ? current + 1 : current - 1); dragStart = null; });
+  let tx = null;
+  wrap.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+  wrap.addEventListener('touchend',   e => { if (tx !== null) { const d = e.changedTouches[0].clientX - tx; if (Math.abs(d) > 40) goTo(d < 0 ? current + 1 : current - 1); tx = null; } }, { passive: true });
+
+  requestAnimationFrame(() => requestAnimationFrame(() => { goTo(0); }));
+  window.addEventListener('resize', render);
+})();
+
+/* ── Metrics count-up animation ─────────────────────────────── */
+(function () {
+  const DURATION = 2800;
+
+  function easeOutExpo(t) {
+    return t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
+  }
+
+  function parseTime(str) {
+    const [m, s] = str.split(':').map(Number);
+    return m * 60 + s;
+  }
+
+  function formatTime(secs) {
+    const m = Math.floor(secs / 60);
+    const s = Math.floor(secs % 60);
+    return m + ':' + String(s).padStart(2, '0');
+  }
+
+  function animateCol(col) {
+    if (col.dataset.animated) return;
+    col.dataset.animated = 'true';
+
+    const type     = col.dataset.type;
+    const valueEl  = col.querySelector('.metric-value');
+    const fromEl   = col.querySelector('.metric-from');
+    const startTs  = performance.now();
+
+    if (type === 'percentage') {
+      const from = parseInt(col.dataset.start);
+      const to   = parseInt(col.dataset.end);
+      function tick(now) {
+        const t      = Math.min((now - startTs) / DURATION, 1);
+        const eased  = easeOutExpo(t);
+        valueEl.textContent = Math.round(from + (to - from) * eased) + '%';
+        if (t < 1) { requestAnimationFrame(tick); }
+        else { valueEl.textContent = to + '%'; setTimeout(() => fromEl.classList.add('visible'), 300); }
+      }
+      requestAnimationFrame(tick);
+
+    } else if (type === 'time') {
+      const from = parseTime(col.dataset.start);
+      const to   = parseTime(col.dataset.end);
+      function tick(now) {
+        const t     = Math.min((now - startTs) / DURATION, 1);
+        const eased = easeOutExpo(t);
+        valueEl.textContent = formatTime(from + (to - from) * eased);
+        if (t < 1) { requestAnimationFrame(tick); }
+        else { valueEl.textContent = formatTime(to); setTimeout(() => fromEl.classList.add('visible'), 300); }
+      }
+      requestAnimationFrame(tick);
+
+    } else if (type === 'eliminated') {
+      const from = parseInt(col.dataset.start);
+      function tick(now) {
+        const t     = Math.min((now - startTs) / DURATION, 1);
+        const eased = easeOutExpo(t);
+        valueEl.textContent = Math.round(from - from * eased) + '%';
+        if (t < 1) { requestAnimationFrame(tick); }
+        else {
+          valueEl.textContent = 'Eliminated';
+          valueEl.classList.add('metric-value--eliminated');
+          setTimeout(() => fromEl.classList.add('visible'), 300);
+        }
+      }
+      requestAnimationFrame(tick);
+    }
+  }
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) animateCol(e.target); });
+  }, { rootMargin: '-80px' });
+
+  document.querySelectorAll('.metric-col').forEach(col => io.observe(col));
+})();
+</script>
 <script>
 (function () {
   const links = Array.from(document.querySelectorAll('#sideNav a'));
@@ -497,6 +1157,16 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 })();
 </script>
 
+<script>
+(function(){
+  const item = document.querySelector(".nav-item--work");
+  const btn  = item && item.querySelector(".nav-btn-work");
+  if (!btn) return;
+  btn.addEventListener("click", function(e){ e.stopPropagation(); item.classList.toggle("is-open"); btn.setAttribute("aria-expanded", item.classList.contains("is-open")); });
+  document.addEventListener("click", function(){ item.classList.remove("is-open"); btn.setAttribute("aria-expanded","false"); });
+  document.addEventListener("keydown", function(e){ if(e.key==="Escape"){ item.classList.remove("is-open"); btn.setAttribute("aria-expanded","false"); }});
+})();
+</script>
 </div><!-- end .page-outer -->
 </body>
 </html>

@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Visual Foundation — Pixel and Patches</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@700&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    background: #f8f5f0;
+    color: #2a2520;
+    padding: 40px;
+  }
+  h1 {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    font-size: 13px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #9a9490;
+    margin-bottom: 40px;
+  }
+
+  /* SECTION */
+  .section { margin-bottom: 60px; }
+  .section-label {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #9a9490;
+    margin-bottom: 20px;
+    font-weight: 400;
+  }
+
+  /* PALETTE */
+  .palette { display: flex; gap: 16px; flex-wrap: wrap; }
+  .swatch {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  .swatch-color {
+    width: 80px;
+    height: 80px;
+    border-radius: 8px;
+    border: 1px solid rgba(0,0,0,0.08);
+  }
+  .swatch-name {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #9a9490;
+  }
+  .swatch-hex {
+    font-size: 12px;
+    color: #2a2520;
+  }
+
+  /* TYPOGRAPHY */
+  .type-row { margin-bottom: 24px; }
+  .type-label {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #9a9490;
+    margin-bottom: 8px;
+  }
+  .display-heading {
+    font-family: 'Noto Serif JP', serif;
+    font-weight: 700;
+    font-size: 52px;
+    line-height: 1.1;
+    color: #2a2520;
+  }
+  .section-heading {
+    font-family: 'Noto Serif JP', serif;
+    font-weight: 700;
+    font-size: 28px;
+    color: #2a2520;
+  }
+  .kicker {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 400;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #9a9490;
+  }
+  .body-copy {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    font-size: 16px;
+    line-height: 1.7;
+    color: #2a2520;
+    max-width: 560px;
+  }
+
+  /* PROJECT CARD */
+  .card-demo {
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+  .project-card {
+    background: #ede8dd;
+    border-radius: 16px;
+    width: 340px;
+    overflow: hidden;
+    position: relative;
+  }
+  .card-thumbnail {
+    width: 100%;
+    height: 220px;
+    background: #ede8dd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    border-bottom: 1px solid rgba(42,37,32,0.08);
+  }
+
+  /* Teal card thumbnail SVG illustration */
+  .card-arrow {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 36px;
+    height: 36px;
+    border: 1.5px solid #2a2520;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+  }
+  .card-arrow:hover { background: #2a2520; }
+  .card-arrow:hover svg path { stroke: #ede8dd; }
+
+  .card-body { padding: 24px; }
+  .card-kicker {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #9a9490;
+    margin-bottom: 10px;
+  }
+  .card-title {
+    font-family: 'Noto Serif JP', serif;
+    font-weight: 700;
+    font-size: 22px;
+    line-height: 1.25;
+    color: #2a2520;
+    margin-bottom: 10px;
+  }
+  .card-desc {
+    font-size: 14px;
+    font-weight: 300;
+    color: #6a6460;
+    line-height: 1.6;
+    margin-bottom: 16px;
+  }
+  .pill-row { display: flex; flex-wrap: wrap; gap: 6px; }
+  .pill {
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 400;
+    padding: 5px 10px;
+    border-radius: 20px;
+    border: 1px solid #2a2520;
+    color: #2a2520;
+  }
+  .pill.teal { border-color: #0f6e56; color: #0f6e56; }
+  .pill.coral { border-color: #d85a30; color: #d85a30; }
+
+  /* CURE GROUP HEADER */
+  .cure-group-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 0 0 20px 0;
+    border-bottom: 1px solid rgba(42,37,32,0.1);
+    margin-bottom: 24px;
+    max-width: 712px;
+  }
+  .cure-group-label {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #2a2520;
+    font-weight: 400;
+  }
+  .cure-group-sub {
+    font-style: italic;
+    font-size: 13px;
+    color: #9a9490;
+    font-weight: 300;
+  }
+
+  /* NAV */
+  .nav-demo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 40px;
+    background: #f4efe6;
+    border-radius: 12px;
+    border: 1px solid rgba(42,37,32,0.08);
+  }
+  .wordmark {
+    font-family: 'Noto Serif JP', serif;
+    font-weight: 700;
+    font-size: 18px;
+    color: #2a2520;
+  }
+  .nav-links {
+    display: flex;
+    gap: 40px;
+    list-style: none;
+  }
+  .nav-links a {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #2a2520;
+    text-decoration: none;
+    font-weight: 400;
+  }
+  .nav-links a:hover { color: #0f6e56; }
+
+  hr { border: none; border-top: 1px solid rgba(42,37,32,0.08); margin: 40px 0; }
+
+  .note {
+    font-size: 12px;
+    color: #9a9490;
+    font-style: italic;
+    margin-top: 12px;
+  }
+</style>
+</head>
+<body>
+
+<h1>Visual Foundation — Pixel and Patches Portfolio</h1>
+
+<!-- PALETTE -->
+<div class="section">
+  <div class="section-label">Color Palette</div>
+  <div class="palette">
+    <div class="swatch">
+      <div class="swatch-color" style="background:#f4efe6;"></div>
+      <div class="swatch-name">Page BG</div>
+      <div class="swatch-hex">#f4efe6</div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#ede8dd;"></div>
+      <div class="swatch-name">Card / Sand</div>
+      <div class="swatch-hex">#ede8dd</div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#2a2520;"></div>
+      <div class="swatch-name">Charcoal</div>
+      <div class="swatch-hex">#2a2520</div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#0f6e56;"></div>
+      <div class="swatch-name">Teal (Tersus)</div>
+      <div class="swatch-hex">#0f6e56</div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#d85a30;"></div>
+      <div class="swatch-name">Coral (CURE)</div>
+      <div class="swatch-hex">#d85a30</div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#1a2a2a;"></div>
+      <div class="swatch-name">Pond Dark</div>
+      <div class="swatch-hex">#1a2a2a</div>
+    </div>
+  </div>
+</div>
+
+<hr>
+
+<!-- TYPOGRAPHY -->
+<div class="section">
+  <div class="section-label">Typography</div>
+
+  <div class="type-row">
+    <div class="type-label">Display — Noto Serif JP 700, 52px</div>
+    <div class="display-heading">One app, many journeys.</div>
+  </div>
+
+  <div class="type-row" style="margin-top:28px;">
+    <div class="type-label">Section heading — Noto Serif JP 700, 28px</div>
+    <div class="section-heading">The Challenge</div>
+  </div>
+
+  <div class="type-row" style="margin-top:28px;">
+    <div class="type-label">Kicker / metadata — DM Sans 400, 11px, spaced caps</div>
+    <div class="kicker">Mobile App &amp; Web &nbsp;·&nbsp; Sole Product Designer &nbsp;·&nbsp; ~1 Year</div>
+  </div>
+
+  <div class="type-row" style="margin-top:28px;">
+    <div class="type-label">Body — DM Sans 300, 16px</div>
+    <div class="body-copy">I'm a product designer who builds from zero — mapping out complex problems, designing across mobile and web, and shipping work that holds up under scrutiny.</div>
+  </div>
+</div>
+
+<hr>
+
+<!-- NAV -->
+<div class="section">
+  <div class="section-label">Navigation</div>
+  <nav class="nav-demo">
+    <div class="wordmark">Pixel and Patches</div>
+    <ul class="nav-links">
+      <li><a href="#">Work</a></li>
+      <li><a href="#">The Garden</a></li>
+      <li><a href="#">Teahouse</a></li>
+    </ul>
+  </nav>
+</div>
+
+<hr>
+
+<!-- PROJECT CARDS -->
+<div class="section">
+  <div class="section-label">Project Card — Tersus (teal) and CURE (coral)</div>
+  <div class="card-demo">
+
+    <!-- TERSUS CARD -->
+    <div class="project-card">
+      <div class="card-thumbnail">
+        <!-- ILLUSTRATION: Tersus device mockup (mobile + web side by side) -->
+        <svg width="280" height="180" viewBox="0 0 280 180" fill="none" xmlns="http://www.w3.org/2000/svg" data-illustration="tersus-thumbnail">
+          <!-- Phone left -->
+          <rect x="60" y="20" width="72" height="130" rx="10" fill="#c8e6de" stroke="#2a2520" stroke-width="1.5"/>
+          <rect x="68" y="34" width="56" height="88" rx="4" fill="#eaf4f1" stroke="#2a2520" stroke-width="1"/>
+          <!-- phone screen lines -->
+          <rect x="74" y="42" width="28" height="5" rx="2" fill="#0f6e56" opacity="0.5"/>
+          <rect x="74" y="52" width="40" height="3" rx="1.5" fill="#2a2520" opacity="0.15"/>
+          <rect x="74" y="59" width="32" height="3" rx="1.5" fill="#2a2520" opacity="0.15"/>
+          <rect x="74" y="70" width="44" height="18" rx="4" fill="#0f6e56" opacity="0.2" stroke="#0f6e56" stroke-width="1"/>
+          <rect x="74" y="94" width="44" height="3" rx="1.5" fill="#2a2520" opacity="0.1"/>
+          <rect x="74" y="100" width="36" height="3" rx="1.5" fill="#2a2520" opacity="0.1"/>
+          <!-- phone home bar -->
+          <rect x="88" y="136" width="20" height="3" rx="1.5" fill="#2a2520" opacity="0.2"/>
+
+          <!-- Browser / web right -->
+          <rect x="148" y="30" width="88" height="110" rx="6" fill="#d4ede7" stroke="#2a2520" stroke-width="1.5"/>
+          <rect x="148" y="30" width="88" height="18" rx="6" fill="#c0e0d8" stroke="#2a2520" stroke-width="1.5"/>
+          <circle cx="158" cy="39" r="3" fill="#2a2520" opacity="0.2"/>
+          <circle cx="167" cy="39" r="3" fill="#2a2520" opacity="0.2"/>
+          <circle cx="176" cy="39" r="3" fill="#2a2520" opacity="0.2"/>
+          <rect x="156" y="56" width="60" height="4" rx="2" fill="#0f6e56" opacity="0.4"/>
+          <rect x="156" y="65" width="72" height="3" rx="1.5" fill="#2a2520" opacity="0.12"/>
+          <rect x="156" y="72" width="56" height="3" rx="1.5" fill="#2a2520" opacity="0.12"/>
+          <rect x="156" y="84" width="68" height="22" rx="4" fill="#0f6e56" opacity="0.18" stroke="#0f6e56" stroke-width="1"/>
+          <rect x="156" y="112" width="72" height="3" rx="1.5" fill="#2a2520" opacity="0.08"/>
+          <rect x="156" y="119" width="48" height="3" rx="1.5" fill="#2a2520" opacity="0.08"/>
+        </svg>
+        <div class="card-arrow">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path d="M3 11L11 3M11 3H5M11 3V9" stroke="#2a2520" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-kicker">Mobile App &amp; Web &nbsp;·&nbsp; Sole Product Designer</div>
+        <div class="card-title">Tersus — Two users.<br>One platform.</div>
+        <div class="card-desc">Full product design across customer and cleaner sides of a cleaning service marketplace.</div>
+        <div class="pill-row">
+          <span class="pill teal">Mobile App & Web</span>
+          <span class="pill teal">Sole Product Designer</span>
+          <span class="pill teal">~1 Year</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CURE CARD -->
+    <div class="project-card">
+      <div class="card-thumbnail">
+        <!-- ILLUSTRATION: CURE Quick Quote screens (web form flow) -->
+        <svg width="280" height="180" viewBox="0 0 280 180" fill="none" xmlns="http://www.w3.org/2000/svg" data-illustration="cure-thumbnail">
+          <!-- Browser frame -->
+          <rect x="40" y="24" width="200" height="130" rx="8" fill="#f5ece5" stroke="#2a2520" stroke-width="1.5"/>
+          <rect x="40" y="24" width="200" height="22" rx="8" fill="#eaddd4" stroke="#2a2520" stroke-width="1.5"/>
+          <circle cx="52" cy="35" r="3.5" fill="#2a2520" opacity="0.2"/>
+          <circle cx="62" cy="35" r="3.5" fill="#2a2520" opacity="0.2"/>
+          <circle cx="72" cy="35" r="3.5" fill="#2a2520" opacity="0.2"/>
+          <!-- form fields -->
+          <rect x="56" y="56" width="80" height="5" rx="2" fill="#d85a30" opacity="0.4"/>
+          <rect x="56" y="66" width="168" height="14" rx="4" fill="#fff" stroke="#2a2520" stroke-width="1" opacity="0.7"/>
+          <rect x="56" y="85" width="168" height="14" rx="4" fill="#fff" stroke="#2a2520" stroke-width="1" opacity="0.7"/>
+          <rect x="56" y="104" width="80" height="14" rx="4" fill="#fff" stroke="#2a2520" stroke-width="1" opacity="0.7"/>
+          <rect x="144" y="104" width="80" height="14" rx="4" fill="#fff" stroke="#2a2520" stroke-width="1" opacity="0.7"/>
+          <rect x="56" y="124" width="100" height="18" rx="5" fill="#d85a30" opacity="0.85"/>
+          <rect x="62" y="130" width="60" height="5" rx="2" fill="#fff" opacity="0.7"/>
+        </svg>
+        <div class="card-arrow">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path d="M3 11L11 3M11 3H5M11 3V9" stroke="#2a2520" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-kicker">Web App &nbsp;·&nbsp; Shipped</div>
+        <div class="card-title">NJ Quick Quote — 20 screens down to 10.</div>
+        <div class="card-desc">Redesigning CURE's primary new customer acquisition flow from the ground up.</div>
+        <div class="pill-row">
+          <span class="pill coral">Web App</span>
+          <span class="pill coral">Shipped</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<hr>
+
+<!-- CURE GROUP HEADER -->
+<div class="section">
+  <div class="section-label">CURE Group Header (three-project grouping)</div>
+  <div class="cure-group-header">
+    <span class="cure-group-label">Cure Auto Insurance &nbsp;·&nbsp; Three Projects, One Client</span>
+    <span class="cure-group-sub">one brand, three distinct problems</span>
+  </div>
+  <p class="note">Three coral-accented cards appear below this header in the homepage grid.</p>
+</div>
+
+</body>
+</html>

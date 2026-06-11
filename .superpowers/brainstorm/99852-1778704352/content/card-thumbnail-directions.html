@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Card Thumbnail Directions</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@700&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  background: #f4efe6;
+  color: #2a2520;
+  padding: 48px 56px;
+}
+h1 {
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #9a9490;
+  margin-bottom: 8px;
+}
+.page-sub {
+  font-size: 14px;
+  color: #6a6460;
+  margin-bottom: 48px;
+  font-weight: 300;
+}
+
+.directions {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+  margin-bottom: 48px;
+}
+
+.direction-block { cursor: pointer; }
+.direction-label {
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #9a9490;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.direction-letter {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1.5px solid #2a2520;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 400;
+  color: #2a2520;
+}
+
+/* CARD base */
+.project-card {
+  background: #ede8dd;
+  border-radius: 16px;
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.project-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 40px rgba(42,37,32,0.12);
+}
+.card-thumbnail {
+  width: 100%;
+  height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+.card-arrow {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  border: 1.5px solid #2a2520;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  transition: background 0.2s;
+}
+.card-body { padding: 22px 24px 24px; }
+.card-kicker {
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #9a9490;
+  margin-bottom: 8px;
+}
+.card-title {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.3;
+  margin-bottom: 8px;
+  color: #2a2520;
+}
+.card-desc {
+  font-size: 13px;
+  color: #6a6460;
+  line-height: 1.6;
+  margin-bottom: 14px;
+}
+.pill-row { display: flex; flex-wrap: wrap; gap: 5px; }
+.pill {
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1px solid;
+}
+.pill.teal { border-color: #0f6e56; color: #0f6e56; }
+.pill.coral { border-color: #d85a30; color: #d85a30; }
+
+/* ─── DIRECTION A: Color field + subtle texture ─── */
+.thumb-a {
+  background: #c8e2da;
+  position: relative;
+}
+.thumb-a::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    repeating-linear-gradient(0deg, transparent, transparent 28px, rgba(42,37,32,0.04) 28px, rgba(42,37,32,0.04) 29px),
+    repeating-linear-gradient(90deg, transparent, transparent 28px, rgba(42,37,32,0.04) 28px, rgba(42,37,32,0.04) 29px);
+}
+.thumb-a-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+.thumb-a-label {
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #0f6e56;
+  opacity: 0.7;
+}
+.thumb-a-title {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: #0f6e56;
+  opacity: 0.35;
+}
+
+/* ─── DIRECTION B: Minimal iconic device silhouettes ─── */
+.thumb-b { background: #ede8dd; }
+
+/* ─── DIRECTION C: Blurred screenshot placeholder ─── */
+.thumb-c {
+  background: linear-gradient(135deg, #d4ede7 0%, #c8e2d8 40%, #b8d4ca 100%);
+  position: relative;
+  overflow: hidden;
+}
+.thumb-c-noise {
+  position: absolute;
+  inset: 0;
+  opacity: 0.06;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+}
+.thumb-c-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+  padding: 0 24px;
+}
+.thumb-c-eyebrow {
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(15,110,86,0.7);
+}
+.thumb-c-placeholder {
+  width: 80px;
+  height: 3px;
+  background: rgba(15,110,86,0.25);
+  border-radius: 2px;
+}
+
+/* Description below each direction */
+.direction-desc {
+  margin-top: 14px;
+  font-size: 13px;
+  color: #6a6460;
+  line-height: 1.6;
+}
+.direction-desc strong {
+  color: #2a2520;
+  font-weight: 400;
+}
+
+/* Selected state */
+.direction-block.selected .project-card {
+  outline: 2.5px solid #2a2520;
+  outline-offset: 3px;
+}
+.direction-block.selected .direction-letter {
+  background: #2a2520;
+  color: #f4efe6;
+}
+
+.recommendation {
+  background: #ede8dd;
+  border-radius: 12px;
+  padding: 20px 24px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: #2a2520;
+  margin-top: 8px;
+}
+.recommendation strong { font-weight: 400; color: #0f6e56; }
+</style>
+</head>
+<body>
+
+<h1>Card Thumbnail — Three Directions</h1>
+<p class="page-sub">The thumbnail is the most visible part of each card. Pick the direction that feels right — the rest of the page builds around it.</p>
+
+<div class="directions">
+
+  <!-- DIRECTION A: Color field -->
+  <div class="direction-block" onclick="select('a', this)">
+    <div class="direction-label">
+      <div class="direction-letter">A</div>
+      Color field + project name
+    </div>
+    <div class="project-card">
+      <div class="card-thumbnail thumb-a">
+        <div class="thumb-a-content">
+          <div class="thumb-a-label">Mobile App & Web</div>
+          <div class="thumb-a-title">Tersus</div>
+        </div>
+        <div class="card-arrow">
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2.5 10.5L10.5 2.5M10.5 2.5H4.5M10.5 2.5V8.5" stroke="#2a2520" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-kicker">Mobile App & Web · Sole Product Designer</div>
+        <div class="card-title">Tersus — Two users,<br>one platform.</div>
+        <div class="card-desc">Full product design across customer and cleaner sides of a cleaning service marketplace.</div>
+        <div class="pill-row">
+          <span class="pill teal">Mobile App & Web</span>
+          <span class="pill teal">~1 Year</span>
+        </div>
+      </div>
+    </div>
+    <div class="direction-desc">
+      <strong>Flat tinted color + subtle grid texture.</strong> The project name appears large in the field. No devices, no scenes. All warmth comes from color and type. Real screenshots swap in later with zero layout change.
+    </div>
+  </div>
+
+  <!-- DIRECTION B: Minimal device silhouettes -->
+  <div class="direction-block" onclick="select('b', this)">
+    <div class="direction-label">
+      <div class="direction-letter">B</div>
+      Minimal device silhouettes
+    </div>
+    <div class="project-card">
+      <div class="card-thumbnail thumb-b">
+        <!-- Clean, iconic, very simple device shapes — no internal detail -->
+        <svg width="260" height="180" viewBox="0 0 260 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Phone silhouette -->
+          <rect x="52" y="18" width="68" height="124" rx="10" fill="#b8d8d0" stroke="#2a2520" stroke-width="2"/>
+          <rect x="62" y="32" width="48" height="78" rx="3" fill="#d4eae5"/>
+          <circle cx="86" cy="128" r="5" fill="#2a2520" opacity="0.15"/>
+          <!-- Web browser silhouette -->
+          <rect x="136" y="28" width="90" height="104" rx="7" fill="#c4dbd5" stroke="#2a2520" stroke-width="2"/>
+          <rect x="136" y="28" width="90" height="20" rx="7" fill="#aaccc6" stroke="#2a2520" stroke-width="2"/>
+          <circle cx="147" cy="38" r="3.5" fill="#2a2520" opacity="0.2"/>
+          <circle cx="157" cy="38" r="3.5" fill="#2a2520" opacity="0.2"/>
+          <circle cx="167" cy="38" r="3.5" fill="#2a2520" opacity="0.2"/>
+          <rect x="148" y="56" width="66" height="52" rx="3" fill="#d4eae5"/>
+        </svg>
+        <div class="card-arrow">
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2.5 10.5L10.5 2.5M10.5 2.5H4.5M10.5 2.5V8.5" stroke="#2a2520" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-kicker">Mobile App & Web · Sole Product Designer</div>
+        <div class="card-title">Tersus — Two users,<br>one platform.</div>
+        <div class="card-desc">Full product design across customer and cleaner sides of a cleaning service marketplace.</div>
+        <div class="pill-row">
+          <span class="pill teal">Mobile App & Web</span>
+          <span class="pill teal">~1 Year</span>
+        </div>
+      </div>
+    </div>
+    <div class="direction-desc">
+      <strong>Icon-level device shapes — no screen content.</strong> Silhouettes only, clean outlines, flat tinted fills. Suggests "product design" without faking a UI. Honest and minimal.
+    </div>
+  </div>
+
+  <!-- DIRECTION C: Gradient field + type treatment -->
+  <div class="direction-block" onclick="select('c', this)">
+    <div class="direction-label">
+      <div class="direction-letter">C</div>
+      Soft gradient + typographic lock-up
+    </div>
+    <div class="project-card">
+      <div class="card-thumbnail thumb-c">
+        <div class="thumb-c-noise"></div>
+        <div class="thumb-c-content">
+          <div class="thumb-c-eyebrow">Tersus · 2023–2024</div>
+          <svg width="120" height="2" style="margin: 4px 0;"><rect width="120" height="2" rx="1" fill="rgba(15,110,86,0.3)"/></svg>
+          <div style="font-family:'Noto Serif JP',serif; font-size:38px; font-weight:700; color:rgba(15,110,86,0.22); line-height:1; letter-spacing:-1px;">T</div>
+          <svg width="60" height="2" style="margin: 4px 0;"><rect width="60" height="2" rx="1" fill="rgba(15,110,86,0.15)"/></svg>
+        </div>
+        <div class="card-arrow">
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2.5 10.5L10.5 2.5M10.5 2.5H4.5M10.5 2.5V8.5" stroke="#2a2520" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-kicker">Mobile App & Web · Sole Product Designer</div>
+        <div class="card-title">Tersus — Two users,<br>one platform.</div>
+        <div class="card-desc">Full product design across customer and cleaner sides of a cleaning service marketplace.</div>
+        <div class="pill-row">
+          <span class="pill teal">Mobile App & Web</span>
+          <span class="pill teal">~1 Year</span>
+        </div>
+      </div>
+    </div>
+    <div class="direction-desc">
+      <strong>Soft gradient field, initial letter as graphic element.</strong> Warm, abstract, each project gets its own color mood. No devices. Screenshot drops in later as a full-bleed replace.
+    </div>
+  </div>
+
+</div>
+
+<div class="recommendation">
+  My pick: <strong>Direction B</strong> — minimal device silhouettes. It's honest about being a designed portfolio (not a photography portfolio), clearly communicates "product design work," and looks intentional rather than apologetic. Direction A is a close second if you want zero device references. Avoid C if you plan to eventually use real screenshots — the gradient and type treatment competes with a photo.
+</div>
+
+<script>
+function select(choice, el) {
+  document.querySelectorAll('.direction-block').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+  if (window.__recordChoice) window.__recordChoice(choice, el.querySelector('.direction-label').textContent.trim());
+}
+</script>
+
+</body>
+</html>

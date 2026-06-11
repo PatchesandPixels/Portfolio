@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-P9JER5X15D"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-P9JER5X15D');
+  </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Andy Nguyen — Product Designer</title>
@@ -8,20 +16,30 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Inter:wght@400;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="nav.css">
 </head>
 <body>
   <div class="page-wrapper">
 
     <!-- NAV -->
-    <nav class="nav">
+    <nav class="nav" id="topNav">
       <a href="index.html" class="nav-logo">
-        <img src="assets/logo.png" alt="Pixel and Patches">
+        <img src="assets/logo.png" alt="Pixel and Patches" loading="lazy">
       </a>
       <ul class="nav-links">
-        <li><a href="index.html" class="nav-link" data-page="work">Work<span class="nav-underline"></span></a></li>
-        <li><a href="#" class="nav-link" data-page="playground">Playground<span class="nav-underline"></span></a></li>
-        <li><a href="#" class="nav-link" data-page="about">About<span class="nav-underline"></span></a></li>
-        <li><a href="#" class="nav-link" data-page="contact">Contact<span class="nav-underline"></span></a></li>
+        <li class="nav-item--work">
+          <button class="nav-link nav-btn-work" data-page="work" aria-haspopup="true" aria-expanded="false">Work<span class="nav-underline"></span></button>
+          <div class="nav-dropdown" role="menu">
+            <a href="tersus.html" class="nav-dropdown-item" role="menuitem"><span class="nav-dropdown-num">01</span>Tersus</a>
+            <a href="cure-quick-quote.html" class="nav-dropdown-item" role="menuitem"><span class="nav-dropdown-num">02</span>Quick Quote</a>
+            <a href="cure-scan-license.html" class="nav-dropdown-item" role="menuitem"><span class="nav-dropdown-num">03</span>Scan to Insure</a>
+            <a href="cure-my-account.html" class="nav-dropdown-item" role="menuitem"><span class="nav-dropdown-num">04</span>My Account</a>
+          </div>
+        </li>
+        <li><a href="playground.html" class="nav-link" data-page="playground">Playground<span class="nav-underline"></span></a></li>
+        
+        <li><a href="assets/andy-nguyen-resume.pdf" target="_blank" rel="noopener" class="nav-link" data-page="resume">Resume<span class="nav-underline"></span></a></li>
+        <li><a href="mailto:nguyenlandy@gmail.com" class="nav-link" data-page="contact">Contact<span class="nav-underline"></span></a></li>
       </ul>
     </nav>
     <div class="nav-rule"></div>
@@ -29,9 +47,9 @@
     <main class="main-content">
 
       <!-- HERO -->
-      <div style="display:flex; align-items:flex-start; gap:40px; min-height:380px;">
+      <section class="hero-section">
         <!-- Left column -->
-        <div style="display:flex; flex-direction:column; gap:16px; padding:16px 0; flex-shrink:0; max-width:480px;">
+        <div class="hero-text">
           <p class="kicker">UX/UI DESIGN</p>
           <h1 class="display-heading">
             Human-centered<br>
@@ -45,22 +63,14 @@
             products feel effortless.
           </p>
         </div>
-        <!-- Right column: overlapping screenshots -->
-        <div style="position:relative; flex:1; min-height:380px;">
+        <!-- Right column: hero screens composite -->
+        <div class="hero-images">
           <img
-            src="assets/hero-mobile-home.png"
-            alt="Tersus mobile app"
-            style="position:absolute; left:0; top:54px; width:107px; height:271px; border-radius:10px; box-shadow:4px 4px 4px rgba(0,0,0,0.1); object-fit:cover;">
-          <img
-            src="assets/hero-tersus-web.png"
-            alt="Tersus web app"
-            style="position:absolute; left:75px; top:0; width:596px; height:367px; border-radius:10px; box-shadow:4px 4px 4px rgba(0,0,0,0.1); object-fit:cover;">
-          <img
-            src="assets/hero-auto-quote.png"
-            alt="CURE auto quote"
-            style="position:absolute; right:0; top:47px; width:138px; height:287px; border-radius:10px; box-shadow:0 4px 4px rgba(0,0,0,0.25); object-fit:cover;">
+            src="assets/hero-screens.png"
+            alt="Product design work — Tersus and CURE app screens"
+            style="position:absolute; top:50%; left:0; transform:translateY(-50%); width:100%; height:auto; object-fit:contain; border-radius:10px;">
         </div>
-      </div>
+      </section>
 
       <!-- SELECTED WORK HEADER + TERSUS FEATURED CARD -->
       <div style="display:flex; flex-direction:column; gap:24px;">
@@ -79,17 +89,16 @@
               <h2 class="card-title-lg">Designing a simpler marketplace for home cleaning services</h2>
               <p class="body-text">Enhancing the booking experience with clearer flows, thoughtful UX decisions, and end-to-end product design that reduced friction for both customers and cleaners.</p>
               <div class="pill-row">
-                <span class="pill">UX RESEARCH</span>
-                <span class="pill">PRODUCT DESIGN</span>
-                <span class="pill">DESIGN SYSTEM</span>
-                <span class="pill">2023–2024</span>
+                <span class="pill">END-TO-END DESIGN</span>
+                <span class="pill">MARKETPLACE</span>
+                <span class="pill">iOS &amp; WEB</span>
               </div>
             </div>
-            <a href="tersus.html" class="link-arrow">View Case Studies <span>➜</span></a>
+            <a href="tersus.html" class="link-arrow">View Case Study <span>➜</span></a>
           </div>
           <div class="featured-card-image" style="min-height:380px;">
-            <img src="assets/tersus-card-bg.png" alt="" style="object-fit:cover;">
-            <img src="assets/tersus-card-screens.png" alt="Tersus product screens" style="object-fit:contain; z-index:1;">
+            <img src="assets/tersus-card-bg.png" alt="" style="object-fit:cover;" loading="lazy">
+            <img src="assets/tersus-card-screens.png" alt="Tersus product screens" style="object-fit:contain; z-index:1;" loading="lazy">
           </div>
         </div>
       </div>
@@ -101,16 +110,16 @@
 
           <div class="cure-card">
             <div class="cure-card-thumbnail">
-              <img src="assets/cure-quick-quote.png" alt="CURE Quick Quote">
+              <img src="assets/cure-quick-quote.png" alt="CURE Quick Quote" loading="lazy">
             </div>
             <div class="cure-card-body">
               <div class="cure-card-body-inner">
                 <h3 class="card-title-lg">Quick Quote</h3>
                 <p class="body-text">Redesigned the quote experience to reduce user friction, improve form clarity, and help customers move through the insurance signup process with more confidence.</p>
                 <div class="pill-row">
-                  <span class="pill">UX RESEARCH</span>
-                  <span class="pill">PRODUCT DESIGN</span>
-                  <span class="pill">DESIGN SYSTEM</span>
+                  <span class="pill">FULL REDESIGN</span>
+                  <span class="pill">INSURANCE FLOW</span>
+                  <span class="pill">WEB &amp; MOBILE</span>
                 </div>
               </div>
               <a href="cure-quick-quote.html" class="link-arrow">View Case Study <span>➜</span></a>
@@ -119,16 +128,16 @@
 
           <div class="cure-card">
             <div class="cure-card-thumbnail">
-              <img src="assets/cure-scan-license.png" alt="CURE Scan to Insure">
+              <img src="assets/cure-scan-license.png" alt="CURE Scan to Insure" loading="lazy">
             </div>
             <div class="cure-card-body">
               <div class="cure-card-body-inner">
                 <h3 class="card-title-lg">Scan to Insure</h3>
                 <p class="body-text">Created a mobile-first quote experience that reduced manual entry by pre-filling customer details from a scanned driver's license.</p>
                 <div class="pill-row">
-                  <span class="pill">UX RESEARCH</span>
-                  <span class="pill">PRODUCT DESIGN</span>
-                  <span class="pill">DESIGN SYSTEM</span>
+                  <span class="pill">0 TO 1 DESIGN</span>
+                  <span class="pill">SCAN FEATURE</span>
+                  <span class="pill">MOBILE-FIRST</span>
                 </div>
               </div>
               <a href="cure-scan-license.html" class="link-arrow">View Case Study <span>➜</span></a>
@@ -137,16 +146,16 @@
 
           <div class="cure-card">
             <div class="cure-card-thumbnail">
-              <img src="assets/cure-my-account.png" alt="CURE My Account Portal">
+              <img src="assets/cure-my-account.png" alt="CURE My Account Portal" loading="lazy">
             </div>
             <div class="cure-card-body">
               <div class="cure-card-body-inner">
                 <h3 class="card-title-lg">My Account Portal</h3>
                 <p class="body-text">Redesigned the account portal to help customers access policy details, manage account tasks, and navigate important insurance information with less confusion.</p>
                 <div class="pill-row">
-                  <span class="pill">UX RESEARCH</span>
-                  <span class="pill">PRODUCT DESIGN</span>
-                  <span class="pill">DESIGN SYSTEM</span>
+                  <span class="pill">FULL REDESIGN</span>
+                  <span class="pill">ACCOUNT PORTAL</span>
+                  <span class="pill">WEB &amp; MOBILE</span>
                 </div>
               </div>
               <a href="cure-my-account.html" class="link-arrow">View Case Study <span>➜</span></a>
@@ -165,10 +174,10 @@
               <h3 class="card-title-sm">About Andy</h3>
               <p class="body-text" style="max-width:380px;">I'm a product designer with 8+ years of experience partnering with founders and cross-functional teams. My approach blends research, clarity, and craft to design experiences that are useful, usable, and a little delightful.</p>
             </div>
-            <a href="#" class="link-arrow">More about me <span>➜</span></a>
+            <!-- About link hidden until About page is built -->
           </div>
           <div class="bottom-card-illustration">
-            <img src="assets/about-cat.png" alt="Illustrated cat" style="width:185px; height:199px; object-fit:contain;">
+            <img src="assets/about-cat.png" alt="Illustrated cat" style="width:185px; height:199px; object-fit:contain;" loading="lazy">
           </div>
         </div>
 
@@ -186,14 +195,38 @@
             </a>
           </div>
           <div class="bottom-card-illustration">
-            <img src="assets/contact-laptop.png" alt="Illustrated laptop" style="height:270px; object-fit:contain;">
+            <img src="assets/contact-laptop.png" alt="Illustrated laptop" style="height:270px; object-fit:contain;" loading="lazy">
           </div>
         </div>
 
       </div>
 
-    </main>
+    
+    <footer class="footer">
+    <div class="footer-inner">
+      <a href="index.html" class="brandmark">andy<span class="dot">.</span></a>
+      <div>© 2026 Andy Nguyen — designed, coded, cat approved.</div>
+      <div class="footer-links">
+        <a href="mailto:nguyenlandy@gmail.com">nguyenlandy@gmail.com</a>
+        <span class="footer-divider">·</span>
+        <a href="https://www.linkedin.com/in/andylounguyen" target="_blank" rel="noopener">LinkedIn</a>
+        <span class="footer-divider">·</span>
+        <a href="assets/andy-nguyen-resume.pdf" target="_blank" rel="noopener">Resume</a>
+      </div>
+    </div>
+  </footer>
+</main>
   </div>
   <script src="scripts.js"></script>
+<script>
+(function(){
+  const item = document.querySelector(".nav-item--work");
+  const btn  = item && item.querySelector(".nav-btn-work");
+  if (!btn) return;
+  btn.addEventListener("click", function(e){ e.stopPropagation(); item.classList.toggle("is-open"); btn.setAttribute("aria-expanded", item.classList.contains("is-open")); });
+  document.addEventListener("click", function(){ item.classList.remove("is-open"); btn.setAttribute("aria-expanded","false"); });
+  document.addEventListener("keydown", function(e){ if(e.key==="Escape"){ item.classList.remove("is-open"); btn.setAttribute("aria-expanded","false"); }});
+})();
+</script>
 </body>
 </html>

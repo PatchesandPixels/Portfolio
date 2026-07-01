@@ -132,21 +132,50 @@
     rig.appendChild(partImg('right-fin'));
     return rig;
   }
+
+  function buildWaterMaskRig() {
+    var rig = document.createElement('div'); rig.className = 'koi-water-rig';
+    function partMask(part) {
+      var m = document.createElement('div');
+      m.className = 'koi-water-mask-part koi-' + part;
+      m.style.setProperty('--part-mask', 'url("' + RIG + 'koi-' + part + '.png")');
+      return m;
+    }
+
+    var midJoint = document.createElement('div'); midJoint.className = 'koi-joint koi-joint-mid';
+    var tailStemJoint = document.createElement('div'); tailStemJoint.className = 'koi-joint koi-joint-tail-stem';
+    var tailFinJoint = document.createElement('div'); tailFinJoint.className = 'koi-joint koi-joint-tail-fin';
+
+    tailFinJoint.appendChild(partMask('tail-fin'));
+    tailStemJoint.appendChild(tailFinJoint);
+    tailStemJoint.appendChild(partMask('tail-stem'));
+    midJoint.appendChild(tailStemJoint);
+    midJoint.appendChild(partMask('mid-body'));
+
+    rig.appendChild(midJoint);
+    rig.appendChild(partMask('head-body'));
+    rig.appendChild(partMask('left-fin'));
+    rig.appendChild(partMask('right-fin'));
+    return rig;
+  }
+
   function buildFish() {
     resize();                                   // ensure W/H known before placing
     stage.innerHTML = ''; fish = [];
     var count = 1;                               // single koi for now
     for (var i = 0; i < count; i++) {
       var el = document.createElement('div'); el.className = 'koi-fish';
+      var groundShadow = document.createElement('div'); groundShadow.className = 'koi-ground-shadow';
       var shadowRig = buildRig('koi-shadow-rig');
       var visibleRig = buildRig('koi-visible-rig');
-      el.appendChild(shadowRig); el.appendChild(visibleRig);
+      var waterRig = buildWaterMaskRig();
+      el.appendChild(groundShadow); el.appendChild(shadowRig); el.appendChild(visibleRig); el.appendChild(waterRig);
       stage.appendChild(el);
       var p = randInWater();
       fish.push({
         el: el, x: p.x, y: p.y, angle: Math.random() * 6.28, speed: 0, phase: Math.random() * 6.28,
         sizeMul: 1, dart: 0, dartT: 6 + Math.random() * 8, orbit: newOrbit(),
-        turnAmount: 0, smoothedBend: 0, bendVel: 0
+        turnAmount: 0, smoothedBend: 0, bendVel: 0, turnVel: 0
       });
     }
     resize();
@@ -197,8 +226,8 @@
   /* bend is a light spring (not a flat lerp): it eases toward rawTurn,
      slightly overshoots, and settles — a flexible tail catching up to a
      turn rather than a value gliding smoothly to a stop. */
-  var BEND_STIFFNESS = 0.26;
-  var BEND_DAMPING = 0.72;
+  var BEND_STIFFNESS = 0.16;
+  var BEND_DAMPING = 0.78;
 
   function update(dtf) {
     var dt = dtf / 60;
@@ -231,21 +260,28 @@
       var edge = Math.hypot((f.x - e.cx) / e.rx, (f.y - e.cy) / e.ry);
       if (edge > 0.84) { desired = Math.atan2(e.cy - f.y, e.cx - f.x); maxRate = Math.max(maxRate, MAXTURN_EDGE); }
 
-      // rate-clamped turn: cap the per-frame heading change, don't lerp
+      // Rate-clamp the desired heading change, then ease angular
+      // velocity toward it so turns accelerate/decelerate smoothly.
       var diff = angleDiff(f.angle, desired);
       var cap = maxRate * dtf;
-      var step = clamp(diff, -cap, cap);
-      f.angle += step;
-      f.turnAmount = clamp(diff / 0.85, -1, 1);            // desired turn pressure, drives the tail/fin bend
+      var targetTurnVel = clamp(diff, -cap, cap);
+      f.turnVel += (targetTurnVel - f.turnVel) * 0.16 * dtf;
+      f.turnVel = clamp(f.turnVel, -cap, cap);
+      if (Math.abs(diff) < Math.abs(f.turnVel)) f.turnVel = diff;
+      f.angle += f.turnVel;
 
-      f.speed += (targetSpeed - f.speed) * 0.08 * dtf;
-      f.x += Math.cos(f.angle) * f.speed * dtf;            // always advances — never a spin-in-place
-      f.y += Math.sin(f.angle) * f.speed * dtf;
+      var desiredTurnPressure = clamp(f.turnVel / Math.max(cap, 0.0001), -1, 1) * clamp(Math.abs(diff) / 0.75, 0, 1);
+      f.turnAmount += (desiredTurnPressure - f.turnAmount) * 0.055 * dtf;
+
+      f.speed += (targetSpeed - f.speed) * 0.045 * dtf;
+      var surge = 1 + Math.sin(f.phase - 0.35) * Math.min(1, f.speed / 1.2) * 0.035;
+      f.x += Math.cos(f.angle) * f.speed * surge * dtf;    // always advances — never a spin-in-place
+      f.y += Math.sin(f.angle) * f.speed * surge * dtf;
 
       // separation so fish never stack
       for (var j = 0; j < fish.length; j++) { if (j === k) continue; var o = fish[j]; var dx = f.x - o.x, dy = f.y - o.y, dd = Math.hypot(dx, dy), minD = (fishW * f.sizeMul + fishW * o.sizeMul) * 0.55; if (dd > 0.001 && dd < minD) { var pp = (minD - dd) * 0.5 * dtf; f.x += dx / dd * pp; f.y += dy / dd * pp; } }
       clampWater(f, lenF * 0.1);
-      f.phase += (0.22 + f.speed * 0.34) * dtf;
+      f.phase += (0.28 + f.speed * 0.20) * dtf;
     }
   }
 
@@ -257,28 +293,28 @@
      a swim-oscillation term) — mid-body barely turns, the tail-stem
      turns more, the tail-fin turns the most, so the curve visibly
      travels down the body instead of the whole fish spinning. */
-  var TURN_BEND_GAIN = 1.25;
-  var MID_BEND_DEG = 5;
-  var TAIL_STEM_BEND_DEG = 14;
-  var TAIL_FIN_BEND_DEG = 32;
+  var TURN_BEND_GAIN = 1.05;
+  var MID_BEND_DEG = 3;
+  var TAIL_STEM_BEND_DEG = 15;
+  var TAIL_FIN_BEND_DEG = 34;
 
   function placeFish(f, dtf) {
     var sn = Math.min(1, f.speed / 1.4);                           // speed 0..1
-    var propulsion = 0.35 + sn * 1.15;
-    var headWag = Math.sin(f.phase + 2.35) * 1.8 * propulsion;
+    var propulsion = 0.55 + sn * 1.05;
+    var headWag = Math.sin(f.phase + 2.35) * 0.45 * propulsion;
     var rot = f.angle * 180 / Math.PI - 90 + headWag;              // source fish points down
     var tx = f.x - PIV_X * fishW, ty = f.y - PIV_Y * fishH;
-    f.el.style.transform = 'translate(' + tx.toFixed(2) + 'px,' + ty.toFixed(2) + 'px) rotate(' + rot.toFixed(2) + 'deg) scale(' + f.sizeMul.toFixed(3) + ')';
+    f.el.style.transform = 'translate3d(' + tx.toFixed(3) + 'px,' + ty.toFixed(3) + 'px,0) rotate(' + rot.toFixed(3) + 'deg) scale(' + f.sizeMul.toFixed(3) + ')';
     if (reduce) return;
 
     // ── smooth the bend over time: rawTurn follows steering instantly,
     // but the body is a damped spring. The bend trails, overshoots a
     // little, and relaxes, which reads more like a flexible koi spine
     // than a value sliding linearly toward zero. ──
-    var rawTurn = clamp(f.turnAmount * TURN_BEND_GAIN, -1.15, 1.15);
+    var rawTurn = clamp(f.turnAmount * TURN_BEND_GAIN, -1.05, 1.05);
     f.bendVel += (rawTurn - f.smoothedBend) * BEND_STIFFNESS * dtf;
     f.bendVel *= Math.pow(BEND_DAMPING, dtf);
-    f.smoothedBend = clamp(f.smoothedBend + f.bendVel * dtf, -1.15, 1.15);
+    f.smoothedBend = clamp(f.smoothedBend + f.bendVel * dtf, -1.05, 1.05);
 
     // Nonlinear bend makes normal cruising stay graceful, but once the
     // fish commits to a hard turn the tail curls into a visible C-shape.
@@ -292,24 +328,24 @@
 
     // head/front-body: no independent rotation — it stays the most
     // stable part, exactly as the wrapper's own heading dictates.
-    var midAngle = bend * MID_BEND_DEG + swimMid * 2.2 * propulsion;
-    var tailStemAngle = bend * TAIL_STEM_BEND_DEG + swimStem * 7.5 * propulsion;
-    var tailFinAngle = bend * TAIL_FIN_BEND_DEG + swimTail * 18 * propulsion;
-    var turnCurl = clamp(Math.abs(bend), 0, 1.15);
-    var bodySquash = 1 - turnCurl * 0.035;
-    var bodyLift = -turnCurl * 1.25;
+    var midAngle = bend * MID_BEND_DEG + swimMid * 0.65 * propulsion;
+    var tailStemAngle = bend * TAIL_STEM_BEND_DEG + swimStem * 4.6 * propulsion;
+    var tailFinAngle = bend * TAIL_FIN_BEND_DEG + swimTail * 14.5 * propulsion;
+    var turnCurl = clamp(Math.abs(bend), 0, 1.05);
+    var bodySquash = 1 - turnCurl * 0.018;
+    var bodyLift = -turnCurl * 0.6;
     var curlDir = bend < 0 ? -1 : 1;
     var swimCurlDir = Math.sin(f.phase);
-    var midCurlX = swimCurlDir * fishW * 0.008 * propulsion;
-    var tailStemCurlX = curlDir * turnCurl * fishW * 0.018 + swimCurlDir * fishW * 0.03 * propulsion;
-    var tailFinCurlX = curlDir * turnCurl * fishW * 0.04 + swimCurlDir * fishW * 0.07 * propulsion;
+    var midCurlX = swimCurlDir * fishW * 0.002 * propulsion;
+    var tailStemCurlX = curlDir * turnCurl * fishW * 0.025 + swimCurlDir * fishW * 0.018 * propulsion;
+    var tailFinCurlX = curlDir * turnCurl * fishW * 0.075 + swimCurlDir * fishW * 0.06 * propulsion;
 
     // Pectoral fins paddle, but not as mirrored clock hands. A slight
     // phase offset plus a turn bias makes the inside fin tuck while the
     // outside fin pushes through a turn.
-    var finBase = 1.4 + sn * 4.4;
-    var leftFinAngle = Math.sin(f.phase * 1.7 + 0.6) * finBase - bend * 8.5;
-    var rightFinAngle = Math.sin(f.phase * 1.7 + 2.25) * finBase + bend * 8.5;
+    var finBase = 0.9 + sn * 2.4;
+    var leftFinAngle = Math.sin(f.phase * 1.45 + 0.6) * finBase - bend * 3.2;
+    var rightFinAngle = Math.sin(f.phase * 1.45 + 2.25) * finBase + bend * 3.2;
 
     f.el.style.setProperty('--mid-angle', midAngle.toFixed(2) + 'deg');
     f.el.style.setProperty('--tail-stem-angle', tailStemAngle.toFixed(2) + 'deg');

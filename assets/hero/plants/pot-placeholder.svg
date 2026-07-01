@@ -1,0 +1,15 @@
+<svg viewBox="0 0 140 184" xmlns="http://www.w3.org/2000/svg">
+  <!-- TEMPORARY placeholder — potted plant base (new leaves added via CSS/JS). -->
+  <!-- pot -->
+  <path d="M34 120 H106 L98 178 H42 Z" fill="#d08a5a"/>
+  <rect x="28" y="108" width="84" height="18" rx="5" fill="#e0a06f"/>
+  <!-- soil -->
+  <ellipse cx="70" cy="118" rx="38" ry="7" fill="#5a4631"/>
+  <!-- base leaves -->
+  <path d="M70 116 C46 96 40 64 56 36" stroke="#4f9d6b" stroke-width="9" fill="none" stroke-linecap="round"/>
+  <path d="M70 116 C92 100 100 70 88 40" stroke="#5fb37c" stroke-width="9" fill="none" stroke-linecap="round"/>
+  <path d="M70 116 C70 86 70 52 70 24" stroke="#57a974" stroke-width="9" fill="none" stroke-linecap="round"/>
+  <ellipse cx="55" cy="34" rx="13" ry="20" fill="#5fb37c" transform="rotate(-24 55 34)"/>
+  <ellipse cx="88" cy="38" rx="13" ry="20" fill="#4f9d6b" transform="rotate(22 88 38)"/>
+  <ellipse cx="70" cy="22" rx="13" ry="22" fill="#57a974"/>
+</svg>

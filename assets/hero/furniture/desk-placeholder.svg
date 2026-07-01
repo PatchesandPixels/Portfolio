@@ -1,0 +1,16 @@
+<svg viewBox="0 0 360 210" xmlns="http://www.w3.org/2000/svg">
+  <!-- TEMPORARY placeholder — warm wood desk. See docs/hero-asset-manifest.md -->
+  <g fill="none">
+    <!-- legs -->
+    <rect x="38" y="60" width="20" height="138" rx="4" fill="#b9885a"/>
+    <rect x="302" y="60" width="20" height="138" rx="4" fill="#b9885a"/>
+    <rect x="38" y="60" width="20" height="138" rx="4" fill="#000" opacity="0.06"/>
+    <!-- top -->
+    <rect x="14" y="40" width="332" height="34" rx="9" fill="#caa06f"/>
+    <rect x="14" y="40" width="332" height="13" rx="9" fill="#d8b483"/>
+    <rect x="14" y="64" width="332" height="10" rx="6" fill="#000" opacity="0.08"/>
+    <!-- small drawer -->
+    <rect x="232" y="78" width="92" height="44" rx="6" fill="#bd9263"/>
+    <circle cx="278" cy="100" r="4" fill="#7a5836"/>
+  </g>
+</svg>

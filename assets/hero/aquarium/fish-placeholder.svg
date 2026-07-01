@@ -1,0 +1,8 @@
+<svg viewBox="0 0 60 36" xmlns="http://www.w3.org/2000/svg">
+  <!-- TEMPORARY placeholder — tank fish. -->
+  <path d="M2 18 L16 8 L16 28 Z" fill="#f49e4f"/>
+  <ellipse cx="34" cy="18" rx="22" ry="12" fill="#f7a85c"/>
+  <ellipse cx="34" cy="18" rx="22" ry="12" fill="#fff" opacity="0.08"/>
+  <circle cx="48" cy="15" r="2.6" fill="#1a1612"/>
+  <path d="M30 12 q6 -3 12 0" stroke="#e07a2a" stroke-width="2" fill="none" stroke-linecap="round"/>
+</svg>

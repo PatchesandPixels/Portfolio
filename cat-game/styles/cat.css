@@ -1,0 +1,205 @@
+/* ============================================================
+   cat.css — the cat character (placeholder blob art, expressive)
+   Structure: .cat (JS sets translate) > .cat-rig (JS sets scale/rotate)
+   ============================================================ */
+
+.cat {
+  position: absolute;
+  top: 0; left: 0;
+  width: var(--cat-w, 120px);
+  height: var(--cat-h, 110px);
+  z-index: 4;
+  will-change: transform;
+}
+.cat-rig {
+  position: absolute;
+  inset: 0;
+  transform-origin: 50% 92%; /* squash/stretch anchored at the feet */
+  will-change: transform;
+}
+
+/* Shadow stays on the floor regardless of squash */
+.cat-shadow {
+  position: absolute;
+  left: 50%; bottom: -6px;
+  width: 78%; height: 16px;
+  transform: translateX(-50%) scaleX(var(--shadow, 1));
+  background: radial-gradient(ellipse, rgba(0,0,0,0.38), transparent 70%);
+  z-index: -1;
+}
+
+/* ---- Body ---- */
+.cat-body {
+  position: absolute;
+  left: 14%; right: 14%; bottom: 4%;
+  height: 62%;
+  background: linear-gradient(160deg, #ffb15c, #f08a3c);
+  border-radius: 48% 48% 42% 42% / 60% 60% 40% 40%;
+  box-shadow: inset 0 -6px 10px rgba(150, 70, 10, 0.3);
+}
+.cat-belly {
+  position: absolute;
+  left: 28%; right: 28%; bottom: 8%;
+  height: 50%;
+  background: #ffe6c4;
+  border-radius: 50% 50% 46% 46%;
+  opacity: 0.9;
+}
+
+/* ---- Legs (back wiggle during crouch) ---- */
+.cat-leg {
+  position: absolute;
+  bottom: -2%;
+  width: 18%; height: 22%;
+  background: #f0883a;
+  border-radius: 40% 40% 50% 50%;
+}
+.cat-leg.left { left: 16%; }
+.cat-leg.right { right: 16%; }
+.cat.crouching .cat-leg { animation: leg-wiggle 0.18s ease-in-out infinite; }
+.cat.crouching .cat-leg.right { animation-delay: 0.09s; }
+
+/* ---- Tail ---- */
+.cat-tail {
+  position: absolute;
+  right: 2%; bottom: 26%;
+  width: 40%; height: 14px;
+  background: #f08a3c;
+  border-radius: 10px;
+  transform-origin: left center;
+  animation: tail-sway 2.4s ease-in-out infinite;
+}
+.cat[data-mood="enraged"] .cat-tail,
+.cat[data-mood="frustrated"] .cat-tail { animation-duration: 0.7s; }
+.cat[data-mood="tired"] .cat-tail { animation-duration: 4s; }
+
+/* ---- Head ---- */
+.cat-head {
+  position: absolute;
+  left: 50%; top: 0;
+  width: 70%; height: 56%;
+  transform: translateX(-50%);
+  transform-origin: 50% 100%;
+  will-change: transform;
+}
+.cat-head-shape {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(160deg, #ffb15c, #f3923f);
+  border-radius: 46% 46% 44% 44%;
+  box-shadow: inset 0 -4px 8px rgba(150, 70, 10, 0.25);
+}
+.cat-ear {
+  position: absolute;
+  top: -28%;
+  width: 38%; height: 46%;
+  background: #f3923f;
+  border-radius: 50% 50% 8% 8%;
+}
+.cat-ear::after {
+  content: ""; position: absolute; inset: 26% 26% 8%;
+  background: #ff9eb6; border-radius: 50% 50% 8% 8%;
+}
+.cat-ear.left { left: -6%; transform: rotate(-16deg); transform-origin: bottom center; }
+.cat-ear.right { right: -6%; transform: rotate(16deg); transform-origin: bottom center; }
+.cat[data-mood="focused"] .cat-ear.left,
+.cat[data-mood="enraged"] .cat-ear.left { transform: rotate(-30deg); }
+.cat[data-mood="focused"] .cat-ear.right,
+.cat[data-mood="enraged"] .cat-ear.right { transform: rotate(30deg); }
+.cat[data-mood="tired"] .cat-ear.left { transform: rotate(2deg); }
+.cat[data-mood="tired"] .cat-ear.right { transform: rotate(-2deg); }
+
+/* ---- Eyes ---- */
+.cat-eye {
+  position: absolute;
+  top: 34%;
+  width: 26%; height: 30%;
+  background: #fff;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: inset 0 0 0 2px rgba(120,60,10,0.15);
+}
+.cat-eye.left { left: 16%; }
+.cat-eye.right { right: 16%; }
+.cat-pupil {
+  position: absolute;
+  left: 50%; top: 50%;
+  width: 52%; height: 60%;
+  margin-left: -26%; margin-top: -30%;
+  background: #20143a;
+  border-radius: 50%;
+  will-change: transform;
+}
+.cat-pupil::after {
+  content: ""; position: absolute; top: 16%; left: 22%;
+  width: 30%; height: 30%; background: #fff; border-radius: 50%; opacity: 0.9;
+}
+/* Blink */
+.cat.blink .cat-eye { height: 4%; }
+/* Mood-driven eye shapes */
+.cat[data-mood="focused"] .cat-eye,
+.cat[data-mood="enraged"] .cat-eye { height: 20%; border-radius: 40% 40% 50% 50%; }
+.cat[data-mood="excited"] .cat-eye { height: 36%; }
+.cat[data-mood="tired"] .cat-eye { height: 12%; top: 40%; }
+.cat[data-mood="embarrassed"] .cat-eye { height: 16%; }
+
+/* ---- Brows (emotion) ---- */
+.cat-brow {
+  position: absolute;
+  top: 24%;
+  width: 22%; height: 6%;
+  background: #b5651d;
+  border-radius: 4px;
+  opacity: 0;
+  transition: transform 0.15s, opacity 0.15s;
+}
+.cat-brow.left { left: 18%; }
+.cat-brow.right { right: 18%; }
+.cat[data-mood="focused"] .cat-brow,
+.cat[data-mood="frustrated"] .cat-brow,
+.cat[data-mood="enraged"] .cat-brow { opacity: 1; }
+.cat[data-mood="frustrated"] .cat-brow.left,
+.cat[data-mood="enraged"] .cat-brow.left { transform: rotate(18deg); }
+.cat[data-mood="frustrated"] .cat-brow.right,
+.cat[data-mood="enraged"] .cat-brow.right { transform: rotate(-18deg); }
+
+/* ---- Nose + mouth ---- */
+.cat-nose {
+  position: absolute;
+  left: 50%; top: 56%;
+  width: 10%; height: 8%;
+  margin-left: -5%;
+  background: #ff7aa2;
+  border-radius: 50% 50% 60% 60%;
+}
+.cat-mouth {
+  position: absolute;
+  left: 50%; top: 66%;
+  width: 22%; height: 12%;
+  margin-left: -11%;
+  border-bottom: 3px solid #b5651d;
+  border-radius: 0 0 50% 50%;
+  opacity: 0.7;
+}
+.cat[data-mood="enraged"] .cat-mouth,
+.cat[data-mood="frustrated"] .cat-mouth {
+  border-bottom: none;
+  border-top: 3px solid #b5651d;
+  border-radius: 50% 50% 0 0;
+  top: 70%;
+}
+
+/* ---- Animations ---- */
+@keyframes tail-sway {
+  0%, 100% { transform: rotate(8deg); }
+  50% { transform: rotate(-22deg); }
+}
+@keyframes leg-wiggle {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(3px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cat-tail { animation: none; }
+  .cat.crouching .cat-leg { animation: none; }
+}

@@ -1,0 +1,29 @@
+<svg viewBox="0 0 140 160" xmlns="http://www.w3.org/2000/svg">
+  <!-- TEMPORARY placeholder — original "Pixels & Patches" patchwork mascot.
+       Soft stitched body, mismatched fabric panels, pixel details, a sprout. -->
+  <!-- sprout (nature feature) -->
+  <path d="M70 30 C70 16 70 8 70 4" stroke="#4f9d6b" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <ellipse cx="62" cy="12" rx="8" ry="12" fill="#5fb37c" transform="rotate(-28 62 12)"/>
+  <ellipse cx="80" cy="14" rx="7" ry="10" fill="#57a974" transform="rotate(26 80 14)"/>
+  <!-- body -->
+  <path d="M22 96 C22 52 48 32 70 32 C92 32 118 52 118 96 C118 132 96 150 70 150 C44 150 22 132 22 96 Z" fill="#e9c98f"/>
+  <!-- mismatched fabric panels -->
+  <path d="M70 32 C92 32 118 52 118 96 C118 112 114 124 106 134 L70 96 Z" fill="#f49e4f" opacity="0.85"/>
+  <path d="M22 96 C22 70 32 52 46 42 L70 96 L40 138 C28 126 22 112 22 96 Z" fill="#9cc6b0" opacity="0.8"/>
+  <!-- stitch seams -->
+  <path d="M70 34 L70 96 L106 132" stroke="#7a5836" stroke-width="1.6" stroke-dasharray="3 4" fill="none"/>
+  <path d="M70 96 L40 136" stroke="#7a5836" stroke-width="1.6" stroke-dasharray="3 4" fill="none"/>
+  <path d="M46 44 L70 96" stroke="#7a5836" stroke-width="1.6" stroke-dasharray="3 4" fill="none"/>
+  <!-- pixel details -->
+  <rect x="30" y="100" width="6" height="6" fill="#1353be" opacity="0.7"/>
+  <rect x="36" y="106" width="6" height="6" fill="#1353be" opacity="0.5"/>
+  <rect x="104" y="70" width="6" height="6" fill="#1353be" opacity="0.6"/>
+  <!-- outline -->
+  <path d="M22 96 C22 52 48 32 70 32 C92 32 118 52 118 96 C118 132 96 150 70 150 C44 150 22 132 22 96 Z" fill="none" stroke="#7a5836" stroke-width="2.4"/>
+  <!-- face -->
+  <circle class="mascot-eye" cx="56" cy="92" r="5" fill="#1a1612"/>
+  <circle class="mascot-eye" cx="84" cy="92" r="5" fill="#1a1612"/>
+  <path d="M60 108 q10 8 20 0" stroke="#1a1612" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+  <circle cx="46" cy="104" r="4" fill="#f49e4f" opacity="0.5"/>
+  <circle cx="94" cy="104" r="4" fill="#f49e4f" opacity="0.5"/>
+</svg>

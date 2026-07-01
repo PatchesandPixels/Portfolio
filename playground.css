@@ -1,0 +1,307 @@
+/* ════════════════════════════════════════════════════════════════
+   PLAYGROUND.CSS — "Patch Notes Playground" hero module
+   Software-patch metaphor (fixes / iteration / debugging) — NOT fabric.
+   Scoped to .playground + the left-column scroll cue. Lives in the
+   right column of the existing .hero grid; everything else untouched.
+   ════════════════════════════════════════════════════════════════ */
+
+/* ── left-column scroll cue ── */
+.hero-scrollcue {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 2.2em;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.hero-scrollcue .cue-chev {
+  display: inline-block;
+  animation: cue-bob 2.2s var(--ease-out) infinite;
+}
+@keyframes cue-bob {
+  0%, 100% { transform: translateY(-1px); opacity: 0.55; }
+  50%      { transform: translateY(3px);  opacity: 1; }
+}
+
+/* ── panel shell ── */
+.playground {
+  position: relative;
+  width: 100%;
+  border-radius: 22px;
+  background:
+    radial-gradient(circle at 1px 1px, rgba(26,22,18,0.06) 1px, transparent 0) 0 0 / 18px 18px,
+    linear-gradient(180deg, #fffdfb 0%, #fbf5ef 100%);
+  border: 1px solid var(--border);
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.8) inset,
+    0 18px 44px rgba(26,22,18,0.12),
+    0 4px 12px rgba(26,22,18,0.06);
+  padding: clamp(16px, 1.4vw, 22px);
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* ── header ── */
+.pg-head {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 4px;
+}
+.pg-title {
+  font-family: var(--font-display);
+  font-variation-settings: var(--font-variation);
+  font-weight: 560;
+  font-size: clamp(1.05rem, 1.5vw, 1.3rem);
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
+.pg-badge {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: rgba(232, 85, 47, 0.1);
+  border: 1px solid rgba(232, 85, 47, 0.3);
+  border-radius: 999px;
+  padding: 3px 9px;
+  transform: translateY(-2px);
+}
+.pg-help {
+  width: 100%;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin: 2px 0 0;
+}
+.pg-help .blink {
+  color: var(--accent);
+  animation: pg-blink 1.4s steps(1) infinite;
+}
+@keyframes pg-blink { 0%, 50% { opacity: 1; } 51%, 100% { opacity: 0; } }
+
+/* ── stage: draggable field + patch zone ── */
+.pg-stage {
+  position: relative;
+  height: clamp(348px, 46vh, 432px);
+  margin: 14px 0 12px;
+  touch-action: pan-y;          /* page can still scroll vertically over the field */
+}
+
+/* patch zone — right side target */
+.pg-zone {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 40%;
+  height: 52%;
+  border: 1.5px dashed rgba(232, 85, 47, 0.55);
+  border-radius: 16px;
+  background: rgba(232, 85, 47, 0.04);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  text-align: center;
+  transition: background var(--dur-fast) var(--ease-out),
+              border-color var(--dur-fast) var(--ease-out),
+              box-shadow var(--dur-med) var(--ease-out),
+              transform var(--dur-med) var(--ease-spring);
+}
+.pg-zone-label {
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.pg-zone-sub {
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  color: var(--text-muted);
+}
+.pg-zone-icon {
+  font-size: 1.1rem;
+  filter: grayscale(0.1);
+}
+.pg-zone.is-hot {
+  background: rgba(232, 85, 47, 0.12);
+  border-color: var(--accent);
+  border-style: solid;
+  box-shadow: 0 0 0 4px rgba(232, 85, 47, 0.12), 0 14px 30px rgba(232, 85, 47, 0.18);
+  transform: scale(1.02);
+}
+.pg-zone.is-pulse { animation: pg-pulse 520ms var(--ease-spring); }
+@keyframes pg-pulse {
+  0% { transform: scale(1.02); }
+  40% { transform: scale(1.06); }
+  100% { transform: scale(1); }
+}
+
+/* ── tokens ── */
+.patch-token {
+  position: absolute;
+  left: 0; top: 0;
+  z-index: 2;
+  cursor: grab;
+  touch-action: none;
+  will-change: transform;
+  /* JS sets transform: translate(x,y). Idle float lives on the inner span
+     so it never fights the drag transform. */
+}
+.patch-token.is-dragging { cursor: grabbing; z-index: 20; }
+.patch-token-in {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 12px;
+  border-radius: 11px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  box-shadow: 0 6px 16px rgba(26,22,18,0.12);
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  white-space: nowrap;
+  color: var(--text-primary);
+  transition: box-shadow var(--dur-fast) var(--ease-out),
+              transform var(--dur-fast) var(--ease-spring),
+              background var(--dur-med) var(--ease-out),
+              border-color var(--dur-med) var(--ease-out),
+              color var(--dur-med) var(--ease-out);
+}
+.patch-token:hover .patch-token-in { box-shadow: 0 10px 22px rgba(26,22,18,0.18); transform: translateY(-2px); }
+.patch-token.is-dragging .patch-token-in { box-shadow: 0 16px 30px rgba(26,22,18,0.24); transform: scale(1.05); }
+
+/* idle float — subtle, premium; paused while dragging or once patched */
+.patch-token:not(.is-patched):not(.is-dragging) .patch-token-in {
+  animation: tok-float 5.5s ease-in-out infinite;
+  animation-delay: var(--float-delay, 0ms);
+}
+@keyframes tok-float {
+  0%, 100% { translate: 0 0; }
+  50%      { translate: 0 -4px; }
+}
+
+/* pixel-block icon (pixel-inspired, not fabric) */
+.tok-dot {
+  width: 9px; height: 9px;
+  flex: none;
+  background: var(--accent);
+  box-shadow: 2px 0 0 var(--accent), 0 2px 0 rgba(232,85,47,0.4);
+  border-radius: 1px;
+}
+.patch-token[data-kind="neutral"] .tok-dot { background: var(--accent-blue); box-shadow: 2px 0 0 var(--accent-blue); }
+.tok-check { display: none; color: var(--accent); font-weight: 700; }
+
+/* patched state */
+.patch-token.is-patched .patch-token-in {
+  background: rgba(232, 85, 47, 0.1);
+  border-color: rgba(232, 85, 47, 0.5);
+  color: var(--accent);
+}
+.patch-token.is-patched .tok-dot { display: none; }
+.patch-token.is-patched .tok-check { display: inline; }
+
+/* ── patched output card ── */
+.pg-output {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 40%;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 12px;
+  box-shadow: 0 8px 20px rgba(26,22,18,0.08);
+}
+.pg-output-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+.pg-output-title .dot { width: 7px; height: 7px; border-radius: 50%; background: #34c759; box-shadow: 0 0 0 3px rgba(52,199,89,0.15); }
+.pg-output-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.pg-output-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  transition: color var(--dur-med) var(--ease-out);
+}
+.pg-output-item .box {
+  width: 15px; height: 15px;
+  flex: none;
+  border: 1.5px solid var(--border);
+  border-radius: 5px;
+  display: grid;
+  place-items: center;
+  font-size: 0.6rem;
+  color: transparent;
+  transition: background var(--dur-med) var(--ease-out),
+              border-color var(--dur-med) var(--ease-out),
+              color var(--dur-med) var(--ease-out);
+}
+.pg-output-item.is-done { color: var(--text-primary); }
+.pg-output-item.is-done .box { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+/* ── foot ── */
+.pg-foot {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  color: var(--text-primary);
+  margin: 2px 0 0;
+}
+.pg-foot strong { color: var(--accent); font-weight: 600; }
+
+/* ── entrance (rides the existing .hero.is-in) ── */
+html.js .playground { opacity: 0; translate: 0 24px; transition: opacity var(--dur-slow) var(--ease-out), translate var(--dur-slow) var(--ease-spring); transition-delay: 120ms; }
+html.js .hero.is-in .playground { opacity: 1; translate: 0 0; }
+
+/* ── reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .patch-token .patch-token-in,
+  .hero-scrollcue .cue-chev,
+  .pg-help .blink { animation: none; }
+  html.js .playground { opacity: 1; translate: 0 0; transition: none; }
+  .pg-zone.is-pulse { animation: none; }
+}
+
+/* ── responsive ── */
+@media (max-width: 900px) {
+  .playground { max-width: 560px; }
+  .pg-stage { height: clamp(360px, 60vw, 420px); }
+  .hero-scrollcue { display: none; }
+}
+@media (max-width: 540px) {
+  /* cramped: simplify — tokens become a tappable wrap row, zone/output stack */
+  .pg-stage {
+    height: auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-content: flex-start;
+  }
+  .patch-token { position: static !important; }
+  .patch-token .patch-token-in { animation: none; }
+  .pg-zone, .pg-output {
+    position: static;
+    width: 100%;
+    margin-top: 12px;
+  }
+  .pg-zone { height: auto; padding: 14px; }
+}

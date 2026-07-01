@@ -7,6 +7,13 @@
       "runtimeArgs": ["serve", "."],
       "port": 3456,
       "autoPort": true
+    },
+    {
+      "name": "cat-game",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["serve", "cat-game"],
+      "port": 8123,
+      "autoPort": true
     }
   ]
 }

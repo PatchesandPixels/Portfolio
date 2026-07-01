@@ -1,0 +1,16 @@
+<svg viewBox="0 0 240 320" xmlns="http://www.w3.org/2000/svg">
+  <!-- TEMPORARY placeholder — open shelving / cabinet. -->
+  <rect x="16" y="10" width="208" height="300" rx="10" fill="#caa06f"/>
+  <rect x="16" y="10" width="208" height="300" rx="10" fill="#000" opacity="0.04"/>
+  <!-- inner shelves -->
+  <rect x="30" y="24" width="180" height="86" rx="5" fill="#f3e8d8"/>
+  <rect x="30" y="120" width="180" height="86" rx="5" fill="#f3e8d8"/>
+  <rect x="30" y="216" width="180" height="80" rx="5" fill="#efe0cc"/>
+  <!-- shelf shadows -->
+  <rect x="30" y="24" width="180" height="10" rx="4" fill="#000" opacity="0.06"/>
+  <rect x="30" y="120" width="180" height="10" rx="4" fill="#000" opacity="0.06"/>
+  <!-- a couple of books on top shelf -->
+  <rect x="42" y="52" width="14" height="54" rx="2" fill="#1353be"/>
+  <rect x="58" y="46" width="14" height="60" rx="2" fill="#f49e4f"/>
+  <rect x="74" y="58" width="14" height="48" rx="2" fill="#7a6f63"/>
+</svg>

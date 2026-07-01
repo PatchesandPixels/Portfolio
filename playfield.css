@@ -1,0 +1,201 @@
+/* ════════════════════════════════════════════════════════════════
+   PLAYFIELD.CSS — playful, panel-less "toss a pixel" object field
+   Right column of the existing .hero grid. No box/panel — a clean
+   canvas with a few tactile, tossable objects. Scoped to .playfield
+   + the left-column scroll cue. Everything else untouched.
+   ════════════════════════════════════════════════════════════════ */
+
+/* ── left-column scroll cue ── */
+.hero-scrollcue {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 2.2em;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.hero-scrollcue .cue-chev { display: inline-block; animation: cue-bob 2.2s var(--ease-out) infinite; }
+@keyframes cue-bob {
+  0%, 100% { transform: translateY(-1px); opacity: 0.55; }
+  50%      { transform: translateY(3px);  opacity: 1; }
+}
+
+/* ── left-column tagline (mono, under the statement) ── */
+.hero-tagline {
+  font-family: var(--font-mono);
+  font-size: clamp(0.74rem, 1vw, 0.86rem);
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  margin: -1em 0 2em;
+}
+.hero-tagline b { color: var(--accent); font-weight: 600; }
+
+/* ── the field (no panel) ── */
+.playfield {
+  position: relative;
+  width: 100%;
+  height: clamp(380px, 50vh, 480px);
+  touch-action: pan-y;     /* page still scrolls vertically over the field */
+}
+
+/* decorative dashed trails / curved arrows behind the objects */
+.pf-trails {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  overflow: visible;
+  color: var(--accent);
+}
+.pf-trails path { stroke-dasharray: 4 7; opacity: 0.35; }
+.pf-trails .trail-anim { animation: trail-dash 9s linear infinite; }
+@keyframes trail-dash { to { stroke-dashoffset: -110; } }
+
+/* "Toss a pixel" hint */
+.pf-hint {
+  position: absolute;
+  top: 6px;
+  left: 8%;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+.pf-hint .hint-arrow { color: var(--accent); animation: hint-nudge 2.6s var(--ease-out) infinite; }
+@keyframes hint-nudge { 0%,100% { transform: translate(0,0); opacity: 0.6; } 50% { transform: translate(3px,2px); opacity: 1; } }
+
+/* ── objects ── */
+.play-obj {
+  position: absolute;
+  left: 0; top: 0;
+  z-index: 2;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: grab;
+  touch-action: none;
+  will-change: transform;     /* JS sets transform: translate(x,y) */
+}
+.play-obj.is-dragging { cursor: grabbing; z-index: 20; }
+.play-obj:focus-visible { outline: 2px solid var(--accent-blue); outline-offset: 4px; border-radius: 12px; }
+
+/* inner wrapper carries rotation, hover-lift and idle float so they
+   never fight the JS drag transform on the outer element */
+.po-in {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  rotate: var(--rot, 0deg);
+  filter: drop-shadow(0 8px 16px rgba(26,22,18,0.16));
+  transition: translate var(--dur-fast) var(--ease-spring),
+              filter var(--dur-fast) var(--ease-out),
+              scale var(--dur-fast) var(--ease-spring);
+}
+.play-obj:hover .po-in { scale: 1.06; filter: drop-shadow(0 14px 24px rgba(26,22,18,0.24)); }
+.play-obj.is-dragging .po-in { scale: 1.1; filter: drop-shadow(0 20px 32px rgba(26,22,18,0.28)); }
+
+.play-obj:not(.is-dragging) .po-in { animation: obj-float 6s ease-in-out infinite; animation-delay: var(--float-delay, 0ms); }
+@keyframes obj-float { 0%,100% { translate: 0 0; } 50% { translate: 0 -6px; } }
+
+/* chips (AI / Motion / Systems / UI Kit label style) */
+.obj-chip .po-in {
+  padding: 9px 14px;
+  border-radius: 12px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+.obj-chip .chip-dot { width: 8px; height: 8px; border-radius: 2px; background: var(--accent); }
+.obj-chip[data-accent="blue"] .chip-dot { background: var(--accent-blue); }
+.obj-chip[data-accent="amber"] .chip-dot { background: var(--accent-orange); }
+
+/* pixel ball — tactile orange sphere with a pixel highlight */
+.obj-ball .po-in {
+  width: 54px; height: 54px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 34% 30%, #ffb47a 0%, var(--accent) 55%, #c2421f 100%);
+}
+.obj-ball .po-in::after {
+  content: ""; width: 7px; height: 7px; border-radius: 1px;
+  background: rgba(255,255,255,0.85);
+  position: absolute; top: 12px; left: 14px;
+}
+
+/* white icon tiles (cursor, cat, folder, sparkle, heart, UI kit) */
+.obj-tile .po-in {
+  width: 56px; height: 56px;
+  border-radius: 14px;
+  background: var(--white);
+  border: 1px solid var(--border);
+}
+.obj-tile.obj-uikit .po-in { width: auto; height: auto; padding: 10px 12px; border-radius: 14px; flex-direction: column; gap: 6px; align-items: flex-start; }
+.po-in svg { display: block; }
+
+/* UI Kit mini swatches */
+.uikit-label { font-family: var(--font-mono); font-size: 0.66rem; color: var(--text-primary); }
+.uikit-swatches { display: flex; gap: 4px; }
+.uikit-swatches i { width: 16px; height: 8px; border-radius: 3px; }
+.uikit-swatches i:nth-child(1) { background: var(--accent); }
+.uikit-swatches i:nth-child(2) { background: var(--accent-blue); }
+.uikit-swatches i:nth-child(3) { background: var(--text-primary); }
+
+/* ── cat paw entering from the right edge (decorative) ── */
+.pf-paw {
+  position: absolute;
+  right: -18px;
+  top: 28%;
+  width: 78px;
+  z-index: 1;
+  pointer-events: none;
+  transform-origin: right center;
+  animation: paw-peek 7s var(--ease-out) infinite;
+}
+@keyframes paw-peek {
+  0%, 70%, 100% { transform: translateX(40%) rotate(6deg); }
+  78%, 92%      { transform: translateX(0%)  rotate(-2deg); }
+}
+
+/* ── entrance (rides the existing .hero.is-in) ── */
+html.js .playfield { opacity: 0; translate: 0 18px; transition: opacity var(--dur-slow) var(--ease-out), translate var(--dur-slow) var(--ease-spring); transition-delay: 120ms; }
+html.js .hero.is-in .playfield { opacity: 1; translate: 0 0; }
+
+/* ── reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .play-obj .po-in,
+  .pf-trails .trail-anim,
+  .pf-hint .hint-arrow,
+  .hero-scrollcue .cue-chev,
+  .pf-paw { animation: none; }
+  html.js .playfield { opacity: 1; translate: 0 0; transition: none; }
+}
+
+/* ── responsive ── */
+@media (max-width: 900px) {
+  .playfield { height: clamp(300px, 46vw, 380px); max-width: 560px; }
+  .hero-scrollcue { display: none; }
+  /* tablet: thin the field — hide the lower-priority objects */
+  .play-obj.obj-secondary { display: none; }
+}
+@media (max-width: 540px) {
+  .playfield { height: 250px; margin-top: 4px; }
+  .pf-hint { font-size: 0.66rem; }
+  .pf-paw { width: 60px; }
+  /* keep the phone field calm — show just a few objects */
+  .play-obj.obj-cat,
+  .play-obj.obj-heart,
+  .play-obj.obj-chip[data-accent="blue"] { display: none; }
+}

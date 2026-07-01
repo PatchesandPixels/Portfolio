@@ -1,0 +1,314 @@
+/* ============================================================
+   main.css — layout, theme, HUD, overlays, mouse character, marker
+   ============================================================ */
+
+:root {
+  --bg-1: #2a2440;
+  --bg-2: #1a1730;
+  --ink: #f4f1ff;
+  --muted: #b6aee0;
+  --accent: #ffd166;
+  --accent-2: #ff7aa2;
+  --danger: #ff5a5f;
+  --good: #6ee7b7;
+  --panel: rgba(28, 24, 52, 0.92);
+  --radius: 16px;
+  --font: "Trebuchet MS", "Segoe UI", system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  font-family: var(--font);
+  color: var(--ink);
+  background: radial-gradient(circle at 50% 30%, var(--bg-1), var(--bg-2));
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+#game {
+  position: fixed;
+  inset: 0;
+}
+
+/* ---- Arena ---- */
+#arena {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  /* Soft "floor" so the cat has a ground to interact with */
+  background:
+    radial-gradient(ellipse 70% 50% at 50% 100%, rgba(255, 209, 102, 0.06), transparent 70%);
+}
+/* Mouse-character mode hides the native cursor only inside the arena. */
+#game[data-cursor="sprite"] #arena { cursor: none; }
+#game[data-cursor="native"] #arena { cursor: default; }
+/* Always show the real cursor when not actively playing, so UI is usable. */
+#game[data-state="start"] #arena,
+#game[data-state="paused"] #arena,
+#game[data-state="gameover"] #arena { cursor: default; }
+
+#fx-layer, #entity-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+#entity-layer { z-index: 2; }
+#fx-layer { z-index: 1; }
+
+/* ---- Mouse character (the player) ---- */
+.mouse {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--mouse-size, 26px);
+  height: var(--mouse-size, 26px);
+  margin-left: calc(var(--mouse-size, 26px) / -2);
+  margin-top: calc(var(--mouse-size, 26px) / -2);
+  z-index: 5;
+  will-change: transform;
+}
+.mouse-body {
+  position: absolute;
+  inset: 18% 8%;
+  background: linear-gradient(160deg, #d9d2f0, #9b91c9);
+  border-radius: 50% 50% 48% 48%;
+  box-shadow: inset 0 -2px 3px rgba(0,0,0,0.2);
+}
+.mouse-ear {
+  position: absolute;
+  width: 42%;
+  height: 42%;
+  top: -8%;
+  background: #c7bfe6;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 3px #a99fd6;
+}
+.mouse-ear.left { left: -6%; }
+.mouse-ear.right { right: -6%; }
+.mouse-eye {
+  position: absolute;
+  width: 14%;
+  height: 14%;
+  background: #1a1730;
+  border-radius: 50%;
+  top: 38%;
+}
+.mouse-eye.left { left: 32%; }
+.mouse-eye.right { right: 32%; }
+.mouse-tail {
+  position: absolute;
+  width: 60%;
+  height: 4px;
+  right: -52%;
+  top: 58%;
+  background: #b7aede;
+  border-radius: 4px;
+  transform-origin: left center;
+  animation: tail-mouse 1.2s ease-in-out infinite;
+}
+/* Optional faint hitbox ring (accessibility assist) */
+.mouse-hitbox {
+  position: absolute;
+  left: 50%; top: 50%;
+  width: calc(var(--hitbox, 18px) * 2);
+  height: calc(var(--hitbox, 18px) * 2);
+  margin-left: calc(var(--hitbox, 18px) * -1);
+  margin-top: calc(var(--hitbox, 18px) * -1);
+  border: 1px dashed rgba(255, 255, 255, 0.35);
+  border-radius: 50%;
+  opacity: 0;
+}
+#game[data-assist="on"] .mouse-hitbox { opacity: 1; }
+
+@keyframes tail-mouse {
+  0%, 100% { transform: rotate(-6deg); }
+  50% { transform: rotate(10deg); }
+}
+
+/* ---- Lunge telegraph marker ---- */
+.lunge-marker {
+  position: absolute;
+  top: 0; left: 0;
+  border-radius: 50%;
+  border: 3px solid var(--danger);
+  background: radial-gradient(circle, rgba(255, 90, 95, 0.18), rgba(255, 90, 95, 0.04) 70%, transparent);
+  box-shadow: 0 0 18px rgba(255, 90, 95, 0.45);
+  z-index: 3;
+  will-change: transform, opacity;
+}
+.lunge-marker::after {
+  /* Inner shrinking ring = countdown to impact */
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px dashed rgba(255, 255, 255, 0.7);
+  transform: scale(var(--countdown, 1));
+  transition: none;
+}
+
+/* ============================================================
+   HUD
+   ============================================================ */
+#hud {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  z-index: 20;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 14px 18px;
+  gap: 16px;
+  pointer-events: none;
+}
+#hud .hud-left, #hud .hud-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--panel);
+  padding: 8px 14px;
+  border-radius: var(--radius);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 6px 22px rgba(0,0,0,0.3);
+}
+.hud-stat, .hud-mood { display: flex; flex-direction: column; line-height: 1.05; }
+.hud-label { font-size: 10px; letter-spacing: 0.12em; color: var(--muted); }
+.hud-stat span:last-child, .hud-mood span:last-child {
+  font-size: 20px; font-weight: 700; font-variant-numeric: tabular-nums;
+}
+#hud-mood { font-size: 15px; text-transform: capitalize; color: var(--accent); }
+
+.heat-wrap {
+  width: 90px; height: 10px;
+  background: rgba(255,255,255,0.12);
+  border-radius: 6px; overflow: hidden;
+  align-self: center;
+}
+#heat-bar {
+  height: 100%; width: 0%;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2), var(--danger));
+  transition: width 0.2s ease;
+}
+.hud-btn {
+  pointer-events: auto;
+  cursor: pointer;
+  border: none;
+  background: rgba(255,255,255,0.1);
+  color: var(--ink);
+  width: 38px; height: 38px;
+  border-radius: 10px;
+  font-size: 18px;
+  transition: background 0.15s, transform 0.1s;
+}
+.hud-btn:hover { background: rgba(255,255,255,0.2); }
+.hud-btn:active { transform: scale(0.92); }
+
+/* ---- Stage-up banner ---- */
+.stage-banner {
+  position: absolute;
+  top: 20%;
+  left: 50%;
+  z-index: 25;
+  text-align: center;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateX(-50%) translateY(-10px) scale(0.9);
+}
+.stage-banner.show {
+  animation: stage-pop 1.8s ease forwards;
+}
+.stage-banner .stage-num {
+  font-size: 14px;
+  letter-spacing: 0.3em;
+  color: var(--accent);
+  text-transform: uppercase;
+}
+.stage-banner .stage-name {
+  font-size: 34px;
+  font-weight: 800;
+  color: var(--ink);
+  text-shadow: 0 4px 18px rgba(0,0,0,0.5);
+}
+@keyframes stage-pop {
+  0%   { opacity: 0; transform: translateX(-50%) translateY(-10px) scale(0.9); }
+  15%  { opacity: 1; transform: translateX(-50%) translateY(0) scale(1.05); }
+  30%  { transform: translateX(-50%) translateY(0) scale(1); }
+  80%  { opacity: 1; }
+  100% { opacity: 0; transform: translateX(-50%) translateY(-8px) scale(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .stage-banner.show { animation-duration: 1.2s; }
+}
+
+/* ============================================================
+   Overlays
+   ============================================================ */
+.overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(12, 10, 26, 0.6);
+  backdrop-filter: blur(4px);
+}
+.overlay.hidden { display: none; }
+.panel {
+  background: var(--panel);
+  padding: 36px 44px;
+  border-radius: 22px;
+  text-align: center;
+  max-width: 460px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  animation: pop-in 0.25s ease;
+}
+.panel h1 { font-size: 44px; margin: 0 0 12px; line-height: 1.05; }
+.panel h2 { font-size: 34px; margin: 0 0 18px; }
+.panel .accent { color: var(--accent); }
+.panel p { color: var(--muted); margin: 6px 0; }
+.panel .hint { color: var(--accent-2); }
+.panel .micro { font-size: 12px; color: var(--muted); margin-top: 18px; }
+.panel .result { color: var(--ink); font-size: 18px; }
+.panel .result span { color: var(--accent); font-weight: 700; }
+
+.big-btn {
+  margin-top: 20px;
+  cursor: pointer;
+  border: none;
+  background: linear-gradient(120deg, var(--accent), var(--accent-2));
+  color: #2a1730;
+  font-weight: 800;
+  font-size: 20px;
+  padding: 14px 30px;
+  border-radius: 14px;
+  transition: transform 0.1s, box-shadow 0.15s;
+  box-shadow: 0 8px 20px rgba(255, 122, 162, 0.35);
+}
+.big-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 26px rgba(255,122,162,0.45); }
+.big-btn:active { transform: translateY(0) scale(0.97); }
+.ghost-btn {
+  display: block;
+  margin: 12px auto 0;
+  cursor: pointer;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.25);
+  color: var(--muted);
+  padding: 8px 18px;
+  border-radius: 10px;
+}
+.ghost-btn:hover { color: var(--ink); border-color: rgba(255,255,255,0.5); }
+
+@keyframes pop-in {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .panel { animation: none; }
+  .mouse-tail { animation: none; }
+}

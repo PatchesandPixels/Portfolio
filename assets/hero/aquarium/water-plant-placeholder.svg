@@ -1,0 +1,6 @@
+<svg viewBox="0 0 44 96" xmlns="http://www.w3.org/2000/svg">
+  <!-- TEMPORARY placeholder — aquatic plant (sways via CSS transform-origin bottom). -->
+  <path d="M22 96 C10 72 12 50 20 30 C24 20 24 10 22 2" stroke="#4f9d6b" stroke-width="6" fill="none" stroke-linecap="round"/>
+  <path d="M22 78 C32 70 38 56 36 44" stroke="#5fb37c" stroke-width="5" fill="none" stroke-linecap="round"/>
+  <path d="M22 60 C12 52 8 42 10 30" stroke="#5fb37c" stroke-width="5" fill="none" stroke-linecap="round"/>
+</svg>

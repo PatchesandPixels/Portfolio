@@ -1,0 +1,78 @@
+/* ============================================================
+   effects.css — transient feedback: dust, stars, near-miss, shake
+   All effects are short-lived nodes added/removed by Renderer.
+   ============================================================ */
+
+.fx {
+  position: absolute;
+  top: 0; left: 0;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+/* Dust puff on landing */
+.fx-dust {
+  width: 16px; height: 16px;
+  margin: -8px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,255,0.7), rgba(200,190,230,0.2) 70%, transparent);
+  animation: dust 0.5s ease-out forwards;
+}
+@keyframes dust {
+  from { transform: scale(0.4); opacity: 0.9; }
+  to { transform: scale(2.4); opacity: 0; }
+}
+
+/* Impact stars (humorous "ow") */
+.fx-star {
+  font-size: 20px;
+  margin: -10px;
+  animation: star 0.6s ease-out forwards;
+}
+@keyframes star {
+  0% { transform: translateY(0) scale(0.5) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(-34px) scale(1.1) rotate(40deg); opacity: 0; }
+}
+
+/* Near-miss spark + floating score */
+.fx-nearmiss {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--good);
+  text-shadow: 0 2px 6px rgba(0,0,0,0.4);
+  margin: -8px;
+  white-space: nowrap;
+  animation: float-up 0.8s ease-out forwards;
+}
+@keyframes float-up {
+  0% { transform: translateY(0) scale(0.8); opacity: 0; }
+  20% { transform: translateY(-6px) scale(1.1); opacity: 1; }
+  100% { transform: translateY(-40px) scale(1); opacity: 0; }
+}
+
+.fx-ring {
+  border: 2px solid var(--good);
+  border-radius: 50%;
+  width: 30px; height: 30px;
+  margin: -15px;
+  animation: ring 0.5s ease-out forwards;
+}
+@keyframes ring {
+  from { transform: scale(0.5); opacity: 0.8; }
+  to { transform: scale(2.2); opacity: 0; }
+}
+
+/* Screen shake on impact */
+#game.shake { animation: shake 0.32s ease; }
+@keyframes shake {
+  0%, 100% { transform: translate(0, 0); }
+  20% { transform: translate(-6px, 3px); }
+  40% { transform: translate(5px, -4px); }
+  60% { transform: translate(-4px, -3px); }
+  80% { transform: translate(3px, 4px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #game.shake { animation: none; }
+  .fx-dust, .fx-star { animation-duration: 0.25s; }
+}

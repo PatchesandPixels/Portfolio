@@ -1,0 +1,8 @@
+<svg viewBox="0 0 420 150" xmlns="http://www.w3.org/2000/svg">
+  <!-- TEMPORARY placeholder — foreground rug (ellipse). -->
+  <ellipse cx="210" cy="75" rx="205" ry="68" fill="#e7d3c2"/>
+  <ellipse cx="210" cy="75" rx="205" ry="68" fill="none" stroke="#f49e4f" stroke-width="4" opacity="0.6"/>
+  <ellipse cx="210" cy="75" rx="168" ry="54" fill="none" stroke="#caa06f" stroke-width="3" opacity="0.5"/>
+  <ellipse cx="210" cy="75" rx="120" ry="38" fill="#efe0cc"/>
+  <ellipse cx="210" cy="75" rx="120" ry="38" fill="none" stroke="#1353be" stroke-width="2" opacity="0.25"/>
+</svg>

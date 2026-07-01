@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cat Game Mouse Game</title>
+  <script>
+    /* If this page is opened as a directory without a trailing slash
+       (e.g. /cat-game served from a repo-root server), the browser resolves
+       relative asset paths against the PARENT, 404-ing all CSS and JS.
+       Redirect to the slashed form so styles/ and src/ resolve correctly. */
+    (function () {
+      var p = location.pathname;
+      if (!/\/$/.test(p) && !/\.[a-z0-9]+$/i.test(p.split('/').pop())) {
+        location.replace(p + '/' + location.search + location.hash);
+      }
+    })();
+  </script>
+  <link rel="stylesheet" href="styles/main.css" />
+  <link rel="stylesheet" href="styles/cat.css" />
+  <link rel="stylesheet" href="styles/effects.css" />
+</head>
+<body>
+  <div id="game">
+    <!-- Play field. The mouse character lives here; native cursor is hidden inside it. -->
+    <div id="arena">
+      <div id="fx-layer"></div>
+      <div id="entity-layer"></div>
+    </div>
+
+    <!-- Heads-up display -->
+    <header id="hud" aria-live="polite">
+      <div class="hud-left">
+        <div class="hud-stat"><span class="hud-label">SCORE</span><span id="hud-score">0</span></div>
+        <div class="hud-stat"><span class="hud-label">TIME</span><span id="hud-time">0.0</span></div>
+        <div class="hud-stat"><span class="hud-label">STAGE</span><span id="hud-stage">1</span></div>
+      </div>
+      <div class="hud-right">
+        <div class="hud-mood"><span class="hud-label">CAT</span><span id="hud-mood">curious</span></div>
+        <div class="heat-wrap" title="Heat — rises as you bait near-misses">
+          <div id="heat-bar"></div>
+        </div>
+        <button id="btn-cursor" class="hud-btn" title="Toggle mouse character / native cursor">🐭</button>
+        <button id="btn-mute" class="hud-btn" title="Mute / unmute">🔊</button>
+        <button id="btn-pause" class="hud-btn" title="Pause (Esc)">⏸</button>
+      </div>
+    </header>
+
+    <!-- Stage-up banner (briefly shown when a new stage begins) -->
+    <div id="stage-banner" class="stage-banner"></div>
+
+    <!-- Start screen (also provides the user gesture WebAudio needs) -->
+    <div id="start-overlay" class="overlay">
+      <div class="panel">
+        <h1>Cat Game<br /><span class="accent">Mouse Game</span></h1>
+        <p>You are the mouse. A cat thinks your cursor is lunch.</p>
+        <p class="hint">Move to survive. Bait near-misses for points. One touch and it's over.</p>
+        <button id="btn-start" class="big-btn">Click to start</button>
+        <p class="micro">Esc to pause · 🐭 swaps cursor style · 🔊 mutes</p>
+      </div>
+    </div>
+
+    <!-- Pause -->
+    <div id="pause-overlay" class="overlay hidden">
+      <div class="panel">
+        <h2>Paused</h2>
+        <button id="btn-resume" class="big-btn">Resume</button>
+        <button id="btn-restart-pause" class="ghost-btn">Restart</button>
+      </div>
+    </div>
+
+    <!-- Game over -->
+    <div id="gameover-overlay" class="overlay hidden">
+      <div class="panel">
+        <h2>Caught!</h2>
+        <p class="result"><span id="go-score">0</span> points · survived <span id="go-time">0.0</span>s</p>
+        <p id="go-quip" class="hint">The cat looks extremely pleased with itself.</p>
+        <button id="btn-restart" class="big-btn">Try again</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>

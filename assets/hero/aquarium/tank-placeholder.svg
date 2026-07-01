@@ -1,0 +1,15 @@
+<svg viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg">
+  <!-- TEMPORARY placeholder — glass fish tank (empty interior; fish & plants layered via CSS). -->
+  <!-- stand -->
+  <rect x="20" y="142" width="160" height="14" rx="4" fill="#b9885a"/>
+  <!-- water -->
+  <rect x="14" y="20" width="172" height="124" rx="10" fill="#bfe3e6"/>
+  <rect x="14" y="20" width="172" height="44" rx="10" fill="#d4eef0"/>
+  <!-- gravel -->
+  <path d="M14 124 q40 -14 86 0 q46 12 86 0 v16 a10 10 0 0 1 -10 10 H24 a10 10 0 0 1 -10 -10 Z" fill="#cdb79a"/>
+  <!-- glass frame -->
+  <rect x="14" y="20" width="172" height="124" rx="10" fill="none" stroke="#9fc6cb" stroke-width="3"/>
+  <rect x="10" y="14" width="180" height="14" rx="6" fill="#a9d2d6"/>
+  <!-- glass highlight -->
+  <rect x="30" y="34" width="10" height="86" rx="5" fill="#ffffff" opacity="0.4"/>
+</svg>

@@ -1,0 +1,563 @@
+/* ════════════════════════════════════════════════════════════════
+   HERO.CSS — interactive 2.5D studio room (Pixels & Patches)
+   All artwork in assets/hero/ is TEMPORARY placeholder SVG.
+   See docs/hero-asset-manifest.md for the replacement workflow.
+   Scoped to .ihero — never touches the approved sections below.
+   ════════════════════════════════════════════════════════════════ */
+
+.ihero {
+  position: relative;
+  /* full-bleed: the room crops against the real viewport edges */
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  min-height: calc(100svh - 90px);
+  display: grid;
+  place-items: center;
+  padding: clamp(24px, 4vh, 56px) 0 clamp(40px, 6vh, 72px);
+  overflow: clip;
+}
+
+/* warm wall + soft floor plane (the page grid shows through) */
+.ihero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, transparent 0%, transparent 70%, rgba(216,205,184,0.20) 78%, rgba(216,205,184,0.30) 100%),
+    radial-gradient(120% 80% at 50% 8%, rgba(255,255,255,0.5) 0%, transparent 60%);
+}
+/* faint horizon line where wall meets floor */
+.ihero::before {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: 22%;
+  height: 1px;
+  z-index: 0;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgba(122,111,99,0.18) 18%, rgba(122,111,99,0.18) 82%, transparent);
+}
+
+/* ── Central protected copy ── */
+.ihero-center {
+  position: relative;
+  z-index: 5;
+  text-align: center;
+  max-width: 640px;
+  margin: 0 auto;
+  will-change: transform, opacity;
+}
+.ihero-center .kicker { color: var(--accent-orange); letter-spacing: 0.18em; }
+
+.ihero-name {
+  font-family: var(--font-display);
+  font-variation-settings: var(--font-variation);
+  font-weight: 560;
+  font-size: clamp(3rem, 8vw, 6.5rem);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  margin: 0.3em 0 0.25em;
+}
+.ihero-name .accent-period { color: var(--accent-orange); }
+
+.ihero-role {
+  font-family: var(--font-mono);
+  font-size: clamp(0.78rem, 1.3vw, 0.95rem);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--text-muted);
+  margin-bottom: 1.2em;
+}
+
+.ihero-statement {
+  font-size: clamp(1rem, 1.5vw, 1.2rem);
+  line-height: 1.6;
+  color: var(--text-body);
+  margin: 0 auto 1.6em;
+  max-width: 30em;
+}
+
+.ihero-ctas {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* interaction hint — secondary, fades after first interaction */
+.ihero-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 1.6em auto 0;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 600ms var(--ease-out), transform 600ms var(--ease-out);
+}
+.ihero-hint.is-shown { opacity: 0.85; transform: none; }
+.ihero-hint-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--accent-orange);
+  box-shadow: 0 0 0 0 rgba(244,158,79,0.5);
+  animation: hint-pulse 2.4s var(--ease-out) infinite;
+}
+@keyframes hint-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(244,158,79,0.5); }
+  70%, 100% { box-shadow: 0 0 0 8px rgba(244,158,79,0); }
+}
+.ihero.has-interacted .ihero-hint { opacity: 0; transform: translateY(-4px); pointer-events: none; }
+.ihero.has-interacted .ihero-hint-dot { animation: none; }
+
+.ihero-scroll {
+  position: absolute;
+  left: 50%;
+  bottom: 18px;
+  transform: translateX(-50%);
+  z-index: 5;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.ihero-scroll .chev { animation: ihero-bob 2.2s var(--ease-out) infinite; }
+@keyframes ihero-bob {
+  0%, 100% { transform: translateY(0); opacity: 0.5; }
+  50%      { transform: translateY(5px); opacity: 1; }
+}
+
+/* ── Object layer + depth groups ── */
+.ihero-objects {
+  position: absolute;
+  inset: 0;
+  z-index: 4;            /* whole studio sits BEHIND the centered copy (z5) */
+  pointer-events: none;
+}
+.studio-grp {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+.grp-heavy  { z-index: 1; }
+.grp-medium { z-index: 2; }
+.grp-light  { z-index: 3; }
+
+.ihero-obj {
+  position: absolute;
+  pointer-events: auto;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: grab;
+  touch-action: none;
+  min-width: 44px;
+  min-height: 44px;
+  filter: drop-shadow(0 10px 18px rgba(26, 22, 18, 0.18));
+  transition: filter var(--dur-fast) var(--ease-out);
+}
+.ihero-obj:hover { filter: drop-shadow(0 14px 24px rgba(26, 22, 18, 0.26)); }
+.ihero-obj.is-dragging { cursor: grabbing; z-index: 40 !important; }
+.ihero-obj img, .ihero-obj svg { display: block; width: 100%; height: auto; pointer-events: none; }
+.ihero-obj:focus-visible { outline: 2px solid var(--accent-blue); outline-offset: 4px; }
+
+/* furniture — decorative, not interactive */
+.ihero-furniture {
+  position: absolute;
+  pointer-events: none;
+  filter: drop-shadow(0 12px 22px rgba(26, 22, 18, 0.12));
+}
+.ihero-furniture img { display: block; width: 100%; height: auto; }
+
+/* ── entrance choreography (JS adds .is-in to .ihero) ── */
+html.js .ihero-center,
+html.js .ihero-scroll { opacity: 0; transform: translateY(18px); transition: opacity 600ms var(--ease-out), transform 600ms var(--ease-out); }
+html.js .ihero.is-in .ihero-center { opacity: 1; transform: none; transition-delay: 300ms; }
+html.js .ihero.is-in .ihero-scroll { opacity: 1; transform: translateX(-50%); transition-delay: 1400ms; }
+html.js .ihero-scroll { transform: translateX(-50%) translateY(18px); }
+
+html.js .ihero-obj,
+html.js .ihero-furniture {
+  opacity: 0;
+  scale: 0.86;
+  transition: opacity 700ms var(--ease-out), scale 700ms var(--ease-spring), filter var(--dur-fast) var(--ease-out);
+  transition-delay: var(--enter-delay, 500ms);
+}
+html.js .ihero.is-in .ihero-obj,
+html.js .ihero.is-in .ihero-furniture { opacity: 1; scale: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  html.js .ihero-center, html.js .ihero-scroll, html.js .ihero-obj, html.js .ihero-furniture {
+    opacity: 1; transform: none; scale: 1; transition: none;
+  }
+  html.js .ihero-scroll { transform: translateX(-50%); }
+  .ihero-scroll .chev, .ihero-hint-dot { animation: none; }
+}
+
+/* ── Aquarium ── */
+.obj-aquarium { cursor: pointer; }
+.obj-aquarium .tankimg { width: 100%; }
+.tank-water {
+  position: absolute;
+  left: 8%; right: 8%; top: 13%; bottom: 14%;
+  overflow: hidden;            /* fish never escape */
+  border-radius: 8px;
+  pointer-events: none;
+}
+.obj-aquarium.lamp-lit .tank-water { box-shadow: inset 0 0 28px rgba(244,158,79,0.4); }
+.tank-water::after {           /* warm reflection when the lamp is on */
+  content: ""; position: absolute; inset: 0; opacity: 0;
+  background: radial-gradient(60% 50% at 30% 10%, rgba(244,200,79,0.35), transparent 70%);
+  transition: opacity 400ms var(--ease-out);
+}
+.obj-aquarium.lamp-lit .tank-water::after { opacity: 1; }
+
+.tank-weed {
+  position: absolute; bottom: -4%; width: 22%; transform-origin: bottom center;
+  animation: weed-sway 5.5s ease-in-out infinite;
+}
+.weed-a { left: 12%; }
+.weed-b { right: 14%; animation-delay: -2.5s; animation-duration: 6.5s; }
+.obj-aquarium.is-active .tank-weed { animation-duration: 2.4s; }
+@keyframes weed-sway { 0%,100% { transform: rotate(-5deg); } 50% { transform: rotate(6deg); } }
+
+.tank-fish {
+  position: absolute; width: 30%; left: 10%;
+  animation: fish-drift 14s ease-in-out infinite;
+  will-change: transform;
+}
+.tank-fish-0 { top: 24%; animation-duration: 13s; }
+.tank-fish-1 { top: 48%; width: 24%; animation-duration: 17s; animation-delay: -4s; }
+.tank-fish-2 { top: 66%; width: 20%; animation-duration: 20s; animation-delay: -9s; }
+.obj-aquarium.is-active .tank-fish-0 { animation-duration: 3.4s; }
+.obj-aquarium.is-active .tank-fish-1 { animation-duration: 4.2s; }
+.obj-aquarium.is-active .tank-fish-2 { animation-duration: 5s; }
+@keyframes fish-drift {
+  0%   { transform: translateX(0) scaleX(1); }
+  46%  { transform: translateX(190%) scaleX(1); }
+  50%  { transform: translateX(195%) scaleX(-1); }
+  96%  { transform: translateX(0) scaleX(-1); }
+  100% { transform: translateX(0) scaleX(1); }
+}
+.tank-bubbles { position: absolute; inset: 0; }
+.tank-bubble {
+  position: absolute; bottom: 4%;
+  width: var(--bsize, 6px); height: var(--bsize, 6px);
+  border-radius: 50%;
+  background: rgba(255,255,255,0.7);
+  border: 1px solid rgba(159,198,203,0.7);
+  animation: bubble-rise var(--bdur, 1800ms) ease-in forwards;
+}
+@keyframes bubble-rise {
+  0% { transform: translateY(0) scale(0.6); opacity: 0; }
+  20% { opacity: 0.9; }
+  100% { transform: translateY(-340%) scale(1); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tank-fish, .tank-weed { animation: none; }
+}
+
+/* ── Plant (and shelf small plant) ── */
+.obj-plant { cursor: pointer; transition: rotate 400ms var(--ease-spring), filter var(--dur-fast) var(--ease-out); }
+.obj-plant:hover { rotate: -2deg; }
+.obj-plant .plantimg { width: 100%; }
+.plant-grown { position: absolute; left: 50%; top: 0; width: 0; height: 0; }
+.plant-leaf {
+  position: absolute; left: 0; bottom: 0; width: 30px;
+  transform-origin: bottom center;
+  translate: var(--lx, 0) 0;
+  rotate: var(--lr, 0deg);
+  scale: 0;
+  opacity: 0;
+  transition: scale 520ms var(--ease-spring), opacity 360ms var(--ease-out);
+}
+.plant-leaf.is-grown { scale: 1; opacity: 1; }
+
+/* ── Mascot ── */
+.obj-mascot { cursor: pointer; }
+.obj-mascot .mascotimg { width: 100%; transition: transform 300ms var(--ease-spring); }
+.obj-mascot.is-blinking .mascotimg { transform: scale(1.06, 0.92) rotate(-3deg); }
+.mascot-bubble {
+  position: absolute; left: 50%; top: -14px;
+  transform: translate(-50%, -100%) scale(0.8);
+  transform-origin: bottom center;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 6px 12px;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  white-space: nowrap;
+  color: var(--text-primary);
+  box-shadow: 0 8px 18px rgba(26,22,18,0.14);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 220ms var(--ease-out), transform 260ms var(--ease-spring);
+}
+.mascot-bubble::after {
+  content: ""; position: absolute; left: 50%; bottom: -6px;
+  width: 10px; height: 10px; background: var(--white);
+  border-right: 1px solid var(--border); border-bottom: 1px solid var(--border);
+  transform: translateX(-50%) rotate(45deg);
+}
+.mascot-bubble.is-shown { opacity: 1; transform: translate(-50%, -100%) scale(1); }
+
+/* ── Shoes & footprints ── */
+.obj-shoes { display: flex; gap: 6px; align-items: flex-end; }
+.obj-shoes .shoe { width: 48%; transition: transform 240ms var(--ease-spring); }
+.obj-shoes:hover .shoe-l { transform: translateY(-6px) rotate(-6deg); }
+.shoe.stepping { animation: shoe-step 480ms var(--ease-spring); }
+@keyframes shoe-step {
+  0%   { transform: translateY(0) rotate(0deg); }
+  35%  { transform: translateY(-14px) rotate(-12deg); }
+  70%  { transform: translateY(-4px) rotate(4deg); }
+  100% { transform: translateY(0) rotate(0deg); }
+}
+.ihero-footprint {
+  position: absolute; width: 26px; z-index: 3;
+  pointer-events: none; opacity: 0;
+  transition: opacity 400ms var(--ease-out);
+}
+.ihero-footprint.is-on { opacity: 0.7; }
+.ihero-footprint.is-fading { opacity: 0; transition-duration: 1200ms; }
+
+/* ── Fishing ── */
+.obj-fishing { cursor: grab; }
+.obj-fishing .rod { width: 100%; }
+.fishing-line {
+  position: absolute; width: 2px;
+  background: rgba(26, 22, 18, 0.45);
+  transform-origin: top center; pointer-events: none; z-index: 3;
+}
+.fishing-fish {
+  position: absolute; width: 56%; z-index: 4;
+  pointer-events: auto; cursor: pointer;
+  background: none; border: none; padding: 0;
+  filter: drop-shadow(0 8px 14px rgba(26, 22, 18, 0.2));
+}
+.fishing-fish img { width: 100%; pointer-events: none; }
+.fishing-fish .fishimg { animation: fish-idle 3.4s ease-in-out infinite; transform-origin: 85% 50%; }
+.fishing-fish.is-flapping .fishimg { animation: fish-flap 320ms ease-in-out infinite; }
+@keyframes fish-idle { 0%,100% { rotate: 0deg; } 50% { rotate: 4deg; } }
+@keyframes fish-flap { 0%,100% { rotate: -8deg; } 50% { rotate: 10deg; } }
+@media (prefers-reduced-motion: reduce) {
+  .fishing-fish .fishimg, .fishing-fish.is-flapping .fishimg { animation: none; }
+}
+
+/* ── Cat ── */
+.ihero-cat {
+  position: absolute; width: 110px; z-index: 6;
+  pointer-events: none;
+  transform: translateY(105%);
+  transition: transform 500ms var(--ease-spring);
+}
+.ihero-cat.is-peeking { transform: translateY(34%); }
+.ihero-cat.is-attacking { transform: translateY(0%) rotate(-4deg); }
+.ihero-cat .paw {
+  position: absolute; top: -52px; left: 12px; width: 30px;
+  opacity: 0; transform: translateY(40px) rotate(20deg);
+  transition: transform 280ms var(--ease-spring), opacity 200ms;
+}
+.ihero-cat.is-attacking .paw { opacity: 1; transform: translateY(0) rotate(-12deg); }
+
+/* ── Notebook (decorative) ── */
+.obj-notebook { cursor: default; transition: scale 300ms var(--ease-out), filter 300ms var(--ease-out); }
+.obj-notebook:hover { scale: 1.03; filter: drop-shadow(0 16px 30px rgba(26, 22, 18, 0.24)); }
+.obj-notebook .nb-wrap { position: relative; width: 100%; }
+.obj-notebook .nb-pages { width: 100%; }
+.nb-note {
+  position: absolute; left: 12%; right: 10%; top: 16%;
+  font-family: var(--font-mono);
+  font-size: clamp(0.55rem, 0.8vw, 0.78rem);
+  line-height: 1.7; color: var(--text-body); pointer-events: none;
+}
+
+/* ── Lamp ── */
+.obj-lamp .lampimg { width: 100%; }
+.lamp-glow {
+  position: absolute; width: 340px; height: 340px;
+  border-radius: 50%; pointer-events: none; z-index: 2;
+  background: radial-gradient(circle, rgba(244, 200, 79, 0.32) 0%, rgba(244, 200, 79, 0.12) 45%, transparent 70%);
+  opacity: 0; scale: 0.6;
+  transition: opacity 500ms var(--ease-out), scale 500ms var(--ease-spring);
+}
+.lamp-glow.is-on { opacity: 1; scale: 1; }
+.lamp-doodle {
+  position: absolute; font-family: var(--font-mono);
+  font-size: 0.62rem; color: var(--text-muted);
+  white-space: nowrap; rotate: -4deg; opacity: 0;
+  transition: opacity 600ms var(--ease-out); pointer-events: none; z-index: 3;
+}
+.lamp-doodle.is-lit { opacity: 0.85; }
+
+/* ── Folder + file cards ── */
+.obj-folder .folderimg { width: 100%; transition: transform 240ms var(--ease-spring); }
+.obj-folder:hover .folderimg { transform: translateY(-4px); }
+.obj-folder .folder-label {
+  display: block; font-family: var(--font-mono); font-size: 0.6rem;
+  text-align: center; color: var(--text-body); margin-top: 2px;
+}
+.ihero-filecard {
+  position: absolute; z-index: 7;
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: 6px; padding: 6px 10px;
+  font-family: var(--font-mono); font-size: 0.62rem; color: var(--text-primary);
+  box-shadow: 0 8px 18px rgba(26, 22, 18, 0.16);
+  pointer-events: none; opacity: 0;
+  transform: translate(0, 0) rotate(0deg);
+  transition: transform 500ms var(--ease-spring), opacity 300ms var(--ease-out);
+}
+.ihero-filecard.is-out { opacity: 1; transform: translate(var(--fx), var(--fy)) rotate(var(--fr)); }
+
+/* ── Camera + polaroid ── */
+.obj-camera .camimg { width: 100%; transition: transform 150ms var(--ease-out); }
+.obj-camera.is-snapping .camimg { transform: scale(0.96); }
+.camera-flash {
+  position: fixed; inset: 0; background: #fff; opacity: 0;
+  pointer-events: none; z-index: 50;
+}
+.camera-flash.is-flashing { animation: cam-flash 350ms var(--ease-out); }
+@keyframes cam-flash { 0% { opacity: 0; } 20% { opacity: 0.5; } 100% { opacity: 0; } }
+.ihero-polaroid {
+  position: absolute; width: 84px; z-index: 7;
+  pointer-events: none;
+  transform: translateY(8px) rotate(var(--pr, 3deg));
+  transition: transform 800ms var(--ease-spring), opacity 600ms var(--ease-out);
+  opacity: 0;
+}
+.ihero-polaroid.is-printed { opacity: 1; transform: translateY(-64px) rotate(var(--pr, 3deg)); }
+.ihero-polaroid img {
+  width: 100%;
+  filter: sepia(0.9) saturate(0.3) contrast(0.7) blur(2px);
+  transition: filter 1600ms ease-out;
+}
+.ihero-polaroid.is-developed img { filter: sepia(0) saturate(1) contrast(1) blur(0); }
+@media (prefers-reduced-motion: reduce) {
+  .camera-flash.is-flashing { animation: none; }
+  .ihero-polaroid { transition: opacity 300ms; }
+  .ihero-polaroid.is-printed { transform: translateY(-64px) rotate(var(--pr, 3deg)); }
+}
+
+/* ── Vinyl ── */
+.obj-vinyl .vt-base { width: 100%; }
+.obj-vinyl .vt-record {
+  position: absolute; top: 12%; left: 8%; width: 58%;
+  will-change: transform; cursor: grab;
+}
+.obj-vinyl.is-scratching .vt-record { cursor: grabbing; }
+.obj-vinyl .vt-arm {
+  position: absolute; top: 4%; right: 4%; width: 38%;
+  transform-origin: 84% 16%;
+  transform: rotate(-24deg);
+  transition: transform 600ms var(--ease-spring);
+}
+.obj-vinyl.is-playing .vt-arm { transform: rotate(0deg); }
+.vinyl-bars {
+  position: absolute; bottom: 8%; right: 10%;
+  display: flex; gap: 2px; align-items: flex-end; height: 12px;
+  opacity: 0; transition: opacity 300ms;
+}
+.obj-vinyl.is-playing .vinyl-bars { opacity: 1; }
+.vinyl-bars i { width: 3px; background: var(--accent-orange); animation: vbar 700ms ease-in-out infinite alternate; }
+.vinyl-bars i:nth-child(2) { animation-delay: 120ms; }
+.vinyl-bars i:nth-child(3) { animation-delay: 240ms; }
+@keyframes vbar { from { height: 3px; } to { height: 12px; } }
+@media (prefers-reduced-motion: reduce) { .vinyl-bars i { animation: none; height: 7px; } }
+
+/* ─── MOBILE NAVIGATION (homepage) ───────────────────────────── */
+.nav-menu-btn {
+  display: none; width: 48px; height: 48px;
+  align-items: center; justify-content: center;
+  border-radius: 10px; color: var(--text-primary);
+  transition: background var(--dur-fast) var(--ease-out);
+}
+.nav-menu-btn:hover { background: rgba(26, 22, 18, 0.06); }
+.nav-menu-btn .burger-mid { transition: opacity 180ms; }
+.nav-menu-btn .burger-top,
+.nav-menu-btn .burger-bot { transition: transform 220ms var(--ease-out); transform-box: fill-box; transform-origin: center; }
+.nav.menu-open .nav-menu-btn .burger-mid { opacity: 0; }
+.nav.menu-open .nav-menu-btn .burger-top { transform: translateY(5px) rotate(45deg); }
+.nav.menu-open .nav-menu-btn .burger-bot { transform: translateY(-5px) rotate(-45deg); }
+
+@media (max-width: 767px) {
+  .home .nav { min-height: 64px; }
+  .nav-menu-btn { display: inline-flex; }
+  .home .nav-links {
+    position: absolute; top: 100%; left: 0; right: 0;
+    flex-direction: column; align-items: stretch; gap: 0;
+    background: var(--bg); border-bottom: 1px solid var(--border);
+    box-shadow: 0 18px 32px rgba(26, 22, 18, 0.1);
+    padding: 8px 4px 16px; opacity: 0; transform: translateY(-8px);
+    pointer-events: none;
+    transition: opacity 200ms var(--ease-out), transform 200ms var(--ease-out);
+    z-index: 150;
+  }
+  .home .nav.menu-open .nav-links { opacity: 1; transform: none; pointer-events: auto; }
+  .home .nav-links > li { width: 100%; }
+  .home .nav-links .nav-link {
+    flex-direction: row; justify-content: flex-start; width: 100%;
+    min-height: 52px; align-items: center; padding: 0 16px; font-size: 19px;
+  }
+  .home .nav-link .nav-underline,
+  .home .nav-link.active .nav-underline { display: none; }
+  .home .nav-item--work .nav-dropdown {
+    position: static; transform: none; opacity: 1; pointer-events: auto;
+    border: none; box-shadow: none; background: transparent;
+    padding: 0 8px 4px 28px; min-width: 0;
+  }
+  body.menu-locked { overflow: hidden; }
+}
+
+/* ── Responsive composition ──
+   Object positions/sizes/visibility per breakpoint live in the
+   HERO_ASSETS layout config in hero.js. Mobile drops the room
+   furniture and keeps a few props around the copy-on-notebook. */
+@media (max-width: 767px) {
+  .ihero {
+    min-height: calc(100svh - 80px);
+    padding: clamp(72px, 11svh, 110px) 0 clamp(96px, 15svh, 140px);
+    padding-bottom: calc(clamp(96px, 15svh, 140px) + env(safe-area-inset-bottom, 0px));
+  }
+  .ihero::before, .ihero::after { display: none; }
+  /* the copy sits ON the notebook: pages render behind the text */
+  .ihero-center {
+    width: min(88vw, 420px);
+    padding: clamp(40px, 12vw, 64px) clamp(20px, 7vw, 40px) clamp(48px, 14vw, 72px);
+    rotate: -4deg;
+  }
+  .ihero-center::before {
+    content: "";
+    position: absolute; inset: -6% -4%; z-index: -1;
+    background: url("assets/hero/notebook/notebook-pages-placeholder.svg") center / 100% 100% no-repeat;
+    rotate: -2deg;
+    filter: drop-shadow(0 18px 36px rgba(26, 22, 18, 0.22));
+  }
+  .ihero-center .kicker { letter-spacing: 0.1em; font-size: 0.72rem; }
+  .ihero-name { font-size: clamp(2rem, 10vw, 3.4rem); }
+  .ihero-role { font-size: 0.78rem; letter-spacing: 0.08em; }
+  .ihero-statement { font-size: clamp(0.88rem, 4vw, 1.05rem); line-height: 1.55; margin-bottom: 1.4em; }
+  .ihero-ctas .btn-ghost { display: none; }
+  .ihero-ctas .btn-patch { min-height: 50px; padding: 12px 30px; width: auto; }
+  .ihero-hint { display: none; }
+  .ihero-scroll { display: none; }
+  .ihero-obj { filter: drop-shadow(0 12px 22px rgba(26, 22, 18, 0.22)); }
+}
+@media (max-width: 359px) {
+  .ihero-center .kicker { letter-spacing: 0.08em; font-size: 0.72rem; }
+  .ihero-role { letter-spacing: 0.06em; }
+}
+/* landscape phones: tighten vertical rhythm, drop low-priority objects */
+@media (max-height: 480px) and (orientation: landscape) {
+  .ihero { min-height: auto; padding: 48px 0 64px; }
+  .obj-aquarium, .obj-vinyl { display: none !important; }
+  .ihero-scroll { display: none; }
+}

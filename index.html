@@ -74,19 +74,15 @@
 
           <!-- ═══ Koi pond — click the water to feed the koi. Optional & ignorable. ═══
                Fish + lily + food/ripple logic in koipond.js, styles in
-               koipond.css. Underwater floor detail is a static canvas
-               (pondfloor.js); ambient water motion is an animated
-               canvas (pondwater.js) — both kept apart from the fish
+               koipond.css. Ambient water motion is a separate canvas
+               layer driven by pondwater.js (kept apart from the fish
                rig logic, the closest vanilla-JS equivalent of the
-               suggested component split.
-               Layer order: pond base → underwater floor + submerged
-               rocks → fish shadow → koi fish → water motion
-               canvas/tint → lily pads (fish swim UNDER these) →
-               ripples/food → UI. -->
+               suggested WaterCanvas/usePondAnimation split).
+               Layer order: pond base → fish shadow → koi fish → water
+               motion canvas/tint → lily pads (fish swim UNDER these) →
+               wake/ripples/food → UI. -->
           <div class="koipond">
             <img class="koi-bg" src="assets/hero/koi/pond3/pond-base.png" alt="" aria-hidden="true">
-            <!-- pond floor + submerged rocks render UNDER the fish -->
-            <canvas class="pond-floor-canvas" aria-hidden="true"></canvas>
             <!-- fish (+ their own shadow) swim UNDER the water layers below -->
             <div class="koi-stage" aria-hidden="true"></div>
             <canvas class="pond-water-canvas" aria-hidden="true"></canvas>
@@ -307,7 +303,6 @@
 
   <script src="scripts.js"></script>
   <script src="home.js"></script>
-  <script src="pondfloor.js"></script>
   <script src="pondwater.js"></script>
   <script src="koipond.js"></script>
   <script>

@@ -22,10 +22,6 @@
        every ~100-170ms rather than panning smoothly, which is what
        reads as softly-alive water instead of color slowly drifting
        (see the referenced duck-pond footage); kept low-contrast.
-     - ambient GLINTS: a few tiny specks twinkling in and out, like
-       light catching the surface, so the pond breathes even when idle.
-   Interaction ripples (food drop / eating) are the pixel-art sprite
-   frames in koipond.js — clean concentric rings, not rendered here.
 
    The animation is clipped to the pond's own silhouette (not a plain
    rectangle) by keying the pond-base art the same way koipond.js does
@@ -73,15 +69,10 @@
   }
 
   var mask = null;              // pond-shaped clip stencil (keyed pond-base alpha)
-  var tex = {};                 // noise/cloud/atmosphere textures (used as shipped)
-  var A5 = 'assets/hero/koi/pond5/';
-  var texSrcs = {
-    noise1: A + 'water-noise-01.png', noise2: A + 'water-noise-02.png',
-    clouds1: A + 'water-soft-clouds-01.png', clouds2: A + 'water-soft-clouds-02.png',
-    oceanic: A5 + 'oceanic-texture.png',   // marbled tonal texture — broad watercolor variation
-    mist: A5 + 'mist-clouds.png'           // pre-keyed wispy haze patches (real alpha)
-  };
-  Object.keys(texSrcs).forEach(function (name) { load(texSrcs[name], function (im) { tex[name] = im; }); });
+  var tex = {};                 // raw noise/cloud textures (used as shipped, no keying)
+  var texNames = ['noise1', 'noise2', 'clouds1', 'clouds2'];
+  var texSrcs = { noise1: 'water-noise-01.png', noise2: 'water-noise-02.png', clouds1: 'water-soft-clouds-01.png', clouds2: 'water-soft-clouds-02.png' };
+  texNames.forEach(function (name) { load(A + texSrcs[name], function (im) { tex[name] = im; }); });
   keyMask(PONDA + 'pond-base.png', function (c) { mask = c; });
 
   var W = 0, H = 0, buf = document.createElement('canvas'), bctx = buf.getContext('2d');
@@ -127,40 +118,12 @@
      boundary — settles the water into its rocky frame */
   function vignette() {
     var r = Math.max(W, H) * 0.72;
-    var g = bctx.createRadialGradient(W / 2, H / 2, r * 0.52, W / 2, H / 2, r);
+    var g = bctx.createRadialGradient(W / 2, H / 2, r * 0.55, W / 2, H / 2, r);
     g.addColorStop(0, 'rgba(0,0,0,0)');
-    g.addColorStop(1, 'rgba(4, 18, 25, 0.44)');
+    g.addColorStop(1, 'rgba(5, 22, 30, 0.34)');
     bctx.globalAlpha = 1;
     bctx.fillStyle = g;
     bctx.fillRect(0, 0, W, H);
-  }
-
-  /* Interaction ripples (food drop / eating) are the pixel-art sprite
-     frames in koipond.js — clean concentric rings, stepped by JS, not
-     rendered here.
-
-     ── ambient glints: a handful of tiny light specks that slowly
-     twinkle in and out at random spots, like light catching the
-     surface — the pond keeps breathing even with no interaction ── */
-  var glints = [];
-  (function () { for (var i = 0; i < 7; i++) glints.push({ t0: Math.random() * 5, t1: 0, x: 0, y: 0 }); })();
-  function drawGlints(t) {
-    for (var i = 0; i < glints.length; i++) {
-      var g = glints[i];
-      if (t >= g.t1) {
-        g.t0 = t + Math.random() * 3;
-        g.t1 = g.t0 + 2.5 + Math.random() * 4;
-        g.x = 0.12 + Math.random() * 0.76;
-        g.y = 0.12 + Math.random() * 0.76;
-      }
-      if (t < g.t0) continue;
-      var pr = (t - g.t0) / (g.t1 - g.t0);
-      var a = Math.pow(Math.sin(Math.PI * pr), 2) * 0.35;
-      if (a < 0.02) continue;
-      bctx.globalAlpha = a;
-      bctx.fillStyle = 'rgb(205, 235, 238)';
-      bctx.fillRect(g.x * W, g.y * H, 1.6, 1.6);
-    }
   }
 
   /* fine grain: what actually reads as "alive, shimmering" water. A
@@ -199,7 +162,7 @@
     // translucent tint so the koi still read as submerged (replaces
     // the old flat pond-water-tint.png)
     bctx.globalAlpha = 1;
-    bctx.fillStyle = 'rgba(6, 28, 33, 0.32)';
+    bctx.fillStyle = 'rgba(8, 32, 38, 0.28)';
     bctx.fillRect(0, 0, W, H);
 
     // depth zones — darker basin + underwater-shadow shapes + a light
@@ -210,20 +173,13 @@
     pool(t, { cx: 0.38, cy: 0.30, r: 0.26, f: 0.009, ph: 1.1, drift: 0.025, color: 'rgba(64, 120, 126, 0.12)' }); // lighter shallow patch
     vignette();
 
-    // marbled watercolor texture — broad tonal richness under the clouds
-    drift(tex.oceanic, t, { scale: 1.35, fx: 0.005, fy: 0.004, ax: 0.07, ay: 0.05, ph: 2.6, alpha: 0.10 });
     // broad soft cloud drift — large, slow, barely-there
     drift(tex.clouds1, t, { scale: 1.5, fx: 0.006, fy: 0.005, ax: 0.09, ay: 0.07, ph: 1.0, alpha: 0.16 });
     drift(tex.clouds2, t, { scale: 1.65, fx: 0.0045, fy: 0.007, ax: 0.11, ay: 0.06, ph: 4.2, alpha: 0.12 });
-    // wispy mist patches — slowest layer, faint haze sliding across
-    drift(tex.mist, t, { scale: 1.45, fx: 0.0035, fy: 0.0055, ax: 0.1, ay: 0.08, ph: 5.4, alpha: 0.14 });
     // fine texture — flickers between random crops; kept low-contrast
     // so it reads as calm water, never a shimmer overlay
     flicker(tex.noise1, 'noise1', nowMs, 0.17);
     flicker(tex.noise2, 'noise2', nowMs, 0.12);
-
-    // living surface: twinkling ambient glints
-    drawGlints(t);
 
     // clip everything to the pond's actual silhouette
     if (mask) { bctx.globalCompositeOperation = 'destination-in'; bctx.globalAlpha = 1; bctx.drawImage(mask, 0, 0, mask.width, mask.height, 0, 0, W, H); bctx.globalCompositeOperation = 'source-over'; }

@@ -5,16 +5,12 @@
 
    Layer stack (back to front):
      1 pond-base (koi-bg)     — dark pixel pond: water, stones, reeds
-     1b pond-floor-canvas     — underwater floor + submerged rocks,
-                                painted once (pondfloor.js); sits UNDER
-                                the fish so it reads as the pond bottom
      2 fish (koi-stage)       — shadow decal + shadow rig + visible rig
      3 pond-water-canvas      — ambient water motion, rendered on canvas
-                                (depth pools + drifting texture + tint —
+                                (drifting noise/cloud grain + tint —
                                 see pondwater.js — never a static image)
-     4 lily-layer             — lily overlay + extra pads/foliage;
-                                fish swim UNDER these
-     5 ripple-layer           — click / feeding ripples
+     4 lily-layer             — decorative lily pads; fish swim UNDER these
+     5 ripple-layer           — click / feeding / wake ripples
      6 food-layer             — food pellets
      7 hint / message         — UI
    ════════════════════════════════════════════════════════════════ */
@@ -52,7 +48,6 @@
 
 /* full-pond overlay layers all share pond-base's canvas and alignment */
 .koi-bg,
-.pond-floor-canvas,
 .pond-water-canvas {
   position: absolute; inset: 0;
   width: 100%; height: 100%;
@@ -65,11 +60,6 @@
   z-index: 1;
   filter: drop-shadow(0 18px 30px rgba(26, 22, 18, 0.16));
 }
-
-/* 1b — underwater floor + submerged rocks (pondfloor.js). Same z as
-   the base; later DOM order paints it on top of the base art, and the
-   fish stage (z2) keeps the koi swimming above it. */
-.pond-floor-canvas { z-index: 1; }
 
 /* 2 — DOM koi rig ── a segmented rig (head-body / mid-body / tail-base /
    tail-fin / left-fin / right-fin), each part an independent layer
@@ -175,20 +165,10 @@
   object-fit: contain;
   filter: brightness(0.82) saturate(0.75) hue-rotate(-6deg) drop-shadow(0 3px 4px rgba(0,0,0,0.25));
 }
-/* extra surface elements added by JS: a few small pads drifting inward
-   from the perimeter clusters + foliage groupings that thicken the
-   edge framing — same tint treatment as the main overlay */
-.lily-layer .lily-extra {
-  position: absolute;
-  filter: brightness(0.82) saturate(0.75) hue-rotate(-6deg) drop-shadow(0 3px 4px rgba(0,0,0,0.25));
-}
 
-/* 5 — local water effects: food/eating ripples. Each ripple plays
-   exactly once and is removed by JS — it never repeats or loops.
-   .pond-ripple: single sprite, CSS scale+fade (eat/idle ripples).
-   .pond-ripple-px: pixel-art ring FRAMES — JS steps through the
-   expanding-ring artwork (the growth is drawn in the frames, so no
-   CSS scaling), then fades it out via the transition below. */
+/* 5 — local water effects: food/eating ripples. Each ripple plays its
+   scale+fade animation exactly once ("forwards", no infinite) and is
+   removed by JS on animationend — it never repeats or loops. */
 .ripple-layer { position: absolute; inset: 0; z-index: 5; pointer-events: none; }
 .pond-ripple {
   position: absolute;
@@ -201,14 +181,6 @@
   0%   { scale: 0.4;  opacity: 0.8; }
   100% { scale: 1.25; opacity: 0; }
 }
-.pond-ripple-px {
-  position: absolute;
-  translate: -50% -50%;
-  image-rendering: pixelated;
-  opacity: 0.75;
-  transition: opacity 450ms ease-out;
-}
-.pond-ripple-px.fade { opacity: 0; }
 
 /* 6 — food pellets */
 .food-layer { position: absolute; inset: 0; z-index: 6; pointer-events: none; }

@@ -48,7 +48,9 @@
   var A = 'assets/hero/koi/';
   var RIG = A + 'rig2/';
   var POND = A + 'pond3/';   // pond base + food pellet — ships fully opaque, needs keying
-  var POND4 = A + 'pond4/';  // lily overlay + ripples — same, needs keying
+  var POND4 = A + 'pond4/';  // lily overlay — same, needs keying
+  var POND5 = A + 'pond5/';  // pre-keyed sprites (real alpha, used as-is):
+                             // ripple ring frames, lily pads, foliage groupings
   /* back-to-front, per koi-rig-pivots.json's recommended layer order */
   var RIG_PARTS = ['tail-fin', 'tail-base', 'mid-body', 'head-body', 'left-fin', 'right-fin'];
   var PIV_X = 0.5, PIV_Y = 667 / 953;      // head/front-body pivot fraction
@@ -60,17 +62,22 @@
   var W = 0, H = 0, fishH = 60, fishW = 38, idleRipT = 3;
   var fish = [], food = [], fed = false;
   var raf = null, last = 0;
-  var sprites = { food: null, rippleFoodDrop: null, rippleSmall: null, shadow: null };
+  var sprites = { food: null, shadow: null };
+  /* pixel-art ripple art (pond5, pre-keyed with real alpha): the four
+     expanding-ring frames for the food drop, and a small ring for
+     eat/idle ripples. Frames share one square canvas so a constant
+     CSS width works — the ring's growth is drawn in the art. */
+  var RIPPLE_FRAMES = [POND5 + 'ripple-f1.png', POND5 + 'ripple-f2.png', POND5 + 'ripple-f3.png', POND5 + 'ripple-f4.png'];
+  var RIPPLE_EAT = POND5 + 'ripple-eat.png';
+  RIPPLE_FRAMES.concat([RIPPLE_EAT]).forEach(function (src) { new Image().src = src; });   // warm the cache
 
-  /* ── background keying: every pond3/pond4 asset ships as a flattened
-     PNG with a baked near-white background (no real alpha), so it's
+  /* ── background keying: pond3/pond4 assets ship as flattened PNGs
+     with a baked near-white background (no real alpha), so they're
      keyed via a border flood-fill the same way earlier batches in this
      pond were handled. Small/isolated art (pellets, the fish shadow) is
      additionally trimmed to its visible bbox so it centers correctly
-     wherever it's placed. The ripple art is the exception — its canvas
-     is a dark tiled pattern edge-to-edge with no near-white border for
-     the flood-fill to key from, which left a visible dark square behind
-     the ripple; keyByLuma() below keys those by brightness instead. ── */
+     wherever it's placed. (pond5 sprites were pre-keyed offline and
+     load as-is.) ── */
   function load(src, cb) { var im = new Image(); im.onload = function () { cb(im); }; im.onerror = function () { cb(null); }; im.src = src; }
   function keyBg(src, cb) {
     load(src, function (im) {
@@ -106,34 +113,6 @@
   }
   /* key + trim a small isolated asset, caching the result for reuse */
   function keySprite(src, cb) { keyBg(src, function (c) { cb(c ? trim(c).toDataURL() : null); }); }
-
-  /* luminance key: for art with a dark, patterned (not near-white)
-     background — alpha becomes "how much brighter than the corner
-     pixel", isolating a glow/highlight (like a ripple ring) and
-     dropping the flat backdrop entirely, regardless of its color.
-     A flat diff*gain ramp wasn't enough here: the source canvas has a
-     faint tiled pattern baked in behind the ring, and every pixel of
-     that pattern is *slightly* brighter than the sampled corner, so a
-     linear ramp left a soft box of haze across the whole sprite. A
-     threshold below the pattern's noise floor (measured ~97th
-     percentile diff ≈ 33) cuts that off before the ramp starts, so
-     only the genuinely bright ring pixels get any alpha. */
-  function keyByLuma(src, cb) {
-    load(src, function (im) {
-      if (!im) { cb(null); return; }
-      var w = im.naturalWidth, h = im.naturalHeight, c = document.createElement('canvas'); c.width = w; c.height = h;
-      var x = c.getContext('2d'); x.drawImage(im, 0, 0);
-      var id; try { id = x.getImageData(0, 0, w, h); } catch (e) { cb(c); return; }
-      var d = id.data, br = d[0], bg = d[1], bb = d[2];
-      var THRESHOLD = 40, GAIN = 8;
-      for (var i = 0; i < d.length; i += 4) {
-        var diff = Math.max(d[i] - br, d[i + 1] - bg, d[i + 2] - bb, 0);
-        d[i + 3] = Math.min(255, Math.max(0, (diff - THRESHOLD) * GAIN));
-      }
-      x.putImageData(id, 0, 0); cb(c);
-    });
-  }
-  function keySpriteLuma(src, cb) { keyByLuma(src, function (c) { cb(c ? trim(c).toDataURL() : null); }); }
 
   /* ── geometry ── */
   function resize() {
@@ -190,23 +169,42 @@
     resize();
   }
 
-  /* ── ripples (DOM imgs; small = idle/eating, food-drop = click).
-     Each is a single element that plays its scale+fade animation once
-     ("forwards", no infinite) and is then removed — it never repeats. ── */
+  /* ── ripples (DOM imgs, pixel-art sprite). Every ripple plays
+     exactly once, then the element is removed — never repeats.
+     Food drop: steps through the four expanding pixel-ring frames
+     (the growth is drawn in the artwork), then fades out.
+     Eat / idle: single small ring with the CSS scale+fade animation. ── */
   function spawnRipple(x, y, isFoodDrop) {
-    var url = isFoodDrop ? sprites.rippleFoodDrop : sprites.rippleSmall;
-    if (!url) return;
+    if (isFoodDrop && !reduce) { spawnRippleFrames(x, y); return; }
     var img = new Image();
     img.className = 'pond-ripple';
-    img.src = url;
+    img.src = isFoodDrop ? RIPPLE_FRAMES[1] : RIPPLE_EAT;
     img.alt = '';
-    var w = fishH * (isFoodDrop ? 2.2 : 1.3);
-    img.style.width = w + 'px';
+    img.style.width = (fishH * (isFoodDrop ? 1.8 : 1.1)) + 'px';
     img.style.left = x + 'px'; img.style.top = y + 'px';
     rippleLayer.appendChild(img);
     var done = function () { img.remove(); };
     img.addEventListener('animationend', done, { once: true });
     setTimeout(done, 2000);
+  }
+  function spawnRippleFrames(x, y) {
+    var img = new Image();
+    img.className = 'pond-ripple-px';
+    img.src = RIPPLE_FRAMES[0];
+    img.alt = '';
+    img.style.width = (fishH * 2.1) + 'px';
+    img.style.left = x + 'px'; img.style.top = y + 'px';
+    rippleLayer.appendChild(img);
+    var i = 1;
+    var step = setInterval(function () {
+      if (i < RIPPLE_FRAMES.length) {
+        img.src = RIPPLE_FRAMES[i++];
+      } else {
+        clearInterval(step);
+        img.classList.add('fade');
+        setTimeout(function () { img.remove(); }, 500);
+      }
+    }, 140);
   }
 
   /* ── feeding: pellet (DOM) + ripple at the click point ── */
@@ -390,12 +388,36 @@
   keyImgInPlace(pond.querySelector('.lily-overlay'), POND4 + 'lily-overlay.png');
 
   keySprite(POND + 'food-pellet.png', function (url) { sprites.food = url; });
-  keySpriteLuma(POND4 + 'ripple-food-drop.png', function (url) { sprites.rippleFoodDrop = url; });
-  keySpriteLuma(POND4 + 'ripple-small.png', function (url) { sprites.rippleSmall = url; });
   keySprite(POND + 'fish-shadow.png', function (url) {
     sprites.shadow = url;
     if (url) fish.forEach(function (f) { f.shadowDecal.src = url; });
   });
+
+  /* extra surface dressing (pond5, pre-keyed): a few small pads
+     drifting inward so the open middle feels intentional rather than
+     blank, plus foliage groupings that thicken the edge framing.
+     Static imgs in the lily layer — fish swim under all of them. */
+  (function () {
+    var lilyLayer = pond.querySelector('.lily-layer');
+    if (!lilyLayer) return;
+    [ // [file, left%, top%, width%]
+      ['lily-pad-1.png', 34, 21, 5],
+      ['lily-pad-2.png', 61, 63, 4.2],
+      ['lily-pad-3.png', 26, 56, 3.4],
+      ['foliage-1.png', 4, 64, 16],
+      ['foliage-2.png', 76, 7, 15],
+      ['foliage-3.png', 52, 72, 6.5]
+    ].forEach(function (it) {
+      var img = new Image();
+      img.className = 'lily-extra';
+      img.src = POND5 + it[0];
+      img.alt = '';
+      img.style.left = it[1] + '%';
+      img.style.top = it[2] + '%';
+      img.style.width = it[3] + '%';
+      lilyLayer.appendChild(img);
+    });
+  })();
 
   var rt = null;
   window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(function () { resize(); render(1); }, 150); }, { passive: true });

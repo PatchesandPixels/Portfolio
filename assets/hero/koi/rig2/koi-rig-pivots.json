@@ -1,0 +1,56 @@
+{
+  "source": "pixel_art_koi_fish_sprite.png",
+  "canvas": {
+    "width": 600,
+    "height": 953
+  },
+  "aligned_files": "All aligned files share the same canvas. Stack them at top-left: 0,0.",
+  "recommended_layer_order": [
+    "koi-tail-fin.png",
+    "koi-tail-base.png",
+    "koi-mid-body.png",
+    "koi-head-body.png",
+    "koi-left-fin.png",
+    "koi-right-fin.png"
+  ],
+  "pivots_px": {
+    "koi-head-body.png": {
+      "x": 300,
+      "y": 667,
+      "note": "mostly stable; parent fish rotation handles heading"
+    },
+    "koi-mid-body.png": {
+      "x": 300,
+      "y": 524,
+      "note": "pivot near seam where front body overlaps mid body"
+    },
+    "koi-tail-base.png": {
+      "x": 300,
+      "y": 295,
+      "note": "pivot at base where tail stem connects to mid body"
+    },
+    "koi-tail-fin.png": {
+      "x": 300,
+      "y": 162,
+      "note": "pivot at tail fork base"
+    },
+    "koi-left-fin.png": {
+      "x": 180,
+      "y": 610,
+      "note": "pivot where fin attaches to body"
+    },
+    "koi-right-fin.png": {
+      "x": 420,
+      "y": 610,
+      "note": "pivot where fin attaches to body"
+    }
+  },
+  "css_transform_origin_percent": {
+    "mid-body": "50% 55%",
+    "tail-base": "50% 31%",
+    "tail-fin": "50% 17%",
+    "left-fin": "30% 64%",
+    "right-fin": "70% 64%"
+  },
+  "warning": "Starter cuts from one fish image. Some seam cleanup may be needed in Aseprite/Photoshop."
+}

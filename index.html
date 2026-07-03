@@ -73,18 +73,25 @@
           </div>
 
           <!-- ═══ Koi pond — click the water to feed the koi. Optional & ignorable. ═══
-               Engine in koipond.js, styles in koipond.css.
-               Layer order: pond base → fish (shadow rig + visible rig) →
-               water overlay → caustics → ripples → food (canvas) → UI. -->
+               Fish + lily + food/ripple logic in koipond.js, styles in
+               koipond.css. Ambient water motion is a separate canvas
+               layer driven by pondwater.js (kept apart from the fish
+               rig logic, the closest vanilla-JS equivalent of the
+               suggested WaterCanvas/usePondAnimation split).
+               Layer order: pond base → fish shadow → koi fish → water
+               motion canvas/tint → lily pads (fish swim UNDER these) →
+               wake/ripples/food → UI. -->
           <div class="koipond">
-            <img class="koi-bg" src="assets/hero/koi/pond-base.png" alt="" aria-hidden="true">
-            <!-- fish swims UNDER the water layers below -->
+            <img class="koi-bg" src="assets/hero/koi/pond3/pond-base.png" alt="" aria-hidden="true">
+            <!-- fish (+ their own shadow) swim UNDER the water layers below -->
             <div class="koi-stage" aria-hidden="true"></div>
-            <img class="pond-water-overlay" src="assets/hero/koi/pond-water-overlay.png" alt="" aria-hidden="true">
-            <img class="pond-caustics" src="assets/hero/koi/pond-caustics.png" alt="" aria-hidden="true">
+            <canvas class="pond-water-canvas" aria-hidden="true"></canvas>
+            <!-- decorative lily pads sit ABOVE the fish, so koi pass underneath them -->
+            <div class="lily-layer" aria-hidden="true">
+              <img class="lily-overlay" src="assets/hero/koi/pond4/lily-overlay.png" alt="">
+            </div>
             <div class="ripple-layer" aria-hidden="true"></div>
-            <!-- food pellets float on the surface, above the tinted fish -->
-            <canvas class="koi-canvas"></canvas>
+            <div class="food-layer" aria-hidden="true"></div>
             <span class="koi-hint"><span class="dot"></span>Click to feed the koi</span>
             <p class="koi-msg"><span class="lead">Small interactions matter.</span><br>Selected work below ↓</p>
           </div>
@@ -296,6 +303,7 @@
 
   <script src="scripts.js"></script>
   <script src="home.js"></script>
+  <script src="pondwater.js"></script>
   <script src="koipond.js"></script>
   <script>
   (function(){

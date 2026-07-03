@@ -1,17 +1,18 @@
 /* ════════════════════════════════════════════════════════════════
-   KOIPOND.CSS — calm, contained koi pond hero module
-   Right column of the existing .hero grid. Smaller than the name —
-   a quiet, premium interactive detail. Scoped to .koipond + the
+   KOIPOND.CSS — dark pixel-art koi pond hero module
+   Right column of the existing .hero grid. Scoped to .koipond + the
    left-column scroll cue / tagline. Everything else untouched.
 
    Layer stack (back to front):
-     1 pond-base (koi-bg)         — background art: rocks, plants, water
-     2 fish (koi-stage)           — shadow rig + visible rig, BELOW water
-     3 pond-water-overlay         — underwater tint/texture, above fish
-     4 pond-caustics              — light highlights, above the tint
-     5 ripple-layer               — click ripples, on the surface
-     6 koi-canvas                 — food pellets, on the surface
-     7 hint / message             — UI
+     1 pond-base (koi-bg)     — dark pixel pond: water, stones, reeds
+     2 fish (koi-stage)       — shadow decal + shadow rig + visible rig
+     3 pond-water-canvas      — ambient water motion, rendered on canvas
+                                (drifting noise/cloud grain + tint —
+                                see pondwater.js — never a static image)
+     4 lily-layer             — decorative lily pads; fish swim UNDER these
+     5 ripple-layer           — click / feeding / wake ripples
+     6 food-layer             — food pellets
+     7 hint / message         — UI
    ════════════════════════════════════════════════════════════════ */
 
 /* ── left-column scroll cue + tagline (shared with prior heroes) ── */
@@ -39,221 +40,162 @@
 .koipond {
   position: relative;
   width: 100%;
-  max-width: 880px;
+  max-width: 620px;
   margin-left: auto;             /* sits to the right, framed by whitespace */
-  aspect-ratio: 1774 / 887;      /* matches pond-base.png */
+  aspect-ratio: 1448 / 1086;     /* matches pond-base.png */
   cursor: pointer;
 }
 
-/* 1 — pond base art (transparent PNG — its own organic shape) */
-.koi-bg {
+/* full-pond overlay layers all share pond-base's canvas and alignment */
+.koi-bg,
+.pond-water-canvas {
   position: absolute; inset: 0;
   width: 100%; height: 100%;
-  object-fit: contain;
   pointer-events: none;
-  z-index: 1;
-  filter: drop-shadow(0 22px 34px rgba(26, 22, 18, 0.22));
 }
 
-/* 2 — DOM koi rig ── a true segmented rig (head-body / mid-body /
-   tail-stem / tail-fin / left-fin / right-fin), each an independent
-   layer rotating around its own joint. JS drives the parent transform
-   (overall heading) plus five custom properties each frame; the body
-   BENDS through these joints instead of the whole image spinning, and
-   nothing ever swaps between discrete sprites. The fish sits BELOW the
-   water overlay / caustics so it reads as submerged. Each fish is TWO
-   stacked rigs: a tinted, blurred "shadow rig" (duplicated parts) and
-   the readable "visible rig" on top — both share the same custom
-   properties (inherited from .koi-fish) so they bend in perfect sync. */
+/* 1 — pond base art */
+.koi-bg {
+  object-fit: contain;
+  z-index: 1;
+  filter: drop-shadow(0 18px 30px rgba(26, 22, 18, 0.16));
+}
+
+/* 2 — DOM koi rig ── a segmented rig (head-body / mid-body / tail-base /
+   tail-fin / left-fin / right-fin), each part an independent layer
+   rotating around its own joint pivot. JS drives the parent transform
+   (position + heading) plus five custom properties per frame; the body
+   BENDS through the joints — never sprite-swapped, never a rigid
+   sticker spin. Each fish is a shadow decal + TWO stacked rigs: a dark
+   blurred "shadow rig" (duplicated parts) under the readable "visible
+   rig" — both read the same custom properties, so the shadow bends in
+   perfect sync. The shadow decal is a separate soft blob that sits
+   beneath everything, giving the fish a grounded, underwater feel. */
 .koi-stage { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
 .koi-fish {
   position: absolute; left: 0; top: 0;
-  transform-origin: 50% 78.84%;     /* head/front-body pivot (224,745 of 448x945) */
+  transform-origin: 50% 69.99%;     /* head/front-body pivot (300,667 of 600x953) */
   will-change: transform;
-}
-.koi-ground-shadow {
-  position: absolute;
-  left: 56%; top: 57%;
-  width: 58%; height: 86%;
-  border-radius: 50%;
-  transform: translate(-50%, -50%) translate(5px, 10px) scaleX(0.72);
-  background:
-    radial-gradient(ellipse at center,
-      rgba(1, 13, 16, 0.82) 0%,
-      rgba(1, 13, 16, 0.58) 34%,
-      rgba(2, 20, 23, 0.3) 58%,
-      rgba(5, 34, 37, 0) 78%);
-  filter: blur(6px);
-  mix-blend-mode: multiply;
-  opacity: 1;
-  pointer-events: none;
-  z-index: 0;
 }
 .koi-shadow-rig,
-.koi-visible-rig,
-.koi-water-rig { position: absolute; inset: 0; }
-.koi-shadow-rig { z-index: 1; }
-.koi-visible-rig { z-index: 2; }
-.koi-water-rig { z-index: 3; }
-.koi-joint {
-  position: absolute; inset: 0;
-  width: 100%; height: 100%;
-  transform-style: preserve-3d;
-  will-change: transform;
-}
+.koi-visible-rig { position: absolute; inset: 0; }
 .koi-fish img {
   position: absolute; left: 0; top: 0;
   width: 100%; height: 100%;
-  object-fit: contain;
   display: block;
 }
-/* joint pivots — head/front body stays put; each part further down the
-   chain gets its own pivot and a larger share of the bend, so motion
-   reads as head leads → body follows → tail trails. */
-.koi-fish .koi-joint-mid {
-  transform-origin: 50% 64.55%;        /* mid-body ↔ head-body joint (224,610) */
-  transform: translate(var(--mid-curl-x, 0px), var(--body-lift, 0px)) scale(1.012) scaleX(var(--body-squash, 1)) rotate(var(--mid-angle, 0deg));
-}
-.koi-fish .koi-joint-tail-stem {
-  transform-origin: 50% 38.10%;        /* tail-stem ↔ mid-body joint (224,360) */
-  transform: translate(var(--tail-stem-curl-x, 0px), calc(var(--body-lift, 0px) * 1.25)) scale(1.018) scaleX(var(--body-squash, 1)) rotate(var(--tail-stem-angle, 0deg));
-}
-.koi-fish .koi-joint-tail-fin {
-  transform-origin: 50% 12.70%;        /* tail-fin ↔ tail-stem joint (224,120) */
-  transform: translate(var(--tail-fin-curl-x, 0px), calc(var(--body-lift, 0px) * 1.45)) scale(1.015) rotate(var(--tail-fin-angle, 0deg));
-}
-.koi-fish .koi-left-fin {
-  transform-origin: 19.20% 67.72%;     /* left fin base (86,640) */
-  transform: rotate(var(--left-fin-angle, 0deg));
-}
-.koi-fish .koi-right-fin {
-  transform-origin: 80.80% 67.72%;     /* right fin base (362,640) */
-  transform: rotate(var(--right-fin-angle, 0deg));
+
+/* soft contact shadow beneath the fish — a separate decorative decal,
+   not part of the bending rig, so it stays a calm, simple blob */
+.koi-fish .koi-shadow-decal {
+  position: absolute;
+  left: 50%; top: 62%;
+  width: 135%; height: auto;
+  transform: translate(-50%, -50%);
+  opacity: 0.62;
+  filter: brightness(0) saturate(100%) blur(3px);
 }
 
-/* underwater shadow: dark teal silhouette, blurred and offset below the fish */
+/* joint pivots (from koi-rig-pivots.json) — head stays calmest; each
+   part further down the chain takes a larger share of the bend, so
+   motion reads head leads → body follows → tail trails. */
+.koi-fish .koi-head-body {
+  transform-origin: 50% 69.99%;        /* (300,667) */
+  transform: rotate(var(--head-angle, 0deg));
+}
+.koi-fish .koi-mid-body {
+  transform-origin: 50% 55%;           /* (300,524) */
+  transform: rotate(var(--mid-angle, 0deg));
+}
+.koi-fish .koi-tail-base {
+  transform-origin: 50% 31%;           /* (300,295) */
+  transform: rotate(var(--tail-base-angle, 0deg));
+}
+.koi-fish .koi-tail-fin {
+  transform-origin: 50% 17%;           /* (300,162) */
+  transform: rotate(var(--tail-fin-angle, 0deg));
+}
+.koi-fish .koi-left-fin {
+  transform-origin: 30% 64%;           /* (180,610) */
+  transform: rotate(var(--fin-angle, 0deg));
+}
+.koi-fish .koi-right-fin {
+  transform-origin: 70% 64%;           /* (420,610) */
+  transform: rotate(calc(var(--fin-angle, 0deg) * -1));
+}
+
+/* underwater shadow: the same rig recolored to a dark silhouette,
+   blurred, offset, and sunk — bends exactly with the visible fish */
 .koi-shadow-rig {
-  transform: translate(3px, 7px) scale(0.94);
-  opacity: 0.28;
-  filter: blur(7px);
+  transform: translate(4px, 7px) scale(0.97);
+  opacity: 0.32;
+  filter: blur(4px);
   mix-blend-mode: multiply;
 }
 .koi-shadow-rig img {
-  filter: brightness(0) saturate(100%) sepia(20%) hue-rotate(135deg) opacity(0.85);
+  filter: brightness(0) saturate(100%) sepia(30%) hue-rotate(150deg) opacity(0.9);
 }
 
-/* visible fish stays fully opaque; color/softness makes it sit under water */
+/* visible fish: slightly softened + de-saturated; the submerged read
+   comes from the water-tint and shimmer layers stacked ABOVE it.
+   (No multiply blend here — the dark water would swallow the white
+   body; normal blend + the tint overlay does the work instead.) */
 .koi-visible-rig {
-  opacity: 1;
-  filter: saturate(0.82) brightness(0.94) contrast(0.9) blur(0.25px);
-  mix-blend-mode: normal;
+  opacity: 0.88;
+  filter: saturate(0.85) brightness(0.97) blur(0.3px);
 }
 
-.koi-water-rig {
-  opacity: 0.5;
-  filter: blur(0.18px);
-  mix-blend-mode: multiply;
-  pointer-events: none;
-}
-.koi-water-mask-part {
-  position: absolute; left: 0; top: 0;
-  width: 100%; height: 100%;
-  background:
-    linear-gradient(180deg, rgba(53, 145, 142, 0.28), rgba(15, 95, 105, 0.22)),
-    radial-gradient(ellipse at 44% 46%, rgba(108, 202, 190, 0.16), rgba(17, 104, 112, 0.2) 62%, rgba(7, 69, 82, 0.28) 100%),
-    url("assets/hero/koi/pond-caustics.png");
-  background-size: 100% 100%, 100% 100%, 260% 260%;
-  background-position: center, 48% 54%;
-  -webkit-mask-image: var(--part-mask);
-  mask-image: var(--part-mask);
-  -webkit-mask-size: contain;
-  mask-size: contain;
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-position: center;
-  mask-position: center;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .koi-fish {
-    --mid-angle: 0deg;
-    --tail-stem-angle: 0deg;
-    --tail-fin-angle: 0deg;
-    --left-fin-angle: 0deg;
-    --right-fin-angle: 0deg;
-    --body-squash: 1;
-    --body-lift: 0px;
-    --mid-curl-x: 0px;
-    --tail-stem-curl-x: 0px;
-    --tail-fin-curl-x: 0px;
-  }
-}
-
-/* 3 — underwater tint/texture, above the fish */
-.pond-water-overlay {
-  position: absolute; inset: 0;
-  width: 100%; height: 100%;
-  object-fit: contain;
+/* 3 — ambient water motion: rendered on a canvas by pondwater.js
+   (drifting noise + soft cloud grain, low opacity, continuously
+   panned — never a static image cross-fading). Sits above the fish so
+   it reads as a moving surface, blended softly into the pond's own
+   color instead of a bright overlay. */
+.pond-water-canvas {
   z-index: 3;
-  pointer-events: none;
-  mix-blend-mode: soft-light;
-  opacity: 0.92;
 }
 
-/* 4 — light highlights/caustics, above the tint */
-.pond-caustics {
+/* 4 — decorative lily pads: fish (z2) swim UNDER these (z4). One
+   full-pond overlay sized to match pond-base exactly, tinted
+   slightly darker/cooler via filter so it sits into the moodier
+   palette instead of popping as bright cartoon green. */
+.lily-layer { position: absolute; inset: 0; z-index: 4; pointer-events: none; }
+.lily-overlay {
   position: absolute; inset: 0;
   width: 100%; height: 100%;
   object-fit: contain;
-  z-index: 4;
-  pointer-events: none;
-  mix-blend-mode: screen;
-  opacity: 0.38;
-  animation: caustic-drift 8s ease-in-out infinite alternate;
-}
-@keyframes caustic-drift {
-  from { transform: translate3d(-4px, -2px, 0) scale(1.01); opacity: 0.24; }
-  to   { transform: translate3d(4px, 3px, 0) scale(1.025); opacity: 0.36; }
+  filter: brightness(0.82) saturate(0.75) hue-rotate(-6deg) drop-shadow(0 3px 4px rgba(0,0,0,0.25));
 }
 
-/* 5 — click ripples, on the surface */
+/* 5 — local water effects: food/eating ripples. Each ripple plays its
+   scale+fade animation exactly once ("forwards", no infinite) and is
+   removed by JS on animationend — it never repeats or loops. */
 .ripple-layer { position: absolute; inset: 0; z-index: 5; pointer-events: none; }
-.ripple {
+.pond-ripple {
   position: absolute;
-  top: 0; left: 0;
-  transform: translate(-50%, -50%) scale(0.35);
-  pointer-events: none;
+  translate: -50% -50%;
+  scale: 0.4;
   opacity: 0;
-  animation: ripple-fade 1.4s ease-out forwards;
+  animation: pond-ripple 1.7s ease-out forwards;
 }
-@keyframes ripple-fade {
-  0%   { transform: translate(-50%, -50%) scale(0.35); opacity: 0.75; }
-  100% { transform: translate(-50%, -50%) scale(1.5); opacity: 0; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .ripple { animation: ripple-fade-reduced 900ms ease-out forwards; }
-  @keyframes ripple-fade-reduced {
-    0%   { transform: translate(-50%, -50%) scale(0.6); opacity: 0.5; }
-    100% { transform: translate(-50%, -50%) scale(0.9); opacity: 0; }
-  }
+@keyframes pond-ripple {
+  0%   { scale: 0.4;  opacity: 0.8; }
+  100% { scale: 1.25; opacity: 0; }
 }
 
-/* 6 — food pellets float on the surface, above everything below */
-.koi-canvas {
-  position: absolute; inset: 0;
-  width: 100%; height: 100%;
-  display: block;
-  z-index: 6;
+/* 6 — food pellets */
+.food-layer { position: absolute; inset: 0; z-index: 6; pointer-events: none; }
+.food-pellet {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  image-rendering: pixelated;
+  transition: opacity 400ms var(--ease-out);
 }
-
-@media (prefers-reduced-motion: reduce) {
-  .pond-caustics { animation: none; }
-}
+.food-pellet.eaten { opacity: 0; }
 
 /* ── helper hint + post-interaction message ── */
 .koi-hint, .koi-msg {
   position: absolute;
-  left: 50%; bottom: 14px;
+  left: 50%; bottom: 16px;
   transform: translateX(-50%);
   z-index: 7;
   font-family: var(--font-mono);
@@ -266,7 +208,7 @@
   white-space: nowrap;
   font-size: 0.72rem; letter-spacing: 0.04em;
   color: #eaf6f4;
-  background: rgba(8, 30, 33, 0.5);
+  background: rgba(4, 22, 30, 0.55);
   border: 1px solid rgba(255,255,255,0.12);
   border-radius: 999px;
   padding: 7px 14px;
@@ -285,7 +227,7 @@
   transform: translateX(-50%) translateY(6px);
   font-size: 0.7rem; line-height: 1.5; color: #eaf6f4;
   letter-spacing: 0.03em;
-  background: rgba(8, 30, 33, 0.5);
+  background: rgba(4, 22, 30, 0.55);
   border: 1px solid rgba(255,255,255,0.12);
   border-radius: 12px;
   padding: 8px 14px;
@@ -308,14 +250,20 @@ html.js .koipond { animation: koi-enter 700ms var(--ease-out) 120ms both; }
 @media (prefers-reduced-motion: reduce) {
   .koi-hint .dot, .hero-scrollcue .cue-chev { animation: none; }
   html.js .koipond { animation: none; }
+  .koi-fish { --head-angle: 0deg; --mid-angle: 0deg; --tail-base-angle: 0deg; --tail-fin-angle: 0deg; --fin-angle: 0deg; }
+  .pond-ripple { animation: pond-ripple-reduced 900ms ease-out forwards; }
+  @keyframes pond-ripple-reduced {
+    0%   { scale: 0.6; opacity: 0.5; }
+    100% { scale: 0.9; opacity: 0; }
+  }
 }
 
 /* ── responsive ── */
 @media (max-width: 900px) {
-  .koipond { margin: 0 auto; max-width: 420px; }
+  .koipond { margin: 0 auto; max-width: 440px; }
   .hero-scrollcue { display: none; }
 }
 @media (max-width: 540px) {
-  .koipond { max-width: 100%; aspect-ratio: 7 / 5; }
+  .koipond { max-width: 100%; }
   .koi-hint { font-size: 0.66rem; }
 }

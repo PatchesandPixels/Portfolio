@@ -5,14 +5,15 @@
 
    Layer stack (back to front):
      1 pond-base (koi-bg)     — dark pixel pond: water, stones, reeds
-     2 fish (koi-stage)       — shadow decal + shadow rig + visible rig
-     3 pond-water-canvas      — ambient water motion, rendered on canvas
+     2 pond-floor-layer       — subtle underwater floor texture
+     3 fish (koi-stage)       — shadow decal + shadow rig + visible rig
+     4 pond-water-canvas      — ambient water motion, rendered on canvas
                                 (drifting noise/cloud grain + tint —
                                 see pondwater.js — never a static image)
-     4 lily-layer             — decorative lily pads; fish swim UNDER these
-     5 ripple-layer           — click / feeding / wake ripples
-     6 food-layer             — food pellets
-     7 hint / message         — UI
+     5 ripple-layer           — canvas food ripples / interaction effects
+     6 lily-layer             — decorative lily pads; fish swim UNDER these
+     7 food-layer             — food pellets
+     8 hint / message         — UI
    ════════════════════════════════════════════════════════════════ */
 
 /* ── left-column scroll cue + tagline (shared with prior heroes) ── */
@@ -48,6 +49,7 @@
 
 /* full-pond overlay layers all share pond-base's canvas and alignment */
 .koi-bg,
+.pond-floor-layer,
 .pond-water-canvas {
   position: absolute; inset: 0;
   width: 100%; height: 100%;
@@ -61,7 +63,49 @@
   filter: drop-shadow(0 18px 30px rgba(26, 22, 18, 0.16));
 }
 
-/* 2 — DOM koi rig ── a segmented rig (head-body / mid-body / tail-base /
+/* 2 — subtle underwater floor texture: scattered, low-opacity interior
+   detail only. No oval basin, no spotlight, no geometric depth mask. */
+.pond-floor-layer {
+  z-index: 2;
+  opacity: 0.14;
+  mix-blend-mode: multiply;
+  background:
+    radial-gradient(circle at 28% 39%, rgba(10, 34, 41, 0.55) 0 2px, rgba(76, 115, 105, 0.26) 3px 6px, transparent 9px),
+    radial-gradient(circle at 36% 56%, rgba(7, 28, 36, 0.5) 0 2px, rgba(74, 112, 102, 0.22) 3px 7px, transparent 10px),
+    radial-gradient(circle at 48% 47%, rgba(8, 30, 38, 0.42) 0 1px, rgba(82, 122, 112, 0.18) 3px 6px, transparent 9px),
+    radial-gradient(circle at 57% 63%, rgba(6, 26, 34, 0.48) 0 2px, rgba(78, 116, 106, 0.2) 3px 7px, transparent 10px),
+    radial-gradient(circle at 68% 42%, rgba(7, 28, 36, 0.44) 0 2px, rgba(86, 124, 112, 0.16) 3px 6px, transparent 9px),
+    radial-gradient(ellipse at 41% 31%, rgba(110, 148, 130, 0.18), transparent 20%),
+    radial-gradient(ellipse at 62% 55%, rgba(3, 18, 26, 0.24), transparent 18%),
+    radial-gradient(ellipse at 33% 68%, rgba(4, 21, 29, 0.2), transparent 16%),
+    repeating-linear-gradient(135deg, rgba(95, 132, 116, 0.05) 0 1px, rgba(3, 16, 24, 0.05) 1px 4px);
+  filter: blur(0.12px);
+  pointer-events: none;
+}
+.pond-floor-layer::before,
+.pond-floor-layer::after {
+  content: "";
+  position: absolute;
+  inset: 17% 15%;
+  pointer-events: none;
+}
+.pond-floor-layer::before {
+  opacity: 0.38;
+  background:
+    radial-gradient(ellipse at 26% 42%, rgba(3, 18, 27, 0.42), transparent 30%),
+    radial-gradient(ellipse at 52% 36%, rgba(94, 139, 126, 0.16), transparent 28%),
+    radial-gradient(ellipse at 70% 62%, rgba(4, 20, 29, 0.36), transparent 26%);
+}
+.pond-floor-layer::after {
+  opacity: 0.26;
+  background:
+    radial-gradient(circle at 22% 46%, rgba(105, 145, 128, 0.26) 0 1px, transparent 3px),
+    radial-gradient(circle at 44% 61%, rgba(12, 43, 45, 0.34) 0 2px, transparent 5px),
+    radial-gradient(circle at 56% 43%, rgba(96, 132, 118, 0.2) 0 1px, transparent 4px),
+    radial-gradient(circle at 75% 50%, rgba(9, 35, 42, 0.3) 0 2px, transparent 6px);
+}
+
+/* 3 — DOM koi rig ── a segmented rig (head-body / mid-body / tail-base /
    tail-fin / left-fin / right-fin), each part an independent layer
    rotating around its own joint pivot. JS drives the parent transform
    (position + heading) plus five custom properties per frame; the body
@@ -71,9 +115,11 @@
    rig" — both read the same custom properties, so the shadow bends in
    perfect sync. The shadow decal is a separate soft blob that sits
    beneath everything, giving the fish a grounded, underwater feel. */
-.koi-stage { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
+.koi-stage { position: absolute; inset: 0; z-index: 3; pointer-events: none; }
 .koi-fish {
   position: absolute; left: 0; top: 0;
+  --koi-depth-opacity: 0.86;
+  --koi-depth-shadow: 0.7;
   transform-origin: 50% 69.99%;     /* head/front-body pivot (300,667 of 600x953) */
   will-change: transform;
 }
@@ -92,8 +138,8 @@
   left: 50%; top: 62%;
   width: 135%; height: auto;
   transform: translate(-50%, -50%);
-  opacity: 0.62;
-  filter: brightness(0) saturate(100%) blur(3px);
+  opacity: var(--koi-depth-shadow);
+  filter: brightness(0) saturate(100%) blur(4.5px);
 }
 
 /* joint pivots (from koi-rig-pivots.json) — head stays calmest; each
@@ -128,8 +174,8 @@
    blurred, offset, and sunk — bends exactly with the visible fish */
 .koi-shadow-rig {
   transform: translate(4px, 7px) scale(0.97);
-  opacity: 0.32;
-  filter: blur(4px);
+  opacity: 0.42;
+  filter: blur(5px);
   mix-blend-mode: multiply;
 }
 .koi-shadow-rig img {
@@ -141,24 +187,40 @@
    (No multiply blend here — the dark water would swallow the white
    body; normal blend + the tint overlay does the work instead.) */
 .koi-visible-rig {
-  opacity: 0.88;
-  filter: saturate(0.85) brightness(0.97) blur(0.3px);
+  opacity: var(--koi-depth-opacity);
+  filter: saturate(0.78) brightness(0.93) contrast(0.92) blur(0.28px);
 }
 
-/* 3 — ambient water motion: rendered on a canvas by pondwater.js
+/* 4 — ambient water motion: rendered on a canvas by pondwater.js
    (drifting noise + soft cloud grain, low opacity, continuously
    panned — never a static image cross-fading). Sits above the fish so
    it reads as a moving surface, blended softly into the pond's own
    color instead of a bright overlay. */
 .pond-water-canvas {
-  z-index: 3;
+  z-index: 4;
+  mix-blend-mode: normal;
 }
 
-/* 4 — decorative lily pads: fish (z2) swim UNDER these (z4). One
+/* 5 — local water effects: canvas-rendered food/eating ripples.
+   Broken ellipse rings + tiny pixels are drawn by koipond.js when
+   WebGL is unavailable; otherwise pondwater.js renders shader ripples. */
+.ripple-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 0.86;
+  image-rendering: pixelated;
+  mix-blend-mode: screen;
+}
+
+/* 6 — decorative lily pads: fish swim UNDER these. One
    full-pond overlay sized to match pond-base exactly, tinted
    slightly darker/cooler via filter so it sits into the moodier
    palette instead of popping as bright cartoon green. */
-.lily-layer { position: absolute; inset: 0; z-index: 4; pointer-events: none; }
+.lily-layer { position: absolute; inset: 0; z-index: 6; pointer-events: none; }
 .lily-overlay {
   position: absolute; inset: 0;
   width: 100%; height: 100%;
@@ -166,24 +228,8 @@
   filter: brightness(0.82) saturate(0.75) hue-rotate(-6deg) drop-shadow(0 3px 4px rgba(0,0,0,0.25));
 }
 
-/* 5 — local water effects: food/eating ripples. Each ripple plays its
-   scale+fade animation exactly once ("forwards", no infinite) and is
-   removed by JS on animationend — it never repeats or loops. */
-.ripple-layer { position: absolute; inset: 0; z-index: 5; pointer-events: none; }
-.pond-ripple {
-  position: absolute;
-  translate: -50% -50%;
-  scale: 0.4;
-  opacity: 0;
-  animation: pond-ripple 1.7s ease-out forwards;
-}
-@keyframes pond-ripple {
-  0%   { scale: 0.4;  opacity: 0.8; }
-  100% { scale: 1.25; opacity: 0; }
-}
-
-/* 6 — food pellets */
-.food-layer { position: absolute; inset: 0; z-index: 6; pointer-events: none; }
+/* 7 — food pellets */
+.food-layer { position: absolute; inset: 0; z-index: 7; pointer-events: none; }
 .food-pellet {
   position: absolute;
   transform: translate(-50%, -50%);
@@ -197,7 +243,7 @@
   position: absolute;
   left: 50%; bottom: 16px;
   transform: translateX(-50%);
-  z-index: 7;
+  z-index: 8;
   font-family: var(--font-mono);
   text-align: center;
   pointer-events: none;
@@ -207,12 +253,13 @@
   display: inline-flex; align-items: center; gap: 7px;
   white-space: nowrap;
   font-size: 0.72rem; letter-spacing: 0.04em;
-  color: #eaf6f4;
-  background: rgba(4, 22, 30, 0.55);
-  border: 1px solid rgba(255,255,255,0.12);
+  color: rgba(234, 246, 244, 0.82);
+  background: rgba(4, 22, 30, 0.38);
+  border: 1px solid rgba(255,255,255,0.08);
   border-radius: 999px;
-  padding: 7px 14px;
+  padding: 6px 13px;
   backdrop-filter: blur(2px);
+  opacity: 0.86;
 }
 .koi-hint .dot {
   width: 8px; height: 8px; border-radius: 1px;
@@ -227,8 +274,8 @@
   transform: translateX(-50%) translateY(6px);
   font-size: 0.7rem; line-height: 1.5; color: #eaf6f4;
   letter-spacing: 0.03em;
-  background: rgba(4, 22, 30, 0.55);
-  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(4, 22, 30, 0.4);
+  border: 1px solid rgba(255,255,255,0.08);
   border-radius: 12px;
   padding: 8px 14px;
   backdrop-filter: blur(2px);
@@ -236,7 +283,7 @@
 }
 .koi-msg b { color: #fff; font-weight: 500; }
 .koi-msg .lead { color: var(--accent-orange); }
-.koipond.fed .koi-msg { opacity: 0.92; transform: translateX(-50%) translateY(0); }
+.koipond.fed .koi-msg { opacity: 0.78; transform: translateX(-50%) translateY(0); }
 
 /* ── entrance ── transform-only rise; the pond is visible from the start
    so its appearance never depends on an animation completing ── */
@@ -251,11 +298,7 @@ html.js .koipond { animation: koi-enter 700ms var(--ease-out) 120ms both; }
   .koi-hint .dot, .hero-scrollcue .cue-chev { animation: none; }
   html.js .koipond { animation: none; }
   .koi-fish { --head-angle: 0deg; --mid-angle: 0deg; --tail-base-angle: 0deg; --tail-fin-angle: 0deg; --fin-angle: 0deg; }
-  .pond-ripple { animation: pond-ripple-reduced 900ms ease-out forwards; }
-  @keyframes pond-ripple-reduced {
-    0%   { scale: 0.6; opacity: 0.5; }
-    100% { scale: 0.9; opacity: 0; }
-  }
+  .ripple-layer { opacity: 0.7; }
 }
 
 /* ── responsive ── */

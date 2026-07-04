@@ -20,7 +20,7 @@
   <link rel="stylesheet" href="nav.css">
   <link rel="stylesheet" href="home.css">
   <link rel="stylesheet" href="hero.css">
-  <link rel="stylesheet" href="koipond.css">
+  <link rel="stylesheet" href="koipond.css?v=rollback-depth-1">
 </head>
 <body>
   <!-- Background layers: canvas grid (JS) + static fallback + grain -->
@@ -78,11 +78,12 @@
                layer driven by pondwater.js (kept apart from the fish
                rig logic, the closest vanilla-JS equivalent of the
                suggested WaterCanvas/usePondAnimation split).
-               Layer order: pond base → fish shadow → koi fish → water
-               motion canvas/tint → lily pads (fish swim UNDER these) →
-               wake/ripples/food → UI. -->
+               Layer order: pond base → subtle underwater floor texture → fish
+               shadow → koi fish → water motion canvas/tint → lily pads
+               (fish swim UNDER these) → wake/ripples/food → UI. -->
           <div class="koipond">
             <img class="koi-bg" src="assets/hero/koi/pond3/pond-base.png" alt="" aria-hidden="true">
+            <div class="pond-floor-layer" aria-hidden="true"></div>
             <!-- fish (+ their own shadow) swim UNDER the water layers below -->
             <div class="koi-stage" aria-hidden="true"></div>
             <canvas class="pond-water-canvas" aria-hidden="true"></canvas>
@@ -90,7 +91,7 @@
             <div class="lily-layer" aria-hidden="true">
               <img class="lily-overlay" src="assets/hero/koi/pond4/lily-overlay.png" alt="">
             </div>
-            <div class="ripple-layer" aria-hidden="true"></div>
+            <canvas class="ripple-layer" aria-hidden="true"></canvas>
             <div class="food-layer" aria-hidden="true"></div>
             <span class="koi-hint"><span class="dot"></span>Click to feed the koi</span>
             <p class="koi-msg"><span class="lead">Small interactions matter.</span><br>Selected work below ↓</p>
@@ -303,8 +304,8 @@
 
   <script src="scripts.js"></script>
   <script src="home.js"></script>
-  <script src="pondwater.js"></script>
-  <script src="koipond.js"></script>
+  <script src="pondwater.js?v=rollback-depth-1"></script>
+  <script src="koipond.js?v=rollback-depth-1"></script>
   <script>
   (function(){
     const item = document.querySelector(".nav-item--work");

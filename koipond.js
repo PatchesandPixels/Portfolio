@@ -60,7 +60,9 @@
   var W = 0, H = 0, fishH = 60, fishW = 38, idleRipT = 3;
   var fish = [], food = [], fed = false;
   var raf = null, last = 0;
-  var sprites = { food: null, rippleFoodDrop: null, rippleSmall: null, shadow: null };
+  var rippleCtx = rippleLayer.getContext ? rippleLayer.getContext('2d') : null;
+  var rippleDpr = 1, ripples = [], rippleRaf = null, nextRippleId = 1;
+  var sprites = { food: null, shadow: null };
 
   /* ── background keying: every pond3/pond4 asset ships as a flattened
      PNG with a baked near-white background (no real alpha), so it's
@@ -107,41 +109,23 @@
   /* key + trim a small isolated asset, caching the result for reuse */
   function keySprite(src, cb) { keyBg(src, function (c) { cb(c ? trim(c).toDataURL() : null); }); }
 
-  /* luminance key: for art with a dark, patterned (not near-white)
-     background — alpha becomes "how much brighter than the corner
-     pixel", isolating a glow/highlight (like a ripple ring) and
-     dropping the flat backdrop entirely, regardless of its color.
-     A flat diff*gain ramp wasn't enough here: the source canvas has a
-     faint tiled pattern baked in behind the ring, and every pixel of
-     that pattern is *slightly* brighter than the sampled corner, so a
-     linear ramp left a soft box of haze across the whole sprite. A
-     threshold below the pattern's noise floor (measured ~97th
-     percentile diff ≈ 33) cuts that off before the ramp starts, so
-     only the genuinely bright ring pixels get any alpha. */
-  function keyByLuma(src, cb) {
-    load(src, function (im) {
-      if (!im) { cb(null); return; }
-      var w = im.naturalWidth, h = im.naturalHeight, c = document.createElement('canvas'); c.width = w; c.height = h;
-      var x = c.getContext('2d'); x.drawImage(im, 0, 0);
-      var id; try { id = x.getImageData(0, 0, w, h); } catch (e) { cb(c); return; }
-      var d = id.data, br = d[0], bg = d[1], bb = d[2];
-      var THRESHOLD = 40, GAIN = 8;
-      for (var i = 0; i < d.length; i += 4) {
-        var diff = Math.max(d[i] - br, d[i + 1] - bg, d[i + 2] - bb, 0);
-        d[i + 3] = Math.min(255, Math.max(0, (diff - THRESHOLD) * GAIN));
-      }
-      x.putImageData(id, 0, 0); cb(c);
-    });
-  }
-  function keySpriteLuma(src, cb) { keyByLuma(src, function (c) { cb(c ? trim(c).toDataURL() : null); }); }
-
   /* ── geometry ── */
   function resize() {
     var r = pond.getBoundingClientRect();
     W = r.width; H = r.height;
+    resizeRippleCanvas();
     fishH = Math.min(W, H) * 0.14;
     fishW = fishH * FISH_AR;
     fish.forEach(function (f) { f.el.style.width = fishW + 'px'; f.el.style.height = fishH + 'px'; });
+  }
+  function resizeRippleCanvas() {
+    if (!rippleCtx) return;
+    rippleDpr = window.devicePixelRatio || 1;
+    rippleLayer.width = Math.max(1, Math.round(W * rippleDpr));
+    rippleLayer.height = Math.max(1, Math.round(H * rippleDpr));
+    rippleLayer.style.width = W + 'px';
+    rippleLayer.style.height = H + 'px';
+    rippleCtx.setTransform(rippleDpr, 0, 0, rippleDpr, 0, 0);
   }
   function ell() { return { cx: WATER.cx * W, cy: WATER.cy * H, rx: WATER.rx * W, ry: WATER.ry * H }; }
   function randInWater() { var e = ell(), a = Math.random() * 6.28, rr = Math.sqrt(Math.random()) * 0.85; return { x: e.cx + Math.cos(a) * e.rx * rr, y: e.cy + Math.sin(a) * e.ry * rr }; }
@@ -190,23 +174,139 @@
     resize();
   }
 
-  /* ── ripples (DOM imgs; small = idle/eating, food-drop = click).
-     Each is a single element that plays its scale+fade animation once
-     ("forwards", no infinite) and is then removed — it never repeats. ── */
+  /* ── canvas ripples: broken pixel-art ellipse rings, low opacity,
+     with a few food-colored center pixels. Reusable via spawnRipple(x,y). ── */
   function spawnRipple(x, y, isFoodDrop) {
-    var url = isFoodDrop ? sprites.rippleFoodDrop : sprites.rippleSmall;
-    if (!url) return;
-    var img = new Image();
-    img.className = 'pond-ripple';
-    img.src = url;
-    img.alt = '';
-    var w = fishH * (isFoodDrop ? 2.2 : 1.3);
-    img.style.width = w + 'px';
-    img.style.left = x + 'px'; img.style.top = y + 'px';
-    rippleLayer.appendChild(img);
-    var done = function () { img.remove(); };
-    img.addEventListener('animationend', done, { once: true });
-    setTimeout(done, 2000);
+    var waterCanvas = pond.querySelector('.pond-water-canvas');
+    if (waterCanvas && waterCanvas.dataset.renderer === 'webgl') {
+      document.dispatchEvent(new CustomEvent('koi:spawn-ripple', { detail: { x: x, y: y } }));
+      return;
+    }
+    if (window.koiPondWater && typeof window.koiPondWater.spawnRipple === 'function') {
+      window.koiPondWater.spawnRipple(x, y);
+      return;
+    }
+    if (!rippleCtx) return;
+    ripples.push({
+      id: nextRippleId++,
+      x: x,
+      y: y,
+      startedAt: performance.now(),
+      duration: reduce ? 900 : (isFoodDrop ? 1650 : 1350),
+      seed: Math.random() * 1000,
+      foodDrop: !!isFoodDrop
+    });
+    wakeRipples();
+  }
+  function wakeRipples() {
+    if (rippleRaf === null && rippleCtx) rippleRaf = requestAnimationFrame(drawRipples);
+  }
+  function drawRipples(now) {
+    if (!rippleCtx) return;
+    rippleCtx.clearRect(0, 0, W, H);
+    rippleCtx.save();
+    clipWater(rippleCtx);
+    for (var i = ripples.length - 1; i >= 0; i--) {
+      if (now - ripples[i].startedAt >= ripples[i].duration) ripples.splice(i, 1);
+    }
+    for (var r = 0; r < ripples.length; r++) drawRipple(rippleCtx, ripples[r], now);
+    rippleCtx.restore();
+    rippleRaf = ripples.length ? requestAnimationFrame(drawRipples) : null;
+  }
+  function clipWater(ctx) {
+    var e = ell();
+    ctx.beginPath();
+    ctx.ellipse(e.cx, e.cy, e.rx * 0.99, e.ry * 0.98, 0, 0, Math.PI * 2);
+    ctx.clip();
+  }
+  function drawRipple(ctx, ripple, now) {
+    var age = now - ripple.startedAt;
+    var t = Math.min(age / ripple.duration, 1);
+    var travel = 1 - Math.pow(1 - t, 2.6);
+    var fade = Math.pow(1 - t, 1.55);
+    var maxRadius = fishH * (ripple.foodDrop ? 1.08 : 0.68);
+    var headRadius = 7 + travel * maxRadius;
+    var ellipseYScale = 0.46;
+
+    if (ripple.foodDrop) drawFoodPixels(ctx, ripple.x, ripple.y, fade);
+    var ringCount = ripple.foodDrop ? 3 : 2;
+    for (var i = 0; i < ringCount; i++) {
+      var spacing = fishH * 0.18;
+      var radius = headRadius - i * spacing;
+      if (radius < 5) continue;
+      var ringAge = Math.max(0, Math.min(1, radius / Math.max(maxRadius, 1)));
+      var innerFade = Math.pow(Math.max(0, 1 - i * 0.16), 1.2);
+      var opacity = fade * innerFade * (ripple.foodDrop ? 0.34 : 0.24);
+      if (ringAge > 0.72) opacity *= Math.max(0, (1 - ringAge) / 0.28);
+      if (i === 0) opacity *= Math.max(0, (1 - t) / 0.62);
+      drawSoftEllipseRing(ctx, ripple.x, ripple.y, radius, radius * ellipseYScale, opacity * 0.42, i);
+      drawBrokenEllipseRing(ctx, ripple.x, ripple.y, radius, radius * ellipseYScale, opacity, ripple.seed + i * 17, i);
+    }
+    drawTinyHighlights(ctx, ripple.x, ripple.y, headRadius, fade, ripple.seed);
+  }
+  function drawSoftEllipseRing(ctx, x, y, rx, ry, opacity, ringIndex) {
+    ctx.save();
+    ctx.lineWidth = ringIndex === 0 ? 3 : 2.4;
+    ctx.strokeStyle = 'rgba(51, 177, 190,' + opacity.toFixed(3) + ')';
+    ctx.shadowColor = 'rgba(52, 180, 190,' + (opacity * 0.65).toFixed(3) + ')';
+    ctx.shadowBlur = 7;
+    ctx.beginPath();
+    ctx.ellipse(x, y, rx, ry, 0, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.restore();
+  }
+  function drawBrokenEllipseRing(ctx, x, y, rx, ry, opacity, seed, ringIndex) {
+    var segmentCount = 24;
+    var snap = 2;
+    ctx.save();
+    ctx.lineWidth = ringIndex === 0 ? 1.25 : 1;
+    ctx.strokeStyle = 'rgba(127, 231, 218,' + opacity.toFixed(3) + ')';
+    ctx.shadowColor = 'rgba(85, 211, 211,' + (opacity * 0.65).toFixed(3) + ')';
+    ctx.shadowBlur = 5;
+    for (var i = 0; i < segmentCount; i++) {
+      var n = pseudoRandom(seed + i * 91);
+      if (n < 0.34) continue;
+      var start = (i / segmentCount) * Math.PI * 2;
+      var length = 0.16 + pseudoRandom(seed + i * 19) * 0.28;
+      var end = start + length;
+      ctx.beginPath();
+      for (var s = 0; s <= 7; s++) {
+        var a = start + (end - start) * (s / 7);
+        var px = Math.round((x + Math.cos(a) * rx) / snap) * snap;
+        var py = Math.round((y + Math.sin(a) * ry) / snap) * snap;
+        if (s === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+      }
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+  function drawFoodPixels(ctx, x, y, fade) {
+    var opacity = Math.min(0.65, fade * 0.9);
+    var pellets = [[0, 0], [5, -2], [-4, 3], [2, 5], [-6, -3]];
+    ctx.save();
+    ctx.fillStyle = 'rgba(198, 126, 42,' + opacity.toFixed(3) + ')';
+    for (var i = 0; i < pellets.length; i++) {
+      ctx.fillRect(Math.round(x + pellets[i][0]), Math.round(y + pellets[i][1]), 3, 3);
+    }
+    ctx.restore();
+  }
+  function drawTinyHighlights(ctx, x, y, radius, fade, seed) {
+    ctx.save();
+    for (var i = 0; i < 5; i++) {
+      var a = pseudoRandom(seed + i * 33) * Math.PI * 2;
+      var rr = radius * (0.65 + pseudoRandom(seed + i * 51) * 0.35);
+      var px = Math.round(x + Math.cos(a) * rr);
+      var py = Math.round(y + Math.sin(a) * rr * 0.38);
+      var alpha = fade * pseudoRandom(seed + i * 77) * 0.42;
+      ctx.fillStyle = 'rgba(200, 244, 234,' + alpha.toFixed(3) + ')';
+      ctx.fillRect(px, py, 2, 2);
+    }
+    ctx.restore();
+  }
+  function pseudoRandom(n) {
+    var x = Math.sin(n) * 10000;
+    return x - Math.floor(x);
   }
 
   /* ── feeding: pellet (DOM) + ripple at the click point ── */
@@ -346,6 +446,9 @@
     var rot = f.visualAngle * 180 / Math.PI - 90;    // source fish points down
     var tx = f.x - PIV_X * fishW, ty = f.y - PIV_Y * fishH;
     f.el.style.transform = 'translate(' + tx.toFixed(2) + 'px,' + ty.toFixed(2) + 'px) rotate(' + rot.toFixed(2) + 'deg) scale(' + f.sizeMul.toFixed(3) + ')';
+    var depth = clamp((f.y / Math.max(H, 1) - 0.2) / 0.62, 0, 1);
+    f.el.style.setProperty('--koi-depth-opacity', (0.8 + depth * 0.06).toFixed(3));
+    f.el.style.setProperty('--koi-depth-shadow', (0.62 + depth * 0.12).toFixed(3));
     if (reduce) return;
 
     var sn = Math.min(1, f.speed / 1.6);             // speed 0..1
@@ -390,14 +493,20 @@
   keyImgInPlace(pond.querySelector('.lily-overlay'), POND4 + 'lily-overlay.png');
 
   keySprite(POND + 'food-pellet.png', function (url) { sprites.food = url; });
-  keySpriteLuma(POND4 + 'ripple-food-drop.png', function (url) { sprites.rippleFoodDrop = url; });
-  keySpriteLuma(POND4 + 'ripple-small.png', function (url) { sprites.rippleSmall = url; });
   keySprite(POND + 'fish-shadow.png', function (url) {
     sprites.shadow = url;
     if (url) fish.forEach(function (f) { f.shadowDecal.src = url; });
   });
 
   var rt = null;
-  window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(function () { resize(); render(1); }, 150); }, { passive: true });
-  document.addEventListener('visibilitychange', function () { if (document.hidden && raf !== null) { cancelAnimationFrame(raf); raf = null; } else if (!document.hidden) wake(); });
+  window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(function () { resize(); render(1); wakeRipples(); }, 150); }, { passive: true });
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) {
+      if (raf !== null) { cancelAnimationFrame(raf); raf = null; }
+      if (rippleRaf !== null) { cancelAnimationFrame(rippleRaf); rippleRaf = null; }
+    } else {
+      wake();
+      wakeRipples();
+    }
+  });
 })();

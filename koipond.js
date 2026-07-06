@@ -1,8 +1,9 @@
 /* ════════════════════════════════════════════════════════════════
    KOIPOND.JS — dark pixel-art koi pond: fish, lily pads, food & ripples
-   Scene: pond base → fish shadow → fish rig → [water motion canvas,
-   see pondwater.js] → lily pads (fish swim UNDER these) → ripples →
-   food pellets → UI.
+   Scene: pond base (WebGL-refracted, see pondripples.js) → fish shadow →
+   fish rig → lily pads (fish swim UNDER these) → ripples → food pellets
+   → UI. Each koi drops its own ripple into the WebGL water as it swims
+   (PondRipples.drop, called from the update loop below).
 
    The koi are SEGMENTED RIGS, never sprite-swapped: head-body /
    mid-body / tail-base / tail-fin / left-fin / right-fin are six
@@ -42,13 +43,14 @@
   var stage = pond.querySelector('.koi-stage');
   var rippleLayer = pond.querySelector('.ripple-layer');
   var foodLayer = pond.querySelector('.food-layer');
+  var disturbanceLayer = pond.querySelector('.koi-disturbance-canvas');
   if (!stage || !rippleLayer || !foodLayer) return;
 
   /* ── asset config ── */
   var A = 'assets/hero/koi/';
   var RIG = A + 'rig2/';
   var POND = A + 'pond3/';   // pond base + food pellet — ships fully opaque, needs keying
-  var POND4 = A + 'pond4/';  // lily overlay + ripples — same, needs keying
+  var BEAUTIFUL = A + 'beautiful-pond/';
   /* back-to-front, per koi-rig-pivots.json's recommended layer order */
   var RIG_PARTS = ['tail-fin', 'tail-base', 'mid-body', 'head-body', 'left-fin', 'right-fin'];
   var PIV_X = 0.5, PIV_Y = 667 / 953;      // head/front-body pivot fraction
@@ -61,7 +63,9 @@
   var fish = [], food = [], fed = false;
   var raf = null, last = 0;
   var rippleCtx = rippleLayer.getContext ? rippleLayer.getContext('2d') : null;
+  var disturbanceCtx = disturbanceLayer && disturbanceLayer.getContext ? disturbanceLayer.getContext('2d') : null;
   var rippleDpr = 1, ripples = [], rippleRaf = null, nextRippleId = 1;
+  var disturbanceDpr = 1;
   var sprites = { food: null, shadow: null };
 
   /* ── background keying: every pond3/pond4 asset ships as a flattened
@@ -114,6 +118,7 @@
     var r = pond.getBoundingClientRect();
     W = r.width; H = r.height;
     resizeRippleCanvas();
+    resizeDisturbanceCanvas();
     fishH = Math.min(W, H) * 0.14;
     fishW = fishH * FISH_AR;
     fish.forEach(function (f) { f.el.style.width = fishW + 'px'; f.el.style.height = fishH + 'px'; });
@@ -127,12 +132,44 @@
     rippleLayer.style.height = H + 'px';
     rippleCtx.setTransform(rippleDpr, 0, 0, rippleDpr, 0, 0);
   }
+  function resizeDisturbanceCanvas() {
+    if (!disturbanceCtx) return;
+    disturbanceDpr = Math.min(window.devicePixelRatio || 1, 2);
+    disturbanceLayer.width = Math.max(1, Math.round(W * disturbanceDpr));
+    disturbanceLayer.height = Math.max(1, Math.round(H * disturbanceDpr));
+    disturbanceLayer.style.width = W + 'px';
+    disturbanceLayer.style.height = H + 'px';
+    disturbanceCtx.setTransform(disturbanceDpr, 0, 0, disturbanceDpr, 0, 0);
+  }
   function ell() { return { cx: WATER.cx * W, cy: WATER.cy * H, rx: WATER.rx * W, ry: WATER.ry * H }; }
   function randInWater() { var e = ell(), a = Math.random() * 6.28, rr = Math.sqrt(Math.random()) * 0.85; return { x: e.cx + Math.cos(a) * e.rx * rr, y: e.cy + Math.sin(a) * e.ry * rr }; }
   function clampWater(o, pad) { var e = ell(), nx = (o.x - e.cx) / (e.rx - pad), ny = (o.y - e.cy) / (e.ry - pad), d = Math.hypot(nx, ny); if (d > 1) { o.x = e.cx + nx / d * (e.rx - pad); o.y = e.cy + ny / d * (e.ry - pad); } }
   function newOrbit() { var c = randInWater(); return { cx: c.x, cy: c.y, r: 0.16 + Math.random() * 0.12, ang: Math.random() * 6.28, dir: Math.random() > 0.5 ? 1 : -1, life: 9 + Math.random() * 7 }; }
   function angleDiff(a, b) { var d = ((b - a + Math.PI) % 6.283) - Math.PI; if (d < -Math.PI) d += 6.283; return d; }
   function clamp(v, lo, hi) { return v < lo ? lo : v > hi ? hi : v; }
+  var DEPTH_LAYERS = [
+    { name: 'bottom', rank: 0, scale: 0.82, tint: 1, shadow: 1 },
+    { name: 'middle', rank: 1, scale: 0.88, tint: 0.68, shadow: 0.58 },
+    { name: 'top', rank: 2, scale: 0.94, tint: 0.35, shadow: 0.18 }
+  ];
+  function depthLayer(index) { return DEPTH_LAYERS[clamp(index, 0, DEPTH_LAYERS.length - 1)]; }
+  function setDepthLayer(f, index, hold) {
+    var next = clamp(index, 0, DEPTH_LAYERS.length - 1);
+    if (f.depthLayer === next) return;
+    f.depthLayer = next;
+    f.depthHold = hold || 8;
+  }
+  function forwardWaterTarget(f, e, pad) {
+    var span = Math.PI * 0.78;
+    var baseDist = Math.min(e.rx, e.ry) * (0.22 + Math.random() * 0.18);
+    for (var i = 0; i < 8; i++) {
+      var a = f.angle + (Math.random() - 0.5) * span;
+      var p = { x: f.x + Math.cos(a) * baseDist, y: f.y + Math.sin(a) * baseDist * 0.82 };
+      clampWater(p, pad);
+      if (Math.abs(angleDiff(f.angle, Math.atan2(p.y - f.y, p.x - f.x))) < Math.PI * 0.72) return p;
+    }
+    return { x: f.x + Math.cos(f.angle) * baseDist, y: f.y + Math.sin(f.angle) * baseDist };
+  }
   /* rest schedule: fish drift to a stop (or slow crawl) every so often
      instead of perpetually circling */
   function scheduleRest() { return 10 + Math.random() * 14; }
@@ -159,14 +196,17 @@
       el.appendChild(buildRig('koi-visible-rig'));
       stage.appendChild(el);
       var p = randInWater();
+      var initialDepth = Math.max(1, 2 - i);
       fish.push({
-        el: el, shadowDecal: shadowDecal, x: p.x, y: p.y,
+        id: i, el: el, shadowDecal: shadowDecal, x: p.x, y: p.y,
         angle: Math.random() * 6.28, visualAngle: 0, speed: 0,
         phase: Math.random() * 6.28,
         sizeMul: i === 0 ? 1 : 0.88,
         dart: 0, dartT: 4 + Math.random() * 5,
         orbit: newOrbit(),
         restT: scheduleRest(), restRemaining: 0, restDrift: 0,
+        depthLayer: initialDepth, depthVisual: initialDepth, depthHold: 4 + i * 2, surfaceHold: 0,
+        idleTurnArc: 0, idleTurnDir: 0,
         turnAmount: 0, bend: 0, bendVel: 0
       });
       fish[i].visualAngle = fish[i].angle;
@@ -175,17 +215,10 @@
   }
 
   /* ── canvas ripples: broken pixel-art ellipse rings, low opacity,
-     with a few food-colored center pixels. Reusable via spawnRipple(x,y). ── */
+     with a few food-colored center pixels. Reusable via spawnRipple(x,y).
+     (Koi-swim water refraction is separate — see PondRipples.drop in
+     the update loop below, driven by pondripples.js/jquery.ripples.) ── */
   function spawnRipple(x, y, isFoodDrop) {
-    var waterCanvas = pond.querySelector('.pond-water-canvas');
-    if (waterCanvas && waterCanvas.dataset.renderer === 'webgl') {
-      document.dispatchEvent(new CustomEvent('koi:spawn-ripple', { detail: { x: x, y: y } }));
-      return;
-    }
-    if (window.koiPondWater && typeof window.koiPondWater.spawnRipple === 'function') {
-      window.koiPondWater.spawnRipple(x, y);
-      return;
-    }
     if (!rippleCtx) return;
     ripples.push({
       id: nextRippleId++,
@@ -304,6 +337,52 @@
     }
     ctx.restore();
   }
+  function drawKoiDisturbance(now) {
+    if (!disturbanceCtx) return;
+    disturbanceCtx.clearRect(0, 0, W, H);
+    if (reduce) return;
+    disturbanceCtx.save();
+    clipWater(disturbanceCtx);
+    for (var i = 0; i < fish.length; i++) {
+      var f = fish[i];
+      var speedN = clamp(f.speed / 1.25, 0, 1);
+      var depthT = clamp(0.35 + ((2 - f.depthVisual) / 2) * 0.65, 0.35, 1);
+      var alphaBase = speedN * (0.42 - depthT * 0.18);
+      if (alphaBase < 0.035) continue;
+      var a = f.visualAngle;
+      var sideX = -Math.sin(a), sideY = Math.cos(a);
+      var backX = -Math.cos(a), backY = -Math.sin(a);
+      var seed = f.id * 71 + Math.floor(now / 180);
+      disturbanceCtx.save();
+      disturbanceCtx.lineCap = 'round';
+      for (var p = 0; p < 6; p++) {
+        var side = p % 2 ? -1 : 1;
+        var along = fishH * (-0.22 + pseudoRandom(seed + p * 17) * 0.5);
+        var out = fishW * (0.34 + pseudoRandom(seed + p * 29) * 0.34);
+        var jitter = (pseudoRandom(seed + p * 41) - 0.5) * fishH * 0.08;
+        var x = f.x + backX * along + sideX * out * side + backX * jitter;
+        var y = f.y + backY * along + sideY * out * side + backY * jitter;
+        var len = 2 + pseudoRandom(seed + p * 53) * 6;
+        var opacity = alphaBase * (0.045 + pseudoRandom(seed + p * 67) * 0.045);
+        disturbanceCtx.strokeStyle = 'rgba(176, 236, 224,' + opacity.toFixed(3) + ')';
+        disturbanceCtx.lineWidth = p % 3 === 0 ? 1.2 : 1;
+        disturbanceCtx.beginPath();
+        disturbanceCtx.moveTo(Math.round(x), Math.round(y));
+        disturbanceCtx.lineTo(Math.round(x + backX * len + sideX * side * 1.5), Math.round(y + backY * len + sideY * side * 1.5));
+        disturbanceCtx.stroke();
+      }
+      if (alphaBase > 0.16) {
+        disturbanceCtx.fillStyle = 'rgba(205, 247, 232,' + (alphaBase * 0.07).toFixed(3) + ')';
+        for (var q = 0; q < 3; q++) {
+          var px = f.x + backX * fishH * (0.08 + q * 0.11) + sideX * (pseudoRandom(seed + q * 83) - 0.5) * fishW;
+          var py = f.y + backY * fishH * (0.08 + q * 0.11) + sideY * (pseudoRandom(seed + q * 97) - 0.5) * fishW;
+          disturbanceCtx.fillRect(Math.round(px), Math.round(py), 2, 2);
+        }
+      }
+      disturbanceCtx.restore();
+    }
+    disturbanceCtx.restore();
+  }
   function pseudoRandom(n) {
     var x = Math.sin(n) * 10000;
     return x - Math.floor(x);
@@ -321,7 +400,10 @@
     img.style.left = p.x + 'px'; img.style.top = p.y + 'px';
     foodLayer.appendChild(img);
     food.push({ x: p.x, y: p.y, el: img, life: 8 });
-    spawnRipple(p.x, p.y, true);
+    // Food uses the same capped ripple profile as koi wakes, with a
+    // small asymmetric scatter handled by pondripples.js.
+    if (window.PondRipples && window.PondRipples.dropFood) window.PondRipples.dropFood(p.x, p.y, fishH);
+    else spawnRipple(p.x, p.y, false);
     if (!fed) { fed = true; pond.classList.add('fed'); }
     wake();
   }
@@ -358,6 +440,20 @@
     return best;
   }
 
+  function updateDepthLayers(dtf) {
+    var dt = dtf / 60;
+    for (var i = 0; i < fish.length; i++) {
+      var f = fish[i];
+      if (f.depthHold > 0) f.depthHold = Math.max(0, f.depthHold - dt);
+      if (food.length || f.surfaceHold > 0) setDepthLayer(f, 2, 2.2);
+      else if (f.depthHold <= 0 && Math.random() < 0.0016 * dtf) {
+        var next = clamp(f.depthLayer + (Math.random() < 0.5 ? -1 : 1), 0, 2);
+        setDepthLayer(f, next, 8 + Math.random() * 8);
+      }
+      f.depthVisual += (f.depthLayer - f.depthVisual) * 0.035 * dtf;
+    }
+  }
+
   /* ── per-frame simulation ──
      Rate-clamped steering: heading changes at most maxRate per frame,
      position always advances — arcs, never spins-in-place. Turned
@@ -367,6 +463,8 @@
   var MAXTURN_FEED = 0.072;    // rad per 60fps-frame while pursuing food (~4.1°)
   var MAXTURN_EDGE = 0.10;     // minimum turn rate near the pond edge
   var DART_TURN_MUL = 0.6;     // less agile mid-dart (forward burst)
+  var IDLE_MAX_TARGET_DIFF = Math.PI * 0.76; // no idle U-turns / full loops; food may override
+  var IDLE_MAX_TURN_ARC = Math.PI * 1.32;    // about 238° total before idle path is re-routed
   var VISUAL_TURN_SMOOTH = 0.10;  // how quickly the RENDERED heading catches up to the steering heading
   /* the bend is a light spring: eases toward the raw turn, slightly
      overshoots, settles — a flexible body catching up to the turn */
@@ -387,8 +485,12 @@
     var e = ell();
 
     for (var k = 0; k < fish.length; k++) {
-      var f = fish[k], lenF = fishH * f.sizeMul, target = pickTarget(f, k), tx, ty, maxRate, targetSpeed;
+      var f = fish[k], lenF = fishH * f.sizeMul, target = pickTarget(f, k), hasFoodTarget = !!target, tx, ty, maxRate, targetSpeed;
+      if (f.surfaceHold > 0) f.surfaceHold = Math.max(0, f.surfaceHold - dt);
       if (target) {
+        f.surfaceHold = 1.2;
+        f.idleTurnArc = 0;
+        f.idleTurnDir = 0;
         f.restRemaining = 0;                 // food interrupts any rest
         tx = target.x; ty = target.y;
         var dist = Math.hypot(tx - f.x, ty - f.y);
@@ -417,8 +519,34 @@
 
       // rate-clamped turn: cap the per-frame heading change, don't lerp
       var diff = angleDiff(f.angle, desired);
+      if (!hasFoodTarget && edge <= 0.94 && Math.abs(diff) > IDLE_MAX_TARGET_DIFF) {
+        var ahead = forwardWaterTarget(f, e, lenF * 0.12);
+        tx = ahead.x; ty = ahead.y;
+        desired = Math.atan2(ty - f.y, tx - f.x);
+        diff = angleDiff(f.angle, desired);
+        f.orbit = newOrbit();
+        f.idleTurnArc = 0;
+        f.idleTurnDir = 0;
+      }
       var cap = maxRate * dtf;
       var step = clamp(diff, -cap, cap);
+      if (!hasFoodTarget) {
+        var turnDir = Math.abs(step) > 0.001 ? (step > 0 ? 1 : -1) : 0;
+        if (turnDir === 0 || turnDir !== f.idleTurnDir) {
+          f.idleTurnArc = 0;
+          f.idleTurnDir = turnDir;
+        }
+        if (turnDir && f.idleTurnArc + Math.abs(step) > IDLE_MAX_TURN_ARC) {
+          var smallTurn = forwardWaterTarget(f, e, lenF * 0.12);
+          desired = Math.atan2(smallTurn.y - f.y, smallTurn.x - f.x);
+          diff = angleDiff(f.angle, desired);
+          step = clamp(diff, -cap, cap);
+          f.orbit = newOrbit();
+          f.idleTurnArc = 0;
+          f.idleTurnDir = step > 0 ? 1 : step < 0 ? -1 : 0;
+        }
+        f.idleTurnArc += Math.abs(step);
+      }
       f.angle += step;
       f.turnAmount = cap > 1e-6 ? step / cap : 0;   // normalized -1..1 → drives the body bend
 
@@ -426,11 +554,26 @@
       f.x += Math.cos(f.angle) * f.speed * dtf;      // always advances — never a spin-in-place
       f.y += Math.sin(f.angle) * f.speed * dtf;
 
-      // separation so fish never stack
-      for (var j = 0; j < fish.length; j++) { if (j === k) continue; var o = fish[j]; var dx = f.x - o.x, dy = f.y - o.y, dd = Math.hypot(dx, dy), minD = (fishW * f.sizeMul + fishW * o.sizeMul) * 0.7; if (dd > 0.001 && dd < minD) { var pp = (minD - dd) * 0.5 * dtf; f.x += dx / dd * pp; f.y += dy / dd * pp; } }
+      // light separation only prevents exact stacking; depth sorting handles normal overlaps
+      for (var j = 0; j < fish.length; j++) { if (j === k) continue; var o = fish[j]; var dx = f.x - o.x, dy = f.y - o.y, dd = Math.hypot(dx, dy), minD = (fishW * f.sizeMul + fishW * o.sizeMul) * 0.32; if (dd > 0.001 && dd < minD) { var pp = (minD - dd) * 0.22 * dtf; f.x += dx / dd * pp; f.y += dy / dd * pp; } }
       clampWater(f, lenF * 0.1);
       f.phase += (0.1 + f.speed * 0.14) * dtf;
+
+      // Koi wakes use a capped shared ripple profile so fast fish do not
+      // throw oversized waves across the pond.
+      if (window.PondRipples) {
+        var mdx = f.x - (f.lastDropX === undefined ? f.x : f.lastDropX);
+        var mdy = f.y - (f.lastDropY === undefined ? f.y : f.lastDropY);
+        var minTravel = window.PondRippleStyle ? window.PondRippleStyle.koiMinTravel : 7;
+        if (f.lastDropX === undefined || mdx * mdx + mdy * mdy > minTravel * minTravel) {
+          var sn2 = Math.min(1, f.speed / 1.2);
+          if (window.PondRipples.dropKoi) window.PondRipples.dropKoi(f.x, f.y, fishH, sn2);
+          else window.PondRipples.drop(f.x, f.y, fishH * 0.2, 0.005 + sn2 * 0.007);
+          f.lastDropX = f.x; f.lastDropY = f.y;
+        }
+      }
     }
+    updateDepthLayers(dtf);
   }
 
   /* ── render: parent transform + the five joint angles ──
@@ -444,11 +587,24 @@
     f.visualAngle += angleDiff(f.visualAngle, f.angle) * VISUAL_TURN_SMOOTH * dtf;
 
     var rot = f.visualAngle * 180 / Math.PI - 90;    // source fish points down
+    var depthT = clamp(0.35 + ((2 - f.depthVisual) / 2) * 0.65, 0.35, 1);
+    var layerScale = 0.82 + f.depthVisual * 0.06;
     var tx = f.x - PIV_X * fishW, ty = f.y - PIV_Y * fishH;
-    f.el.style.transform = 'translate(' + tx.toFixed(2) + 'px,' + ty.toFixed(2) + 'px) rotate(' + rot.toFixed(2) + 'deg) scale(' + f.sizeMul.toFixed(3) + ')';
+    f.el.style.transform = 'translate(' + tx.toFixed(2) + 'px,' + ty.toFixed(2) + 'px) rotate(' + rot.toFixed(2) + 'deg) scale(' + (f.sizeMul * layerScale).toFixed(3) + ')';
     var depth = clamp((f.y / Math.max(H, 1) - 0.2) / 0.62, 0, 1);
-    f.el.style.setProperty('--koi-depth-opacity', (0.8 + depth * 0.06).toFixed(3));
-    f.el.style.setProperty('--koi-depth-shadow', (0.62 + depth * 0.12).toFixed(3));
+    f.el.style.setProperty('--koi-depth-opacity', (0.83 - depthT * 0.12 + depth * 0.025).toFixed(3));
+    f.el.style.setProperty('--koi-depth-shadow', (0.21 + depthT * 0.19 + depth * 0.045).toFixed(3));
+    f.el.style.setProperty('--koi-depth-tint', depthT.toFixed(3));
+    // shadow falls down-right in WORLD space (one constant light
+    // direction) — counter-rotate the offset into the fish's rotated
+    // local frame so it doesn't spin with the body
+    var th = rot * Math.PI / 180;
+    var sdx = fishH * 0.11, sdy = fishH * 0.16;      // world-space offset, scales with fish
+    var inv = 1 / f.sizeMul;
+    var lx = (Math.cos(th) * sdx + Math.sin(th) * sdy) * inv;
+    var ly = (-Math.sin(th) * sdx + Math.cos(th) * sdy) * inv;
+    f.el.style.setProperty('--shadow-tx', lx.toFixed(2) + 'px');
+    f.el.style.setProperty('--shadow-ty', ly.toFixed(2) + 'px');
     if (reduce) return;
 
     var sn = Math.min(1, f.speed / 1.6);             // speed 0..1
@@ -476,9 +632,14 @@
     f.el.style.setProperty('--fin-angle', fin.toFixed(2) + 'deg');
   }
   function render(dtf) {
-    // depth-sort the fish by y (nearer in front)
-    fish.slice().sort(function (a, b) { return a.y - b.y; }).forEach(function (f, idx) { f.el.style.zIndex = idx; });
+    // stable 3-layer sort first; y only breaks ties within a layer.
+    fish.slice().sort(function (a, b) {
+      var la = depthLayer(a.depthLayer).rank;
+      var lb = depthLayer(b.depthLayer).rank;
+      return la === lb ? a.y - b.y : la - lb;
+    }).forEach(function (f, idx) { f.el.style.zIndex = idx; });
     for (var k = 0; k < fish.length; k++) placeFish(fish[k], dtf || 1);
+    drawKoiDisturbance(performance.now());
   }
 
   function frame(t) { var dtf = last ? Math.min(3, (t - last) / 16.67) : 1; last = t; update(dtf); render(dtf); var active = !reduce || food.length; raf = active ? requestAnimationFrame(frame) : (last = 0, null); }
@@ -489,8 +650,8 @@
   render(1);
   if (!reduce) wake();
 
-  keyImgInPlace(pond.querySelector('.koi-bg'), POND + 'pond-base.png');
-  keyImgInPlace(pond.querySelector('.lily-overlay'), POND4 + 'lily-overlay.png');
+  var bgEl = pond.querySelector('.koi-bg');
+  if (bgEl) bgEl.src = BEAUTIFUL + 'pond-background-no-koi.png';
 
   keySprite(POND + 'food-pellet.png', function (url) { sprites.food = url; });
   keySprite(POND + 'fish-shadow.png', function (url) {

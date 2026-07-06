@@ -20,7 +20,7 @@
   <link rel="stylesheet" href="nav.css">
   <link rel="stylesheet" href="home.css">
   <link rel="stylesheet" href="hero.css">
-  <link rel="stylesheet" href="koipond.css?v=rollback-depth-1">
+  <link rel="stylesheet" href="koipond.css?v=koi-ripples-7">
 </head>
 <body>
   <!-- Background layers: canvas grid (JS) + static fallback + grain -->
@@ -74,23 +74,20 @@
 
           <!-- ═══ Koi pond — click the water to feed the koi. Optional & ignorable. ═══
                Fish + lily + food/ripple logic in koipond.js, styles in
-               koipond.css. Ambient water motion is a separate canvas
-               layer driven by pondwater.js (kept apart from the fish
-               rig logic, the closest vanilla-JS equivalent of the
-               suggested WaterCanvas/usePondAnimation split).
-               Layer order: pond base → subtle underwater floor texture → fish
-               shadow → koi fish → water motion canvas/tint → lily pads
-               (fish swim UNDER these) → wake/ripples/food → UI. -->
+               koipond.css. Water refraction is WebGL (pondripples.js +
+               jquery.ripples): each koi drops its own ripple trail as it
+               swims, plus a splash on feeding. pondwaves.js keeps local
+               ripple accents and wind-coupled plant motion.
+               Layer order: baked pond background (WebGL ripple surface) →
+               fish shadow → koi fish → koi-local disturbance/tint →
+               local ripple accents → lily/reed occlusion → food/UI. -->
           <div class="koipond">
-            <img class="koi-bg" src="assets/hero/koi/pond3/pond-base.png" alt="" aria-hidden="true">
-            <div class="pond-floor-layer" aria-hidden="true"></div>
+            <img class="koi-bg" src="assets/hero/koi/beautiful-pond/pond-background-no-koi.png" alt="" aria-hidden="true">
             <!-- fish (+ their own shadow) swim UNDER the water layers below -->
             <div class="koi-stage" aria-hidden="true"></div>
-            <canvas class="pond-water-canvas" aria-hidden="true"></canvas>
-            <!-- decorative lily pads sit ABOVE the fish, so koi pass underneath them -->
-            <div class="lily-layer" aria-hidden="true">
-              <img class="lily-overlay" src="assets/hero/koi/pond4/lily-overlay.png" alt="">
-            </div>
+            <canvas class="koi-disturbance-canvas" aria-hidden="true"></canvas>
+            <div class="pond-tint" aria-hidden="true"></div>
+            <canvas class="pond-waves-canvas" aria-hidden="true"></canvas>
             <canvas class="ripple-layer" aria-hidden="true"></canvas>
             <div class="food-layer" aria-hidden="true"></div>
             <span class="koi-hint"><span class="dot"></span>Click to feed the koi</span>
@@ -304,8 +301,15 @@
 
   <script src="scripts.js"></script>
   <script src="home.js"></script>
-  <script src="pondwater.js?v=rollback-depth-1"></script>
-  <script src="koipond.js?v=rollback-depth-1"></script>
+  <!-- jquery.ripples: WebGL water refraction on the pond background.
+       Drops are driven by the swimming koi (pondripples.js) — mouse
+       interactivity is off. Loaded before the pond scripts so
+       PondRipples is ready when koipond.js boots. -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.ripples/0.5.3/jquery.ripples.min.js"></script>
+  <script src="pondripples.js?v=koi-ripples-7"></script>
+  <script src="pondwaves.js?v=koi-ripples-7"></script>
+  <script src="koipond.js?v=koi-ripples-7"></script>
   <script>
   (function(){
     const item = document.querySelector(".nav-item--work");

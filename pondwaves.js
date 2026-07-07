@@ -24,8 +24,8 @@
        so the pond never reads as switched off.
 
    The ambient all-over wave-strand field is disabled; this layer now
-   only draws short-lived accents that are triggered by the same ripple
-   events as PondRipples, plus the separate wind-coupled plant sprites.
+   draws a masked caustic-intensity pass, short-lived accents triggered
+   by PondRipples, plus the separate wind-coupled plant sprites.
    ════════════════════════════════════════════════════════════════ */
 (function () {
   'use strict';
@@ -35,9 +35,13 @@
   var pond = document.querySelector('.koipond');
   if (!pond) return;
   var canvas = pond.querySelector('.pond-waves-canvas');
-  if (!canvas) return;
+  var floorCanvas = pond.querySelector('.pond-floor-caustics-canvas');
+  var fishCanvas = pond.querySelector('.pond-fish-caustics-canvas');
+  if (!canvas || !floorCanvas || !fishCanvas) return;
   var ctx = canvas.getContext('2d');
-  if (!ctx) return;
+  var floorCtx = floorCanvas.getContext('2d');
+  var fishCtx = fishCanvas.getContext('2d');
+  if (!ctx || !floorCtx || !fishCtx) return;
 
   var DIR = 'assets/hero/koi/beautiful-pond/waves/';
   var SPRITE_COUNT = 10;
@@ -46,6 +50,31 @@
   var WATER = { cx: 0.5, cy: 0.5, rx: 0.44, ry: 0.40 };
   var AMBIENT = 0.22;                              // shimmer floor between gusts
   var GUST_PUSH = 26;                              // extra px/s the wind adds inside a gust
+  var CAUSTIC_SRC = 'assets/hero/koi/beautiful-pond/water-shimmer-texture.png';
+  var causticTexture = new Image();
+  var causticCanvas = document.createElement('canvas');
+  function buildCausticTexture() {
+    var w = causticTexture.naturalWidth, h = causticTexture.naturalHeight;
+    causticCanvas.width = w;
+    causticCanvas.height = h;
+    var cctx = causticCanvas.getContext('2d');
+    cctx.drawImage(causticTexture, 0, 0);
+    var id = cctx.getImageData(0, 0, w, h);
+    var d = id.data;
+    for (var i = 0; i < d.length; i += 4) {
+      var luma = d[i] * 0.299 + d[i + 1] * 0.587 + d[i + 2] * 0.114;
+      var a = clamp((luma - 63) / 58, 0, 1);
+      a = Math.pow(a, 1.55);
+      d[i] = 218;
+      d[i + 1] = 255;
+      d[i + 2] = 248;
+      d[i + 3] = Math.round(a * 255);
+    }
+    cctx.putImageData(id, 0, 0);
+    wake();
+  }
+  causticTexture.onload = buildCausticTexture;
+  causticTexture.src = CAUSTIC_SRC;
 
   var sprites = [], loaded = 0;
   for (var s = 1; s <= SPRITE_COUNT; s++) {
@@ -66,12 +95,17 @@
     var r = pond.getBoundingClientRect();
     W = Math.max(1, Math.round(r.width));
     H = Math.max(1, Math.round(r.height));
-    canvas.width = W * dpr;
-    canvas.height = H * dpr;
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    resizeCanvas(canvas, ctx);
+    resizeCanvas(floorCanvas, floorCtx);
+    resizeCanvas(fishCanvas, fishCtx);
     scratch.width = Math.ceil(W * 0.26 * dpr);
     scratch.height = Math.ceil(W * 0.26 * dpr);
     sctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  function resizeCanvas(c, cctx) {
+    c.width = W * dpr;
+    c.height = H * dpr;
+    cctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   }
 
   function randInWater(shrink) {
@@ -230,29 +264,65 @@
     }
   }
 
+  function drawCausticNet(cctx, t, alphaScale, driftScale) {
+    if (!causticCanvas.width) return;
+    cctx.save();
+    cctx.globalCompositeOperation = 'lighter';
+    cctx.imageSmoothingEnabled = true;
+
+    var scaleA = W * 0.58 / causticCanvas.width;
+    var tileW = causticCanvas.width * scaleA;
+    var tileH = causticCanvas.height * scaleA;
+    var offsetX = -tileW + (t * 7 * driftScale) % tileW;
+    var offsetY = -tileH + (t * 3.5 * driftScale) % tileH;
+    cctx.globalAlpha = 0.48 * alphaScale;
+    for (var y = offsetY; y < H + tileH; y += tileH) {
+      for (var x = offsetX; x < W + tileW; x += tileW) {
+        cctx.drawImage(causticCanvas, x, y, tileW, tileH);
+      }
+    }
+
+    var scaleB = W * 0.82 / causticCanvas.width;
+    var tileWb = causticCanvas.width * scaleB;
+    var tileHb = causticCanvas.height * scaleB;
+    var offsetXb = -tileWb + (tileWb - (t * 3.2 * driftScale) % tileWb);
+    var offsetYb = -tileHb + (t * 2.1 * driftScale) % tileHb;
+    cctx.globalAlpha = 0.13 * alphaScale;
+    cctx.translate(W * 0.5, H * 0.5);
+    cctx.rotate(0.18);
+    for (var yy = offsetYb - H * 0.6; yy < H; yy += tileHb) {
+      for (var xx = offsetXb - W * 0.8; xx < W; xx += tileWb) {
+        cctx.drawImage(causticCanvas, xx, yy, tileWb, tileHb);
+      }
+    }
+    cctx.restore();
+  }
+
   function drawRippleAccents(t) {
     for (var i = impacts.length - 1; i >= 0; i--) {
       var im = impacts[i];
       var age = t - im.born;
-      var life = im.kind === 'food' ? 1.15 : 0.72;
+      var isFood = im.kind === 'food';
+      var isReflection = im.kind === 'reflection';
+      var life = isFood ? 1.15 : isReflection ? 0.92 : 0.72;
       if (age > life) { impacts.splice(i, 1); continue; }
       var p = age / life;
       var fade = Math.pow(1 - p, 1.7) * edgeFade(im.x, im.y);
       if (fade <= 0.01) continue;
-      var weird = im.kind === 'food' ? 1 : 0.45;
-      var radius = Math.min(im.radius * (0.78 + p * (im.kind === 'food' ? 1.8 : 1.15)), W * 0.072);
-      var alpha = Math.min(0.095, im.strength * (im.kind === 'food' ? 5.2 : 2.6)) * fade;
+      var weird = isFood ? 1 : isReflection ? 0.72 : 0.45;
+      var radius = Math.min(im.radius * (0.78 + p * (isFood ? 1.8 : isReflection ? 1.42 : 1.15)), W * 0.072);
+      var alpha = Math.min(0.095, im.strength * (isFood ? 5.2 : isReflection ? 3.4 : 2.6)) * fade;
       ctx.save();
       ctx.lineCap = 'round';
-      ctx.shadowBlur = im.kind === 'food' ? 5 : 3;
+      ctx.shadowBlur = isFood ? 5 : isReflection ? 4 : 3;
       ctx.shadowColor = 'rgba(105, 222, 216,' + (alpha * 0.5).toFixed(3) + ')';
       ctx.strokeStyle = 'rgba(169, 241, 229,' + alpha.toFixed(3) + ')';
-      ctx.lineWidth = im.kind === 'food' ? 1.2 : 0.9;
-      var segs = im.kind === 'food' ? 9 : 5;
+      ctx.lineWidth = isFood ? 1.2 : isReflection ? 1 : 0.9;
+      var segs = isFood ? 9 : isReflection ? 6 : 5;
       for (var s = 0; s < segs; s++) {
-        if (hash(im.seed + s * 31 + Math.floor(p * 5)) < (im.kind === 'food' ? 0.22 : 0.38)) continue;
+        if (hash(im.seed + s * 31 + Math.floor(p * 5)) < (isFood ? 0.22 : isReflection ? 0.34 : 0.38)) continue;
         var start = hash(im.seed + s * 71) * Math.PI * 2 + p * 0.55 * weird;
-        var len = 0.18 + hash(im.seed + s * 19) * (im.kind === 'food' ? 0.34 : 0.2);
+        var len = 0.18 + hash(im.seed + s * 19) * (isFood ? 0.34 : isReflection ? 0.26 : 0.2);
         ctx.beginPath();
         for (var k = 0; k <= 5; k++) {
           var a = start + len * (k / 5);
@@ -274,6 +344,10 @@
     var dt = Math.min(0.1, Math.max(0, t - lastT));
     lastT = t;
     ctx.clearRect(0, 0, W, H);
+    floorCtx.clearRect(0, 0, W, H);
+    fishCtx.clearRect(0, 0, W, H);
+    drawCausticNet(floorCtx, t, 0.88, 0.62);
+    drawCausticNet(fishCtx, t + 0.8, 0.32, 1);
     for (var i = 0; i < waves.length; i++) {
       var wv = waves[i];
       var age = t - wv.born;

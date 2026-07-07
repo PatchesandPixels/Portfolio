@@ -20,7 +20,7 @@
   <link rel="stylesheet" href="nav.css">
   <link rel="stylesheet" href="home.css">
   <link rel="stylesheet" href="hero.css">
-  <link rel="stylesheet" href="koipond.css?v=koi-ripples-7">
+  <link rel="stylesheet" href="koipond.css?v=koi-ripples-20">
 </head>
 <body>
   <!-- Background layers: canvas grid (JS) + static fallback + grain -->
@@ -79,12 +79,15 @@
                swims, plus a splash on feeding. pondwaves.js keeps local
                ripple accents and wind-coupled plant motion.
                Layer order: baked pond background (WebGL ripple surface) →
-               fish shadow → koi fish → koi-local disturbance/tint →
+               caustics projected onto pond floor → fish shadow → koi fish →
+               faint caustics over koi → koi-local disturbance/tint →
                local ripple accents → lily/reed occlusion → food/UI. -->
           <div class="koipond">
             <img class="koi-bg" src="assets/hero/koi/beautiful-pond/pond-background-no-koi.png" alt="" aria-hidden="true">
+            <canvas class="pond-floor-caustics-canvas" aria-hidden="true"></canvas>
             <!-- fish (+ their own shadow) swim UNDER the water layers below -->
             <div class="koi-stage" aria-hidden="true"></div>
+            <canvas class="pond-fish-caustics-canvas" aria-hidden="true"></canvas>
             <canvas class="koi-disturbance-canvas" aria-hidden="true"></canvas>
             <div class="pond-tint" aria-hidden="true"></div>
             <canvas class="pond-waves-canvas" aria-hidden="true"></canvas>
@@ -307,9 +310,9 @@
        PondRipples is ready when koipond.js boots. -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.ripples/0.5.3/jquery.ripples.min.js"></script>
-  <script src="pondripples.js?v=koi-ripples-7"></script>
-  <script src="pondwaves.js?v=koi-ripples-7"></script>
-  <script src="koipond.js?v=koi-ripples-7"></script>
+  <script src="pondripples.js?v=koi-ripples-20"></script>
+  <script src="pondwaves.js?v=koi-ripples-20"></script>
+  <script src="koipond.js?v=koi-ripples-20"></script>
   <script>
   (function(){
     const item = document.querySelector(".nav-item--work");

@@ -6,11 +6,13 @@
    Layer stack (back to front):
      1 koi-bg / koi-bg-water  — baked pond background, refracted live by
                                 the WebGL ripple sim (pondripples.js)
-     2 fish (koi-stage)       — shadow decal + shadow rig + visible rig
-     3 pond-waves-canvas      — local ripple accents (pondwaves.js)
-     4 ripple-layer           — canvas food ripples / interaction effects
-     5 food-layer             — food pellets
-     6 hint / message         — UI
+     2 pond-floor-caustics    — caustics projected onto the pond floor
+     3 fish (koi-stage)       — shadow decal + shadow rig + visible rig
+     4 pond-fish-caustics     — faint caustics crossing koi/water volume
+     5 pond-waves-canvas      — local ripple accents (pondwaves.js)
+     6 ripple-layer           — canvas food ripples / interaction effects
+     7 food-layer             — food pellets
+     8 hint / message         — UI
    ════════════════════════════════════════════════════════════════ */
 
 /* ── left-column scroll cue + tagline (shared with prior heroes) ── */
@@ -42,10 +44,41 @@
   margin-left: auto;             /* sits to the right, blended into the page */
   aspect-ratio: 1448 / 1086;     /* matches pond-background-no-koi.png */
   cursor: pointer;
+  --pond-water-mask: polygon(
+    18% 12%,
+    25% 8%,
+    36% 9%,
+    48% 9%,
+    60% 8%,
+    72% 6%,
+    73% 11%,
+    76% 14%,
+    83% 17%,
+    88% 24%,
+    92% 28%,
+    92% 43%,
+    90% 50%,
+    92% 57%,
+    92% 69%,
+    80% 71%,
+    76% 78%,
+    66% 82%,
+    50% 85%,
+    33% 83%,
+    23% 78%,
+    18% 66%,
+    14% 58%,
+    14% 45%,
+    13% 38%,
+    15% 29%,
+    18% 23%
+  );
 }
 
 /* full-pond overlay layers all share the baked pond canvas and alignment */
 .koi-bg,
+.pond-floor-caustics-canvas,
+.pond-fish-caustics-canvas,
 .koi-disturbance-canvas,
 .pond-tint,
 .pond-waves-canvas {
@@ -64,21 +97,23 @@
     drop-shadow(0 14px 24px rgba(26, 22, 18, 0.1));
 }
 
-/* 1r — WebGL ripple surface (pondripples.js + jquery.ripples): a div
-   carrying the same pond art as its background, refracted live by the
-   ripple simulation as the koi swim. Same layer + filter as .koi-bg so
-   swapping the flat img for this surface is invisible. */
+/* 1r — WebGL ripple surface (pondripples.js + jquery.ripples): a clipped
+   open-water duplicate of the pond art, refracted live by the ripple
+   simulation as the koi swim. The flat .koi-bg remains visible under it,
+   so rocks, reeds, lilies, and dark perimeter art outside the mask never
+   vibrate with the water. */
 .koi-bg-water {
   position: absolute; inset: 0;
   z-index: 1;
   pointer-events: none;
   background-size: 100% 100%;
   background-position: center;
+  -webkit-clip-path: var(--pond-water-mask);
+  clip-path: var(--pond-water-mask);
   filter:
     brightness(1.14)
     saturate(1.08)
-    contrast(1.03)
-    drop-shadow(0 14px 24px rgba(26, 22, 18, 0.1));
+    contrast(1.03);
 }
 
 /* The new baked background already includes the pond bed, banks, stones,
@@ -87,6 +122,17 @@
 .pond-floor-layer,
 .lily-layer {
   display: none;
+}
+
+/* 2 — bottom caustics: projected light on the pond floor, below koi.
+   This is the article/reference behavior: refracted light lands on
+   underwater surfaces rather than sitting only on the water surface. */
+.pond-floor-caustics-canvas {
+  z-index: 2;
+  opacity: 0.9;
+  mix-blend-mode: screen;
+  -webkit-clip-path: var(--pond-water-mask);
+  clip-path: var(--pond-water-mask);
 }
 
 /* 3 — DOM koi rig ── a segmented rig (head-body / mid-body / tail-base /
@@ -99,7 +145,7 @@
    rig" — both read the same custom properties, so the shadow bends in
    perfect sync. The shadow decal is a separate soft blob that sits
    beneath everything, giving the fish a grounded, underwater feel. */
-.koi-stage { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
+.koi-stage { position: absolute; inset: 0; z-index: 3; pointer-events: none; }
 .koi-fish {
   position: absolute; left: 0; top: 0;
   --koi-depth-opacity: 0.78;
@@ -185,30 +231,45 @@
     blur(calc(0.2px + var(--koi-depth-tint) * 0.28px));
 }
 
-/* 4b — local ripple accents (pondwaves.js): faint broken highlights
+/* 4 — fish-volume caustics: a very faint copy above the koi. It lets
+   fish catch the refracted light without making the entire pond look
+   like a bright surface sticker. */
+.pond-fish-caustics-canvas {
+  z-index: 4;
+  opacity: 0.34;
+  mix-blend-mode: screen;
+  -webkit-clip-path: var(--pond-water-mask);
+  clip-path: var(--pond-water-mask);
+}
+
+/* 5b — local ripple accents (pondwaves.js): faint broken highlights
    triggered by PondRipples events. The former all-over drifting wave
    strand field is disabled so no shimmer sits across the whole pond. */
 .pond-waves-canvas {
-  z-index: 3;
+  z-index: 5;
   mix-blend-mode: screen;
+  -webkit-clip-path: var(--pond-water-mask);
+  clip-path: var(--pond-water-mask);
 }
 
-/* 4a — tiny local disturbances tied to the koi position. Drawn by
+/* 5a — tiny local disturbances tied to the koi position. Drawn by
    koipond.js as broken pixels/short soft strokes near moving fish, not
    long wake trails. */
 .koi-disturbance-canvas {
-  z-index: 3;
+  z-index: 5;
   opacity: 0.46;
   image-rendering: pixelated;
   mix-blend-mode: screen;
+  -webkit-clip-path: var(--pond-water-mask);
+  clip-path: var(--pond-water-mask);
 }
 
-/* 4c — water tint above the koi: a subtle teal wash that knocks the
+/* 5c — water tint above the koi: a subtle teal wash that knocks the
    white koi bodies back into the water so they stop reading as pasted
    on top. Radial so it's strongest over open water and fades to
    nothing at the shore art; sits under ripples/plants/UI. */
 .pond-tint {
-  z-index: 3;
+  z-index: 5;
   background: radial-gradient(ellipse 62% 58% at 50% 50%,
     rgba(8, 66, 62, 0.24) 0%,
     rgba(8, 58, 58, 0.14) 62%,
@@ -216,26 +277,28 @@
   mix-blend-mode: multiply;
 }
 
-/* 5 — local water effects: canvas-rendered food/eating ripples —
+/* 6 — local water effects: canvas-rendered food/eating ripples —
    broken ellipse rings + tiny pixels, drawn by koipond.js. Koi-swim
    ripples are handled separately by the WebGL surface (pondripples.js). */
 .ripple-layer {
   position: absolute;
   inset: 0;
-  z-index: 4;
+  z-index: 6;
   width: 100%;
   height: 100%;
   pointer-events: none;
   opacity: 0.86;
   image-rendering: pixelated;
   mix-blend-mode: screen;
+  -webkit-clip-path: var(--pond-water-mask);
+  clip-path: var(--pond-water-mask);
 }
 
-/* 6 — decorative lily pads: fish swim UNDER these. One
+/* 7 — decorative lily pads: fish swim UNDER these. One
    full-pond overlay sized to match pond-base exactly, tinted
    slightly darker/cooler via filter so it sits into the moodier
    palette instead of popping as bright cartoon green. */
-.lily-layer { position: absolute; inset: 0; z-index: 6; pointer-events: none; }
+.lily-layer { position: absolute; inset: 0; z-index: 7; pointer-events: none; }
 .lily-overlay {
   position: absolute; inset: 0;
   width: 100%; height: 100%;
@@ -243,12 +306,12 @@
   filter: brightness(0.82) saturate(0.75) hue-rotate(-6deg) drop-shadow(0 3px 4px rgba(0,0,0,0.25));
 }
 
-/* 6b — wind-coupled shore plants (built by pondwaves.js): separate
+/* 7b — wind-coupled shore plants (built by pondwaves.js): separate
    reed/lily sprites placed at the fringes of the baked clusters and
    animated by the SAME gust field as the wave layer — reeds bend and
    flutter, pads get nudged downwind and settle back. Filter matches
    the .koi-bg brightness boost so they sit in the same light. */
-.plant-layer { position: absolute; inset: 0; z-index: 5; pointer-events: none; }
+.plant-layer { position: absolute; inset: 0; z-index: 7; pointer-events: none; }
 .pond-plant {
   position: absolute;
   will-change: transform;
@@ -257,8 +320,8 @@
 .plant-reed { transform-origin: 50% 98%; }   /* rooted at the stem base */
 .plant-lily { transform-origin: 50% 50%; }   /* floats about its center */
 
-/* 7 — food pellets */
-.food-layer { position: absolute; inset: 0; z-index: 6; pointer-events: none; }
+/* 8 — food pellets */
+.food-layer { position: absolute; inset: 0; z-index: 8; pointer-events: none; }
 .food-pellet {
   position: absolute;
   transform: translate(-50%, -50%);
@@ -272,7 +335,7 @@
   position: absolute;
   left: 50%; bottom: 16px;
   transform: translateX(-50%);
-  z-index: 7;
+  z-index: 9;
   font-family: var(--font-mono);
   text-align: center;
   pointer-events: none;

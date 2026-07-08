@@ -73,6 +73,10 @@
     var img = new Image();
     img.alt = '';
     img.src = DIR + d[0];
+    if (d[0].indexOf('rocks/') === 0) {
+      img.classList.add('pond-decor-rock');
+      if (d[0].indexOf('rock-cluster-bushes') !== -1) img.classList.add('pond-decor-rock-cluster');
+    }
     img.style.left = d[1] + '%';
     img.style.top = d[2] + '%';
     img.style.width = d[3] + '%';

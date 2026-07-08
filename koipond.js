@@ -51,6 +51,7 @@
   var RIG = A + 'rig2/';
   var POND = A + 'pond3/';   // pond base + food pellet — ships fully opaque, needs keying
   var BEAUTIFUL = A + 'beautiful-pond/';
+  var FOOD = 'assets/koi-pond/food/koi-food-pellet.png';
   /* back-to-front, per koi-rig-pivots.json's recommended layer order */
   var RIG_PARTS = ['tail-fin', 'tail-base', 'mid-body', 'head-body', 'left-fin', 'right-fin'];
   var PIV_X = 0.5, PIV_Y = 667 / 953;      // head/front-body pivot fraction
@@ -399,7 +400,7 @@
     img.className = 'food-pellet';
     img.src = sprites.food;
     img.alt = '';
-    img.style.width = (fishH * 0.42) + 'px';
+    img.style.width = Math.max(8, Math.min(14, fishH * 0.18)) + 'px';
     img.style.left = p.x + 'px'; img.style.top = p.y + 'px';
     foodLayer.appendChild(img);
     food.push({ x: p.x, y: p.y, el: img, life: 8 });
@@ -656,7 +657,7 @@
   var bgEl = pond.querySelector('.koi-bg');
   if (bgEl) bgEl.src = 'assets/koi-pond/pond/pond-base.png';
 
-  keySprite(POND + 'food-pellet.png', function (url) { sprites.food = url; });
+  keySprite(FOOD, function (url) { sprites.food = url; });
   keySprite(POND + 'fish-shadow.png', function (url) {
     sprites.shadow = url;
     if (url) fish.forEach(function (f) { f.shadowDecal.src = url; });

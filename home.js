@@ -133,7 +133,8 @@
 
     function update() {
       var heroBottom = heroEl.offsetTop + heroEl.offsetHeight;
-      var showGrid = window.scrollY >= heroBottom - 24;
+      var revealLead = Math.min(150, window.innerHeight * 0.16);
+      var showGrid = window.scrollY >= heroBottom - revealLead;
       document.documentElement.classList.toggle('hero-grid-hidden', !showGrid);
     }
 

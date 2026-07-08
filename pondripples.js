@@ -28,7 +28,7 @@
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (reduce) return;
 
-  var BG_SRC = 'assets/hero/koi/beautiful-pond/pond-background-no-koi.png';
+  var BG_SRC = 'assets/koi-pond/pond/pond-base.png';
   var STYLE = {
     koiRadius: 0.18,
     koiMaxRadius: 13,
@@ -44,7 +44,10 @@
     maxRadius: 22,
     maxStrength: 0.018
   };
-  var WATER = { cx: 0.5, cy: 0.5, rx: 0.42, ry: 0.38 };
+  /* open-water ellipse of the new Figma pond — must match the
+     --pond-water-mask in koipond.css and WATER in koipond.js so the
+     edge-reflection echoes bounce off the actual rock ring */
+  var WATER = { cx: 0.498, cy: 0.48, rx: 0.31, ry: 0.34 };
   var REFLECT = {
     waveSpeed: 210,       // px/s: delay before a wave reaches the edge
     inset: 13,            // keep reflected drops off the painted bank art

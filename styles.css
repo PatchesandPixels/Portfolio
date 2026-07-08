@@ -6,7 +6,9 @@
   --text-muted:    #7a6f63;
   --border:        #d8cdb8;
   --border-light:  #d9d9d9;
-  --accent-blue:   #1353be;
+  --accent-blue:   #e8552f;   /* unified with the site's orange accent: one
+                                 warm accent system (was #1353be — the blue
+                                 read as a second, competing brand color) */
   --accent-orange: #f49e4f;
   --white:         #ffffff;
 

@@ -57,7 +57,10 @@
   var FISH_AR = 600 / 953;                 // rig canvas width / height
 
   /* elliptical swim region (fractions of the pond box) */
-  var WATER = { cx: 0.5, cy: 0.5, rx: 0.42, ry: 0.38 };
+  /* open-water ellipse of the new Figma pond (water inside the rock
+     ring), as fractions of the pond container box — keeps fish, food
+     and ripples off the shore rocks */
+  var WATER = { cx: 0.498, cy: 0.48, rx: 0.31, ry: 0.34 };
 
   var W = 0, H = 0, fishH = 60, fishW = 38, idleRipT = 3;
   var fish = [], food = [], fed = false;
@@ -651,7 +654,7 @@
   if (!reduce) wake();
 
   var bgEl = pond.querySelector('.koi-bg');
-  if (bgEl) bgEl.src = BEAUTIFUL + 'pond-background-no-koi.png';
+  if (bgEl) bgEl.src = 'assets/koi-pond/pond/pond-base.png';
 
   keySprite(POND + 'food-pellet.png', function (url) { sprites.food = url; });
   keySprite(POND + 'fish-shadow.png', function (url) {

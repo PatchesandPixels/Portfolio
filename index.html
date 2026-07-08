@@ -16,11 +16,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Inter:wght@400;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=review-fixes-2">
   <link rel="stylesheet" href="nav.css">
-  <link rel="stylesheet" href="home.css">
+  <link rel="stylesheet" href="home.css?v=work-list-gap-1">
   <link rel="stylesheet" href="hero.css">
-  <link rel="stylesheet" href="koipond.css?v=koi-ripples-20">
+  <link rel="stylesheet" href="koipond.css?v=koi-figma-7">
 </head>
 <body>
   <!-- Background layers: canvas grid (JS) + static fallback + grain -->
@@ -58,18 +58,15 @@
         <section class="hero" aria-label="Introduction">
           <div class="hero-copy">
             <p class="kicker">UX/UI &amp; PRODUCT DESIGN</p>
-            <h1 class="hero-name">Andy<br>Nguyen<span class="accent-period">.</span></h1>
+            <h1 class="hero-name">Andy Nguyen<span class="accent-period">.</span></h1>
             <p class="hero-statement">
-              I design clear, polished digital experiences for complex product problems.
+              Hi, I'm Andy - a UX/UI designer who helps teams turn complex problems into clear, intuitive experiences. I care about craft, strategy, and the details that make products feel effortless.
             </p>
-            <p class="hero-tagline">Human-centered. <b>Detail-obsessed.</b> Playful by nature.</p>
             <div class="hero-ctas">
               <a href="#work" class="btn-patch">View work
                 <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 3v10M8 13l-4-4M8 13l4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
               </a>
-              <a href="mailto:nguyenlandy@gmail.com" class="btn-ghost">Get in touch</a>
             </div>
-            <p class="hero-scrollcue">Scroll to explore <span class="cue-chev" aria-hidden="true">↓</span></p>
           </div>
 
           <!-- ═══ Koi pond — click the water to feed the koi. Optional & ignorable. ═══
@@ -83,7 +80,7 @@
                faint caustics over koi → koi-local disturbance/tint →
                local ripple accents → lily/reed occlusion → food/UI. -->
           <div class="koipond">
-            <img class="koi-bg" src="assets/hero/koi/beautiful-pond/pond-background-no-koi.png" alt="" aria-hidden="true">
+            <img class="koi-bg" src="assets/koi-pond/pond/pond-base.png" alt="" aria-hidden="true">
             <canvas class="pond-floor-caustics-canvas" aria-hidden="true"></canvas>
             <!-- fish (+ their own shadow) swim UNDER the water layers below -->
             <div class="koi-stage" aria-hidden="true"></div>
@@ -113,15 +110,13 @@
                   <span class="work-num">01</span>
                   <h3><a href="tersus.html" class="work-title-link">Tersus</a></h3>
                 </div>
-                <p class="work-desc">Designing a simpler marketplace for home cleaning services — clearer booking flows and end-to-end product design that reduced friction for both customers and cleaners.</p>
-                <p class="work-meta"><span>End-to-end design</span><span>iOS &amp; Web</span></p>
-                <div class="work-tags">
-                  <span class="work-tag">MARKETPLACE</span>
-                  <span class="work-tag">BOOKING FLOW</span>
-                  <span class="work-tag">MOBILE APP</span>
-                </div>
+                <p class="work-desc">Simplified a two-sided home-cleaning marketplace across booking, onboarding, and cleaner job management.</p>
+                <dl class="work-stats" aria-label="Tersus project metrics">
+                  <div><dt>30+</dt><dd>Research participants</dd></div>
+                  <div><dt>5</dt><dd>Testing rounds</dd></div>
+                </dl>
                 <span class="work-cta">View case study <span class="arrow" aria-hidden="true">➜</span></span>
-                <div class="work-row-thumb"><img src="assets/tersus-card-screens.png" alt="Tersus app screens" loading="lazy"></div>
+                <div class="work-row-thumb"><img src="assets/koi-pond/work/tersus.png" alt="Tersus product design preview" loading="lazy"></div>
               </li>
 
               <li class="work-row reveal" data-project="quick-quote" style="--reveal-delay:60ms;">
@@ -129,15 +124,13 @@
                   <span class="work-num">02</span>
                   <h3><a href="cure-quick-quote.html" class="work-title-link">Quick Quote</a></h3>
                 </div>
-                <p class="work-desc">Redesigned CURE Auto Insurance's quote experience to reduce friction, improve form clarity, and help customers move through signup with more confidence.</p>
-                <p class="work-meta"><span>Full redesign</span><span>Web &amp; Mobile</span></p>
-                <div class="work-tags">
-                  <span class="work-tag">INSURANCE FLOW</span>
-                  <span class="work-tag">FORMS</span>
-                  <span class="work-tag">CONVERSION</span>
-                </div>
+                <p class="work-desc">Cut CURE's auto insurance quote flow from 20 screens to 10, making complex forms easier to complete.</p>
+                <dl class="work-stats" aria-label="Quick Quote project metrics">
+                  <div><dt>20 → 10</dt><dd>Screens</dd></div>
+                  <div><dt>4</dt><dd>Live prototype modules</dd></div>
+                </dl>
                 <span class="work-cta">View case study <span class="arrow" aria-hidden="true">➜</span></span>
-                <div class="work-row-thumb"><img src="assets/cure-quick-quote.png" alt="CURE Quick Quote interface" loading="lazy"></div>
+                <div class="work-row-thumb"><img src="assets/koi-pond/work/quick-quote.png" alt="Quick Quote product design preview" loading="lazy"></div>
               </li>
 
               <li class="work-row reveal" data-project="scan" style="--reveal-delay:120ms;">
@@ -145,15 +138,13 @@
                   <span class="work-num">03</span>
                   <h3><a href="cure-scan-license.html" class="work-title-link">Scan to Insure</a></h3>
                 </div>
-                <p class="work-desc">A mobile-first quote experience that reduced manual entry by pre-filling customer details from a scanned driver's license — designed from zero to one.</p>
-                <p class="work-meta"><span>0 → 1 design</span><span>Mobile-first</span></p>
-                <div class="work-tags">
-                  <span class="work-tag">SCAN FEATURE</span>
-                  <span class="work-tag">ONBOARDING</span>
-                  <span class="work-tag">MOBILE</span>
-                </div>
+                <p class="work-desc">Designed a mobile license-scanning flow that pre-filled quote details and reduced manual entry.</p>
+                <dl class="work-stats" aria-label="Scan to Insure project metrics">
+                  <div><dt>41%</dt><dd>Drop-off reduced</dd></div>
+                  <div><dt>4:55</dt><dd>Avg. quote time</dd></div>
+                </dl>
                 <span class="work-cta">View case study <span class="arrow" aria-hidden="true">➜</span></span>
-                <div class="work-row-thumb"><img src="assets/cure-scan-license.png" alt="Scan to Insure interface" loading="lazy"></div>
+                <div class="work-row-thumb"><img src="assets/koi-pond/work/scan.png" alt="Scan to Insure product design preview" loading="lazy"></div>
               </li>
 
               <li class="work-row reveal" data-project="my-account" style="--reveal-delay:180ms;">
@@ -161,39 +152,39 @@
                   <span class="work-num">04</span>
                   <h3><a href="cure-my-account.html" class="work-title-link">My Account Portal</a></h3>
                 </div>
-                <p class="work-desc">Redesigned CURE's account portal so customers can access policy details, manage account tasks, and navigate important insurance information with less confusion.</p>
-                <p class="work-meta"><span>Full redesign</span><span>Web &amp; Mobile</span></p>
-                <div class="work-tags">
-                  <span class="work-tag">ACCOUNT PORTAL</span>
-                  <span class="work-tag">SELF-SERVICE</span>
-                  <span class="work-tag">DASHBOARD</span>
-                </div>
+                <p class="work-desc">Rebuilt CURE's account portal across policy, billing, claims, and mobile self-service.</p>
+                <dl class="work-stats" aria-label="My Account Portal project metrics">
+                  <div><dt>11</dt><dd>Portal sections</dd></div>
+                  <div><dt>2</dt><dd>Designed breakpoints</dd></div>
+                </dl>
                 <span class="work-cta">View case study <span class="arrow" aria-hidden="true">➜</span></span>
-                <div class="work-row-thumb"><img src="assets/cure-my-account.png" alt="My Account portal interface" loading="lazy"></div>
+                <div class="work-row-thumb"><img src="assets/koi-pond/work/my-account.png" alt="My Account Portal product design preview" loading="lazy"></div>
               </li>
 
             </ul>
 
-            <!-- Desktop preview stage: scenes swap on hover/focus -->
+            <!-- Desktop preview stage: a REFLECTING POOL carrying the
+                 hero's water theme. Hovering a project ripples the
+                 water and its screens surface (rise + focus) with a
+                 mirrored reflection below. At rest the first project
+                 stays surfaced so the column is never empty. -->
             <div class="work-stage reveal" aria-hidden="true">
+              <div class="pool-caustics"></div>
+              <div class="pool-ripple"></div>
               <div class="stage-scene" data-project="tersus">
-                <img class="stage-main" src="assets/hero-tersus-web.jpg" alt="" loading="lazy">
-                <img class="stage-phone" src="assets/tersus-phone-1.jpg" alt="" loading="lazy">
+                <img class="stage-art" src="assets/koi-pond/work/tersus.png" alt="" loading="lazy">
                 <span class="stage-label">Tersus · Marketplace</span>
               </div>
               <div class="stage-scene" data-project="quick-quote">
-                <img class="stage-main" src="assets/cure-quick-quote.png" alt="" loading="lazy">
-                <img class="stage-phone" src="assets/cure-qq-phone-mock.png" alt="" loading="lazy">
+                <img class="stage-art" src="assets/koi-pond/work/quick-quote.png" alt="" loading="lazy">
                 <span class="stage-label">CURE · Quick Quote</span>
               </div>
               <div class="stage-scene" data-project="scan">
-                <img class="stage-main" src="assets/cure-scan-license.png" alt="" loading="lazy">
-                <img class="stage-phone" src="assets/cure-scan-screen-1.jpg" alt="" loading="lazy">
+                <video class="stage-art stage-motion" src="assets/cure-scan-license-video.mp4" poster="assets/koi-pond/work/scan.png" preload="metadata" muted playsinline loop aria-hidden="true"></video>
                 <span class="stage-label">CURE · Scan to Insure</span>
               </div>
               <div class="stage-scene" data-project="my-account">
-                <img class="stage-main" src="assets/mac-desktop-home.png" alt="" loading="lazy">
-                <img class="stage-phone" src="assets/mac-mobile-home.png" alt="" loading="lazy">
+                <img class="stage-art" src="assets/koi-pond/work/my-account.png" alt="" loading="lazy">
                 <span class="stage-label">CURE · My Account</span>
               </div>
             </div>
@@ -256,7 +247,7 @@
           <div class="about-grid">
             <div class="reveal">
               <p class="kicker" id="about-title">ABOUT ANDY</p>
-              <p class="about-lede">A product designer with <em>3 years</em> of experience partnering with founders and cross-functional teams.</p>
+              <p class="about-lede">A product designer partnering with founders and cross-functional teams to <em>ship real products</em>.</p>
               <p class="body-text">My approach blends research, clarity, and craft to design experiences that are useful, usable, and a little delightful.</p>
               <ul class="capability-patches">
                 <li>Research</li>
@@ -303,16 +294,17 @@
   </div>
 
   <script src="scripts.js"></script>
-  <script src="home.js"></script>
+  <script src="home.js?v=work-grid-dim-1"></script>
   <!-- jquery.ripples: WebGL water refraction on the pond background.
        Drops are driven by the swimming koi (pondripples.js) — mouse
        interactivity is off. Loaded before the pond scripts so
        PondRipples is ready when koipond.js boots. -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.ripples/0.5.3/jquery.ripples.min.js"></script>
-  <script src="pondripples.js?v=koi-ripples-20"></script>
-  <script src="pondwaves.js?v=koi-ripples-20"></script>
-  <script src="koipond.js?v=koi-ripples-20"></script>
+  <script src="ponddecor.js?v=koi-figma-7"></script>
+  <script src="pondripples.js?v=koi-figma-2"></script>
+  <script src="pondwaves.js?v=koi-figma-2"></script>
+  <script src="koipond.js?v=koi-figma-2"></script>
   <script>
   (function(){
     const item = document.querySelector(".nav-item--work");

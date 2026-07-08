@@ -36,43 +36,20 @@
 }
 .hero-tagline b { color: var(--accent); font-weight: 600; }
 
-/* ── pond shell ── */
+/* ── pond shell ──
+   Box = the decorated bbox of the Figma composition (node 693:171):
+   origin (694,86), 803 × 726 in frame units. All decor/plant/water
+   coordinates are percentages of this box. */
 .koipond {
   position: relative;
+  z-index: 1;
   width: 100%;
-  max-width: 620px;
+  max-width: min(760px, 50vw);
   margin-left: auto;             /* sits to the right, blended into the page */
-  aspect-ratio: 1448 / 1086;     /* matches pond-background-no-koi.png */
+  aspect-ratio: 803 / 726;       /* Figma pond composition bbox */
   cursor: pointer;
-  --pond-water-mask: polygon(
-    18% 12%,
-    25% 8%,
-    36% 9%,
-    48% 9%,
-    60% 8%,
-    72% 6%,
-    73% 11%,
-    76% 14%,
-    83% 17%,
-    88% 24%,
-    92% 28%,
-    92% 43%,
-    90% 50%,
-    92% 57%,
-    92% 69%,
-    80% 71%,
-    76% 78%,
-    66% 82%,
-    50% 85%,
-    33% 83%,
-    23% 78%,
-    18% 66%,
-    14% 58%,
-    14% 45%,
-    13% 38%,
-    15% 29%,
-    18% 23%
-  );
+  /* open water inside the rock ring — an ellipse in the new art */
+  --pond-water-mask: ellipse(31% 34% at 49.8% 48%);
 }
 
 /* full-pond overlay layers all share the baked pond canvas and alignment */
@@ -86,34 +63,60 @@
   width: 100%; height: 100%;
   pointer-events: none;
 }
-/* 1 — pond base art */
+/* 0 — sandy ground under everything (ponddecor.js): spills past the
+   pond box per the Figma layout; radially feathered so the opaque
+   texture melts into the page instead of showing a hard rectangle */
+.pond-ground {
+  position: absolute;
+  z-index: 0;
+  pointer-events: none;
+  max-width: none;
+  object-fit: fill;
+  opacity: 1;
+  filter: saturate(1.04) contrast(1.03);
+  -webkit-mask-image: radial-gradient(ellipse 46% 48% at 50% 50%, #000 58%, rgba(0, 0, 0, 0.86) 75%, transparent 96%);
+  mask-image: radial-gradient(ellipse 46% 48% at 50% 50%, #000 58%, rgba(0, 0, 0, 0.86) 75%, transparent 96%);
+}
+
+/* 1 — pond base art: sits at the Figma pond rect within the box
+   (725×726 at x=722 of the 803-wide composition) */
 .koi-bg {
-  object-fit: contain;
+  inset: auto;
+  left: 3.49%; top: 0;
+  width: 90.29%; height: 100%;
+  object-fit: fill;
   z-index: 1;
-  filter:
-    brightness(1.14)
-    saturate(1.08)
-    contrast(1.03)
-    drop-shadow(0 14px 24px rgba(26, 22, 18, 0.1));
 }
 
 /* 1r — WebGL ripple surface (pondripples.js + jquery.ripples): a clipped
    open-water duplicate of the pond art, refracted live by the ripple
    simulation as the koi swim. The flat .koi-bg remains visible under it,
    so rocks, reeds, lilies, and dark perimeter art outside the mask never
-   vibrate with the water. */
+   vibrate with the water. Full-box div (drop coords stay 1:1 with the
+   pond container); the background renders into the pond rect via
+   background-size/position, and the mask clips to open water. */
 .koi-bg-water {
   position: absolute; inset: 0;
   z-index: 1;
   pointer-events: none;
-  background-size: 100% 100%;
-  background-position: center;
+  background-size: 90.29% 100%;
+  background-position: 35.94% 0;   /* = 3.49% box offset with a 90.29%-wide image */
+  background-repeat: no-repeat;
   -webkit-clip-path: var(--pond-water-mask);
   clip-path: var(--pond-water-mask);
-  filter:
-    brightness(1.14)
-    saturate(1.08)
-    contrast(1.03);
+}
+
+/* 7 — shore decor from the Figma composition (ponddecor.js): rocks,
+   bushes, stone lantern, flat stones — placed per Figma, above the
+   fish and water effects so koi slip beneath the rim */
+.pond-decor {
+  position: absolute; inset: 0;
+  z-index: 7;
+  pointer-events: none;
+}
+.pond-decor img {
+  position: absolute;
+  display: block;
 }
 
 /* The new baked background already includes the pond bed, banks, stones,
@@ -270,7 +273,7 @@
    nothing at the shore art; sits under ripples/plants/UI. */
 .pond-tint {
   z-index: 5;
-  background: radial-gradient(ellipse 62% 58% at 50% 50%,
+  background: radial-gradient(ellipse 34% 37% at 49.8% 48%,
     rgba(8, 66, 62, 0.24) 0%,
     rgba(8, 58, 58, 0.14) 62%,
     rgba(9, 42, 48, 0) 100%);
@@ -315,7 +318,9 @@
 .pond-plant {
   position: absolute;
   will-change: transform;
-  filter: brightness(1.14) saturate(1.08) contrast(1.03) drop-shadow(0 2px 3px rgba(0, 0, 0, 0.35));
+  /* new Figma art is final-color — no brightness boost, just a soft
+     float shadow on the water */
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.3));
 }
 .plant-reed { transform-origin: 50% 98%; }   /* rooted at the stem base */
 .plant-lily { transform-origin: 50% 50%; }   /* floats about its center */
@@ -333,7 +338,9 @@
 /* ── helper hint + post-interaction message ── */
 .koi-hint, .koi-msg {
   position: absolute;
-  left: 50%; bottom: 16px;
+  /* sits on the lower open water, not on the shore rocks — the water
+     ellipse bottoms out around 82% of the pond box */
+  left: 49.8%; bottom: 21%;
   transform: translateX(-50%);
   z-index: 9;
   font-family: var(--font-mono);
@@ -345,13 +352,12 @@
   display: inline-flex; align-items: center; gap: 7px;
   white-space: nowrap;
   font-size: 0.72rem; letter-spacing: 0.04em;
-  color: rgba(234, 246, 244, 0.82);
-  background: rgba(4, 22, 30, 0.38);
-  border: 1px solid rgba(255,255,255,0.08);
+  color: #f2faf8;
+  background: rgba(8, 24, 28, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.16);
   border-radius: 999px;
   padding: 6px 13px;
   backdrop-filter: blur(2px);
-  opacity: 0.86;
 }
 .koi-hint .dot {
   width: 8px; height: 8px; border-radius: 1px;

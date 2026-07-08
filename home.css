@@ -14,7 +14,8 @@
 
   --accent: #e8552f;            /* sharper patch-orange for the homepage */
   --accent-soft: #fbe3d9;
-  --grid-line: rgba(26, 22, 18, 0.07);
+  --hero-bg: #f6e7d4;
+  --grid-line: rgba(26, 22, 18, 0.055);
 }
 
 /* Homepage goes full-bleed; inner sections manage their own width */
@@ -22,6 +23,7 @@
   max-width: none;
   padding: 0;
   overflow-x: clip;
+  background: var(--bg);
 }
 
 .home .home-shell {
@@ -30,6 +32,11 @@
   padding: 0 clamp(20px, 5vw, 80px);
   position: relative;
   z-index: 1;
+}
+
+.home .main-content {
+  gap: 0;
+  padding-top: 0;
 }
 
 .home .nav {
@@ -44,7 +51,7 @@
   content: "";
   position: absolute;
   inset: 0 -100vw 0 -100vw;
-  background: var(--bg);
+  background: var(--hero-bg);
   z-index: -1;
 }
 
@@ -116,6 +123,8 @@
   height: 100%;
   z-index: 0;
   pointer-events: none;
+  opacity: 1;
+  transition: opacity var(--dur-med) var(--ease-out);
 }
 
 /* Static CSS fallback grid (no-JS and reduced-motion baseline) */
@@ -124,6 +133,8 @@
   inset: 0;
   z-index: 0;
   pointer-events: none;
+  opacity: 1;
+  transition: opacity var(--dur-med) var(--ease-out);
   background-image: repeating-linear-gradient(
     to right,
     var(--grid-line) 0 1px,
@@ -131,6 +142,14 @@
   );
 }
 html.js .grid-static { display: none; }
+html.hero-grid-hidden .grid-canvas,
+html.hero-grid-hidden .grid-static {
+  opacity: 0;
+}
+html.work-grid-dimmed:not(.hero-grid-hidden) .grid-canvas,
+html.work-grid-dimmed:not(.hero-grid-hidden) .grid-static {
+  opacity: 0.22;
+}
 
 /* Subtle paper grain over everything, very low opacity */
 .grain {
@@ -167,30 +186,48 @@ html.js .reveal.is-in {
 
 /* ─── HERO ───────────────────────────────────────────────────── */
 .hero {
-  min-height: 0;
+  position: relative;
+  isolation: isolate;
+  min-height: calc(100vh - 70px);
   display: grid;
-  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
-  align-items: start;
-  gap: clamp(24px, 4vw, 56px);
-  padding-top: clamp(28px, 5vh, 52px);
-  padding-bottom: clamp(28px, 4vh, 48px);
+  grid-template-columns: minmax(480px, 0.94fr) minmax(560px, 1.06fr);
+  align-items: center;
+  gap: clamp(28px, 3vw, 52px);
+  padding-top: clamp(56px, 8vh, 96px);
+  padding-bottom: clamp(48px, 8vh, 88px);
 }
-.hero-copy { padding-top: clamp(8px, 1.5vh, 20px); }
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0 calc(50% - 50vw);
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 60% 72% at 66% 50%, rgba(255, 246, 229, 0.48), transparent 68%),
+    var(--hero-bg);
+}
+.hero-copy {
+  position: relative;
+  z-index: 2;
+  padding-top: clamp(18px, 4vh, 64px);
+}
 
 .hero-copy .kicker {
   color: var(--accent);
   letter-spacing: 0.18em;
-  font-size: 0.78rem;
+  font-size: clamp(0.84rem, 1.25vw, 1.08rem);
+  margin-bottom: clamp(18px, 3.2vh, 28px);
 }
 
 .hero-name {
   font-family: var(--font-display);
   font-variation-settings: var(--font-variation);
   font-weight: 560;
-  font-size: clamp(2.4rem, 4.6vw, 3.6rem);
-  line-height: 1;
-  letter-spacing: -0.02em;
-  margin: 0.3em 0 0.28em;
+  font-size: clamp(4.1rem, 8.8vw, 6.45rem);
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+  margin: 0 0 0.22em;
+  white-space: nowrap;
 }
 .hero-name .accent-period { color: var(--accent); }
 
@@ -204,11 +241,11 @@ html.js .reveal.is-in {
 }
 
 .hero-statement {
-  font-size: clamp(0.92rem, 1.15vw, 1.02rem);
-  line-height: 1.5;
+  font-size: clamp(0.98rem, 1.25vw, 1.08rem);
+  line-height: 1.46;
   color: var(--text-body);
-  max-width: 28em;
-  margin-bottom: 1.1em;
+  max-width: 43em;
+  margin-bottom: 1.6em;
 }
 
 .hero-ctas {
@@ -219,9 +256,9 @@ html.js .reveal.is-in {
 }
 .hero-ctas .btn-patch,
 .hero-ctas .btn-ghost {
-  min-height: 40px;
-  padding: 9px 18px;
-  font-size: 0.74rem;
+  min-height: 44px;
+  padding: 11px 19px;
+  font-size: 0.86rem;
 }
 
 .btn-patch {
@@ -231,16 +268,16 @@ html.js .reveal.is-in {
   min-height: 48px;
   padding: 12px 26px;
   border-radius: 999px;
-  background: var(--text-primary);
+  background: var(--accent-blue);
   color: var(--white);
-  font-family: var(--font-mono);
-  font-size: 0.85rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  letter-spacing: 0;
+  text-transform: none;
   transition: transform var(--dur-fast) var(--ease-spring),
               background var(--dur-fast) var(--ease-out);
 }
-.btn-patch:hover { background: var(--accent); transform: translateY(-2px); }
+.btn-patch:hover { background: #0f49aa; transform: translateY(-2px); }
 .btn-patch:active { transform: translateY(0); }
 
 .btn-ghost {
@@ -305,6 +342,15 @@ html.js .hero.is-in .patch { opacity: 1; translate: 0 0; scale: 1; }
 
 @media (prefers-reduced-motion: reduce) {
   html.js .patch { opacity: 1; translate: 0 0; scale: 1; transition: none; }
+  /* the pool holds still; projects crossfade instead of surfacing */
+  .pool-caustics { animation: none; }
+  .pool-ripple.is-rippling { animation: none; }
+  .stage-scene {
+    transform: none;
+    filter: none;
+    transition: opacity 200ms var(--ease-out);
+  }
+  .stage-scene.is-active { transform: none; filter: none; }
 }
 
 .patch--note {
@@ -396,8 +442,11 @@ html.js .hero.is-in .patch { opacity: 1; translate: 0 0; scale: 1; }
 
 .work-row {
   position: relative;
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  column-gap: clamp(14px, 2vw, 28px);
   border-top: 1px solid var(--border);
-  padding: clamp(22px, 3vh, 36px) 8px;
+  padding: clamp(28px, 4vh, 44px) 8px;
   transition: opacity var(--dur-med) var(--ease-out),
               background var(--dur-med) var(--ease-out);
 }
@@ -408,13 +457,18 @@ html.js .hero.is-in .patch { opacity: 1; translate: 0 0; scale: 1; }
 .work-row.is-active { background: rgba(232, 85, 47, 0.045); }
 
 .work-row-top {
-  display: flex;
-  align-items: baseline;
-  gap: 18px;
+  display: contents;
+}
+.work-row-top h3 {
+  grid-column: 2;
+  margin: 0;
 }
 
 .work-num {
   font-family: var(--font-mono);
+  grid-column: 1;
+  align-self: baseline;
+  padding-top: 0.35em;
   font-size: 0.8rem;
   color: var(--accent);
   letter-spacing: 0.08em;
@@ -425,9 +479,9 @@ html.js .hero.is-in .patch { opacity: 1; translate: 0 0; scale: 1; }
   font-family: var(--font-display);
   font-variation-settings: var(--font-variation);
   font-weight: 560;
-  font-size: clamp(1.5rem, 3vw, 2.3rem);
+  font-size: clamp(1.8rem, 3.4vw, 2.6rem);
   letter-spacing: -0.01em;
-  line-height: 1.1;
+  line-height: 1.08;
   transition: color var(--dur-fast) var(--ease-out);
 }
 .work-row.is-active .work-title-link { color: var(--accent); }
@@ -435,39 +489,65 @@ html.js .hero.is-in .patch { opacity: 1; translate: 0 0; scale: 1; }
 .work-title-link::after { content: ""; position: absolute; inset: 0; }
 
 .work-desc {
-  margin: 0.7em 0 0.9em;
+  grid-column: 2;
+  margin: 0.72em 0 0;
   color: var(--text-body);
-  max-width: 46em;
+  max-width: 44em;
+  font-size: 1rem;
   line-height: 1.55;
 }
 
-.work-meta {
-  font-family: var(--font-mono);
-  font-size: 0.74rem;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
+.work-stats {
+  grid-column: 2;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  align-items: baseline;
+  margin: 0.82em 0 0;
+  padding: 0;
+  max-width: 46em;
   color: var(--text-muted);
-  margin-bottom: 0.9em;
 }
-.work-meta span + span::before { content: " · "; color: var(--border); }
-
-.work-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 1em; }
-.work-tag {
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  letter-spacing: 0.08em;
-  padding: 5px 12px;
-  border: 1px solid var(--border);
-  border-radius: 999px;
+.work-stats div {
+  min-width: 0;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+}
+.work-stats div + div::before {
+  content: "·";
+  margin-right: 4px;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: var(--text-primary);
+}
+.work-stats dt {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0;
+  line-height: 1;
+  color: var(--accent);
+}
+.work-stats dd {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  line-height: 1.32;
+  letter-spacing: 0;
+  text-transform: lowercase;
   color: var(--text-body);
 }
 
 .work-cta {
+  grid-column: 2;
+  margin-top: 1.15em;
   font-family: var(--font-mono);
   font-size: 0.78rem;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--accent-blue);
+  color: var(--accent);
   display: inline-flex;
   gap: 8px;
   align-items: center;
@@ -477,70 +557,154 @@ html.js .hero.is-in .patch { opacity: 1; translate: 0 0; scale: 1; }
 
 /* preview thumb inside each row — visible on mobile, hidden where stage exists */
 .work-row-thumb {
+  grid-column: 2;
   margin-top: 16px;
   border-radius: 12px;
   overflow: hidden;
   border: 1px solid var(--border);
-  background: var(--white);
+  aspect-ratio: 16 / 10;
+  background: #1a1a1a;
 }
-.work-row-thumb img { width: 100%; display: block; }
+.work-row-thumb img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+}
 
-/* Preview stage (desktop) — chrome-less floating layer */
+/* Preview stage (desktop) — a REFLECTING POOL that carries the hero's
+   water metaphor into the work section. A dark, still water surface
+   with a slow caustic shimmer; hovering a project sends a ripple
+   across it and the screenshots SURFACE — rising and pulling into
+   focus from a blur, then settling perfectly crisp (legibility first)
+   with a soft mirrored reflection on the water below. At rest the
+   first project stays surfaced (home.js), so the column is never
+   empty. Caustic texture reused from the koi pond. */
 .work-stage {
   position: sticky;
   top: 110px;
-  height: clamp(420px, 62vh, 640px);
+  height: clamp(440px, 62vh, 640px);
+  width: min(100%, 460px);
+  margin-left: auto;
+  overflow: hidden;
+  border-radius: 16px;
+  background:
+    radial-gradient(120% 90% at 50% 0%, rgba(28, 74, 80, 0.55), transparent 60%),
+    linear-gradient(#0f363d 0%, #0a2a30 46%, #061e23 100%);
+  box-shadow:
+    0 30px 60px rgba(8, 30, 34, 0.32),
+    inset 0 2px 0 rgba(190, 235, 232, 0.14),
+    inset 0 -30px 60px rgba(3, 14, 17, 0.5);
+}
+/* soft water-line highlight along the top rim */
+.work-stage::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 40%;
+  background: linear-gradient(rgba(150, 210, 208, 0.1), transparent);
+  pointer-events: none;
+  z-index: 1;
 }
 
+/* continuous caustic shimmer drifting over the surface, behind the
+   screens so they stay crisp — the pool reads alive without haze on
+   the UI */
+.pool-caustics {
+  position: absolute;
+  inset: -20%;
+  background: url("assets/hero/koi/pond-caustics.png") center / 120% auto repeat;
+  opacity: 0.16;
+  mix-blend-mode: screen;
+  pointer-events: none;
+  z-index: 1;
+  animation: pool-drift 26s ease-in-out infinite;
+}
+@keyframes pool-drift {
+  0%   { transform: translate(0, 0) scale(1); }
+  50%  { transform: translate(-3%, 2%) scale(1.06); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+
+/* expanding ripple ring; home.js restarts it (.is-rippling) each swap */
+.pool-ripple {
+  position: absolute;
+  left: 50%; top: 46%;
+  width: 26%; aspect-ratio: 1;
+  transform: translate(-50%, -50%) scale(0.2);
+  border-radius: 50%;
+  border: 2px solid rgba(170, 224, 220, 0.5);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 3;
+}
+.pool-ripple.is-rippling { animation: pool-ripple 900ms var(--ease-out); }
+@keyframes pool-ripple {
+  0%   { transform: translate(-50%, -50%) scale(0.15); opacity: 0.7; }
+  100% { transform: translate(-50%, -50%) scale(2.4);  opacity: 0; }
+}
+
+/* each project surfaces from the water: rises + pulls into focus */
 .stage-scene {
   position: absolute;
-  inset: 0;
+  inset: 9% 8% 0 8%;
   opacity: 0;
-  transition: opacity var(--dur-med) var(--ease-out);
+  transform: translateY(20px) scale(0.97);
+  filter: blur(7px);
+  transition:
+    opacity 360ms var(--ease-out),
+    transform 620ms cubic-bezier(0.22, 0.9, 0.28, 1),
+    filter 500ms var(--ease-out);
   pointer-events: none;
+  z-index: 2;
 }
-.stage-scene.is-active { opacity: 1; }
+.stage-scene.is-active {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  filter: blur(0);
+}
 
-.stage-main {
+/* one composited project mockup (Figma export, dark bg keyed out)
+   floats crisp on the water, casting a mirrored reflection below.
+   width/height auto + max constraints → the browser scales each to
+   fit within the box regardless of aspect (wide desktop shots vs. the
+   tall single phone), and the element box stays tight to the art so
+   the reflection sits right beneath it. */
+.stage-art {
   position: absolute;
-  top: 6%;
-  left: 0;
-  width: 86%;
-  border-radius: 10px;
-  box-shadow: 0 16px 44px rgba(26, 22, 18, 0.18);
-  transform: translateY(18px) rotate(-1deg);
-  transition: transform var(--dur-med) var(--ease-spring);
+  top: 3%;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 96%;
+  max-height: 74%;
+  width: auto;
+  height: auto;
+  filter: drop-shadow(0 18px 34px rgba(3, 16, 19, 0.55));
+  -webkit-box-reflect: below 12px linear-gradient(transparent 46%, rgba(8, 28, 32, 0.32));
 }
-.stage-phone {
-  /* phone sits ON TOP of the desktop screen */
-  position: absolute;
-  right: 4%;
-  top: 32%;
-  width: 30%;
-  max-height: 62%;
-  object-fit: contain;
-  z-index: 1;
-  border-radius: 14px;
-  box-shadow: 0 20px 48px rgba(26, 22, 18, 0.25);
-  transform: translateY(30px) rotate(2deg);
-  transition: transform var(--dur-med) var(--ease-spring) 60ms;
-}
-.stage-scene.is-active .stage-main  { transform: translateY(0) rotate(-1deg); }
-.stage-scene.is-active .stage-phone { transform: translateY(0) rotate(2deg); }
 
+/* caption sits on the lower water — light text + a glowing red seal */
 .stage-label {
   position: absolute;
-  left: 0;
-  bottom: 8%;
-  z-index: 2;
+  left: 8%;
+  bottom: 6%;
+  z-index: 4;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
   font-family: var(--font-mono);
-  font-size: 0.72rem;
-  letter-spacing: 0.1em;
+  font-size: 0.66rem;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  background: var(--text-primary);
-  color: var(--white);
-  padding: 7px 14px;
-  border-radius: 999px;
+  color: rgba(224, 244, 242, 0.9);
+}
+.stage-label::before {
+  content: "";
+  width: 9px; height: 9px;
+  border-radius: 2px;
+  background: var(--accent);       /* the red seal */
+  box-shadow: 0 0 10px rgba(232, 85, 47, 0.6);
 }
 
 
@@ -705,17 +869,50 @@ html.js .hero.is-in .patch { opacity: 1; translate: 0 0; scale: 1; }
     min-height: auto;
     padding-top: 32px;
   }
+  /* the display name must wrap and scale below tablet — nowrap at the
+     desktop size overflows the viewport and drags the whole hero
+     column (statement + CTA) past the right edge with it */
+  .hero-name {
+    white-space: normal;
+    overflow-wrap: break-word;
+    font-size: clamp(3rem, 12vw, 4.6rem);
+  }
   .patch-board { height: clamp(280px, 44vw, 420px); }
   .work-layout { grid-template-columns: 1fr; }
   .work-stage { display: none; }       /* thumbs in rows take over */
   .work-list.has-active .work-row:not(.is-active) { opacity: 1; }
+  .work-row {
+    grid-template-columns: 30px minmax(0, 1fr);
+    column-gap: 14px;
+    padding-block: 32px;
+  }
+  .work-num { font-size: 0.78rem; }
+  .work-title-link { font-size: clamp(1.75rem, 6.5vw, 2.35rem); }
+  .work-desc {
+    max-width: 100%;
+    font-size: 0.98rem;
+  }
   .about-grid { grid-template-columns: 1fr; }
   .gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 @media (max-width: 540px) {
   .gallery { grid-template-columns: 1fr; }
-  .work-row-top { flex-wrap: wrap; gap: 10px; }
+  .work-row {
+    grid-template-columns: 1fr;
+    row-gap: 10px;
+  }
+  .work-row-top,
+  .work-row-top h3,
+  .work-num,
+  .work-desc,
+  .work-stats,
+  .work-cta,
+  .work-row-thumb {
+    grid-column: 1;
+  }
+  .work-num { padding-top: 0; }
+  .work-title-link { font-size: clamp(1.75rem, 10vw, 2.45rem); }
   .hero-ctas .btn-patch,
   .hero-ctas .btn-ghost { width: 100%; justify-content: center; }
   .patch--note { font-size: 0.64rem; }

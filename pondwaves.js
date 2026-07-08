@@ -47,7 +47,9 @@
   var SPRITE_COUNT = 10;
   var WAVES = 0;                                   // ambient full-pond wave strands disabled
   var BASE_DIR = -0.18;                            // shared wind heading (rad, ~10° up-right)
-  var WATER = { cx: 0.5, cy: 0.5, rx: 0.44, ry: 0.40 };
+  /* open-water ellipse of the new Figma pond (water inside the rock
+     ring), as fractions of the pond container box */
+  var WATER = { cx: 0.498, cy: 0.48, rx: 0.31, ry: 0.34 };
   var AMBIENT = 0.22;                              // shimmer floor between gusts
   var GUST_PUSH = 26;                              // extra px/s the wind adds inside a gust
   var CAUSTIC_SRC = 'assets/hero/koi/beautiful-pond/water-shimmer-texture.png';
@@ -206,21 +208,20 @@
          settle back as the gust moves on
      Each plant smooths the gust with its own inertia (reeds respond
      fast, floating pads lag), so the pond, plants, and waves all obey
-     one wind. [file, type, centerX, anchorY, width% of pond] */
-  var PLANTS_DIR = 'assets/hero/koi/beautiful-pond/plants/';
+     one wind. Sprites + placement come from the Figma composition
+     (node 693:171): the floating lily pads and lotus flowers.
+     [file, type, centerX, centerY, width% of pond, flipX] */
+  var PLANTS_DIR = 'assets/koi-pond/';
   var PLANT_DEFS = [
-    ['reeds-tall-01.png', 'reed', 0.085, 0.52, 9],
-    ['reeds-medium-01.png', 'reed', 0.315, 0.975, 9],
-    ['reeds-tall-02.png', 'reed', 0.66, 0.985, 10],
-    ['reeds-small-01.png', 'reed', 0.945, 0.34, 7],
-    ['single-lily-large-01.png', 'lily', 0.315, 0.075, 6.5],
-    ['lily-cluster-small-01.png', 'lily', 0.735, 0.075, 7],
-    ['single-lily-medium-01.png', 'lily', 0.155, 0.315, 5.5],
-    ['single-lily-medium-02.png', 'lily', 0.855, 0.60, 5.5],
-    ['single-lily-small-01.png', 'lily', 0.435, 0.935, 4.5],
-    ['single-lily-small-02.png', 'lily', 0.235, 0.635, 4]
+    ['lilies/lily-pad-small.png', 'lily', 0.4197, 0.7452, 9.22, 0],
+    ['lilies/lily-pad-small.png', 'lily', 0.3961, 0.719, 9.22, 0],
+    ['lilies/lily-pad-medium.png', 'lily', 0.5112, 0.2431, 12.58, 0],
+    ['lilies/lily-pad-medium.png', 'lily', 0.7367, 0.5172, 6.6, 1],
+    ['lilies/lily-pad-neon.png', 'lily', 0.4104, 0.2762, 11.33, 0],
+    ['flowers/lotus-open.png', 'lily', 0.411, 0.7266, 5.73, 0],
+    ['flowers/lotus-bud.png', 'lily', 0.7342, 0.5, 4.11, 0]
   ];
-  var POND_AR = 1448 / 1086;                 // pond box aspect, for %-height math
+  var POND_AR = 803 / 726;                   // pond box aspect, for %-height math
   var plants = [];
   (function buildPlants() {
     var layer = document.createElement('div');
@@ -240,7 +241,7 @@
         layer.appendChild(img);
       };
       img.src = PLANTS_DIR + d[0];
-      plants.push({ el: img, type: d[1], x: d[2], y: d[3], ph: Math.random() * 6.283, g: 0 });
+      plants.push({ el: img, type: d[1], x: d[2], y: d[3], ph: Math.random() * 6.283, g: 0, flip: d[5] ? ' scaleX(-1)' : '' });
     });
   })();
 
@@ -259,7 +260,7 @@
         var tx = COS_D * nudge + Math.sin(t * 0.6 + p.ph) * 1.3;
         var ty = SIN_D * nudge + Math.cos(t * 0.5 + p.ph) * 1.0;
         var rot = Math.sin(t * 0.9 + p.ph) * (0.8 + p.g * 2.6);
-        p.el.style.transform = 'translate(' + tx.toFixed(2) + 'px,' + ty.toFixed(2) + 'px) rotate(' + rot.toFixed(2) + 'deg)';
+        p.el.style.transform = 'translate(' + tx.toFixed(2) + 'px,' + ty.toFixed(2) + 'px) rotate(' + rot.toFixed(2) + 'deg)' + (p.flip || '');
       }
     }
   }

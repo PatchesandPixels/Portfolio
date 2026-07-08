@@ -126,6 +126,22 @@
     }
   })();
 
+  /* ─── 1b. KEEP GRID OFF THE HERO ───────────────────────────── */
+  (function heroGridGate() {
+    var heroEl = document.querySelector('.hero');
+    if (!heroEl) return;
+
+    function update() {
+      var heroBottom = heroEl.offsetTop + heroEl.offsetHeight;
+      var showGrid = window.scrollY >= heroBottom - 24;
+      document.documentElement.classList.toggle('hero-grid-hidden', !showGrid);
+    }
+
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update, { passive: true });
+    update();
+  })();
+
   /* ─── 2. SCROLL REVEALS ─────────────────────────────────────── */
   (function reveals() {
     var els = document.querySelectorAll('.reveal');
@@ -197,24 +213,64 @@
       scenes[s.dataset.project] = s;
     });
 
-    var current = null;
+    var sceneId = null;
+    var DEFAULT_ID = rows.length ? rows[0].dataset.project : null;
+    var ripple = stage.querySelector('.pool-ripple');
 
-    function activate(id) {
-      if (id === current) return;
-      if (current && scenes[current]) scenes[current].classList.remove('is-active');
-      rows.forEach(function (r) {
-        r.classList.toggle('is-active', r.dataset.project === id);
+    function stopSceneMotion(scene) {
+      if (!scene) return;
+      scene.querySelectorAll('video').forEach(function (video) {
+        video.pause();
+        video.currentTime = 0;
       });
-      current = id;
+    }
+
+    function playSceneMotion(scene) {
+      if (!scene) return;
+      scene.querySelectorAll('video').forEach(function (video) {
+        video.currentTime = 0;
+        var play = video.play();
+        if (play && typeof play.catch === 'function') play.catch(function () {});
+      });
+    }
+
+    // send a ripple across the pool (restart the CSS animation)
+    function pulseRipple() {
+      if (!ripple) return;
+      ripple.classList.remove('is-rippling');
+      void ripple.offsetWidth;              // reflow so the animation replays
+      ripple.classList.add('is-rippling');
+    }
+
+    // which project is surfaced in the reflecting pool (rise/focus in CSS)
+    function setScene(id) {
+      if (id === sceneId) return;
+      if (sceneId && scenes[sceneId]) {
+        scenes[sceneId].classList.remove('is-active');
+        stopSceneMotion(scenes[sceneId]);
+      }
+      sceneId = id;
       if (id && scenes[id]) {
         scenes[id].classList.add('is-active');
-        list.classList.add('has-active');
+        playSceneMotion(scenes[id]);
         stage.classList.add('has-active');
+        pulseRipple();
       } else {
-        list.classList.remove('has-active');
         stage.classList.remove('has-active');
       }
     }
+    // which row reads as hovered (dims the others)
+    function setRowHighlight(id) {
+      rows.forEach(function (r) {
+        r.classList.toggle('is-active', r.dataset.project === id);
+      });
+      list.classList.toggle('has-active', !!id);
+      document.documentElement.classList.toggle('work-grid-dimmed', !!id);
+    }
+    function activate(id) { setScene(id); setRowHighlight(id); }
+    // at rest the scroll is never empty: the first project stays on
+    // display, with no row highlighted/dimmed
+    function rest() { setScene(DEFAULT_ID); setRowHighlight(null); }
 
     rows.forEach(function (row) {
       var id = row.dataset.project;
@@ -222,10 +278,12 @@
       // keyboard parity: focusing the row's link previews it too
       row.addEventListener('focusin', function () { activate(id); });
     });
-    list.addEventListener('pointerleave', function () { activate(null); });
+    list.addEventListener('pointerleave', rest);
     list.addEventListener('focusout', function (e) {
-      if (!list.contains(e.relatedTarget)) activate(null);
+      if (!list.contains(e.relatedTarget)) rest();
     });
+
+    rest();   // resting display on load — scroll shows the first project
   })();
 
   /* ─── 4b. MOBILE NAVIGATION ─────────────────────────────────── */

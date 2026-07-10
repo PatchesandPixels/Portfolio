@@ -154,7 +154,8 @@
   position: relative;
 }
 
-.cure-anim-hero img {
+.cure-anim-hero img,
+.cure-anim-hero video {
   width: 100%;
   display: block;
   max-height: 520px;
@@ -164,7 +165,7 @@
 
 .cure-anim-pair {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 16px;
 }
 
@@ -184,7 +185,8 @@
   justify-content: center;
 }
 
-.cure-anim-item-inner img {
+.cure-anim-item-inner img,
+.cure-anim-item-inner video {
   width: 100%;
   height: 100%;
   object-fit: contain;

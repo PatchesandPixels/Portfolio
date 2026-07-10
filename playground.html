@@ -17,6 +17,24 @@
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Inter:wght@400;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="nav.css?v=site-nav-1">
+  <style>
+    .pg-empty {
+      min-height: 60vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 14px;
+      padding: 80px 20px;
+    }
+    .pg-empty .kicker { color: var(--accent-blue); letter-spacing: 0.18em; }
+    .pg-empty h1 { font-family: var(--font-display); font-weight: 500; font-size: clamp(2.4rem, 6vw, 4rem); line-height: 1.02; letter-spacing: -0.02em; margin: 0; }
+    .pg-empty h1 .accent-period { color: var(--accent-blue); }
+    .pg-empty p { color: var(--text-muted); max-width: 34em; line-height: 1.6; }
+    .pg-empty .pg-empty-back { margin-top: 10px; font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.04em; color: var(--text-body); text-decoration: none; border-bottom: 1px solid var(--border); padding-bottom: 2px; }
+    .pg-empty .pg-empty-back:hover { color: var(--accent-blue); border-color: var(--accent-blue); }
+  </style>
 </head>
 <body>
   <div class="page-wrapper">
@@ -41,8 +59,8 @@
           <a href="cure-my-account.html" class="nav-dropdown-item" role="menuitem"><span class="nav-dropdown-num">04</span>My Account</a>
         </div>
       </li>
-      <li><a href="index.html#graphic-design" class="nav-link" data-page="graphic-design">Graphic Design<span class="nav-underline"></span></a></li>
-      <li><a href="playground.html" class="nav-link" data-page="playground">Playground<span class="nav-underline"></span></a></li>
+      <li><a href="graphic-design.html" class="nav-link" data-page="graphic-design">Graphic Design<span class="nav-underline"></span></a></li>
+      <li><a href="playground.html" class="nav-link active" data-page="playground">Playground<span class="nav-underline"></span></a></li>
       <li><a href="index.html#contact" class="nav-link" data-page="contact">Contact<span class="nav-underline"></span></a></li>
     </ul>
     <a href="mailto:nguyenlandy@gmail.com" class="nav-connect">Let's connect<span class="nav-connect-dot" aria-hidden="true"></span></a>
@@ -50,84 +68,14 @@
     <div class="nav-rule"></div>
 
     <main class="main-content">
-
-      <!-- HERO -->
-      <section class="pg-hero">
+      <section class="pg-empty">
         <p class="kicker">PLAYGROUND</p>
-        <h1 class="display-heading">Where things<br>get interesting<span class="accent-period">.</span></h1>
-        <p class="body-text pg-hero-sub">Graphic design, motion, and creative work that doesn't fit a case study format.</p>
+        <h1>Something's brewing<span class="accent-period">.</span></h1>
+        <p>A space for experiments, side projects, and things that don't fit a case study — coming soon.</p>
+        <a href="index.html" class="pg-empty-back">← Back home</a>
       </section>
 
-      <!-- SCRATCHCARD FEATURED CARD -->
-      <a href="scratchcards.html" class="pg-scratch-card">
-        <div class="pg-scratch-preview">
-          <img src="assets/scratch/pirates-1.jpg" alt="" class="pg-scratch-img pg-scratch-img--1" loading="lazy">
-          <img src="assets/scratch/spooky-scratch.jpg" alt="" class="pg-scratch-img pg-scratch-img--2" loading="lazy">
-          <img src="assets/scratch/vegas-vibes.jpg" alt="" class="pg-scratch-img pg-scratch-img--3" loading="lazy">
-          <img src="assets/scratch/pirates-2.jpg" alt="" class="pg-scratch-img pg-scratch-img--4" loading="lazy">
-        </div>
-        <div class="pg-scratch-overlay"></div>
-        <div class="pg-scratch-content">
-          <div class="pg-scratch-meta">
-            <p class="kicker pg-scratch-kicker">LOTTERY GAMING &nbsp;·&nbsp; 62 DESIGNS</p>
-            <h2 class="card-title-lg pg-scratch-title">Scratchcard Art Direction</h2>
-            <p class="body-text pg-scratch-desc">A full library of scratchcard banner art and play area designs spanning dark fantasy, horror, cartoon, and more — each with its own visual world.</p>
-          </div>
-          <span class="link-arrow pg-scratch-link">Explore the collection <span>➜</span></span>
-        </div>
-      </a>
-
-      <!-- MORE GRID -->
-      <div class="pg-more-grid">
-
-        <!-- CURE TILE -->
-        <a href="cure.html" class="pg-cure-card">
-          <div class="pg-cure-body">
-            <div class="pg-cure-meta">
-              <span class="pg-cure-kicker">MOTION DESIGN &nbsp;·&nbsp; EMAIL &nbsp;·&nbsp; UI GRAPHICS</span>
-              <h2 class="pg-cure-title">CURE Auto Insurance</h2>
-              <p class="pg-cure-desc">Loading animations, email campaigns, and mobile UI graphics designed for a legacy auto insurance brand — built in Lottie for zero performance cost.</p>
-              <div class="pg-cure-tools">
-                <span class="pg-cure-tool-tag">Lottie</span>
-                <span class="pg-cure-tool-tag">Figma</span>
-              </div>
-            </div>
-            <span class="pg-cure-link">View work <span>➜</span></span>
-          </div>
-          <div class="pg-cure-visuals">
-            <video src="assets/cure-rotating-icons.mp4" autoplay loop muted playsinline class="pg-cure-gif-secondary"></video>
-            <video src="assets/cure-binding-animation.mp4" autoplay loop muted playsinline class="pg-cure-gif-main"></video>
-          </div>
-        </a>
-
-        <!-- GLOBALIZER TILE -->
-        <a href="globalizer.html" class="pg-gl-card">
-          <div class="pg-gl-preview">
-            <img src="assets/globalizer-prize-pass.jpg" alt="Globalizer gaming UI" class="pg-gl-img pg-gl-img--main" loading="lazy">
-            <img src="assets/globalizer-pets-beach.jpg" alt="Sweeps.pet illustrated banner" class="pg-gl-img pg-gl-img--secondary" loading="lazy">
-          </div>
-          <div class="pg-gl-content">
-            <div class="pg-gl-meta">
-              <span class="pg-gl-kicker">GAMING UI &nbsp;·&nbsp; ILLUSTRATION &nbsp;·&nbsp; PROMO DESIGN</span>
-              <h2 class="pg-gl-title">Globalizer</h2>
-              <p class="pg-gl-desc">UI screens, illustrated characters, and promotional design across Winloot, Sweeps.pet, RewardIt, and Winstakes.</p>
-              <div class="pg-gl-tools">
-                <span class="pg-gl-tool-tag">Figma</span>
-                <span class="pg-gl-tool-tag">Illustrator</span>
-              </div>
-            </div>
-            <span class="pg-gl-link">View work <span>➜</span></span>
-          </div>
-        </a>
-
-        <div class="pg-more-placeholder">
-          <span class="pg-more-label">More coming soon</span>
-        </div>
-
-      </div>
-
-    
-    <footer class="footer">
+      <footer class="footer">
     <div class="footer-inner">
       <a href="index.html" class="brandmark">andy<span class="dot">.</span></a>
       <div>© 2026 Andy Nguyen — designed, coded, cat approved.</div>
@@ -140,9 +88,9 @@
       </div>
     </div>
   </footer>
-</main>
+    </main>
   </div>
   <script src="scripts.js"></script>
-<script src="nav.js?v=site-nav-1"></script>
+  <script src="nav.js?v=site-nav-1"></script>
 </body>
 </html>

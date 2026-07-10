@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-P9JER5X15D"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-P9JER5X15D');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Graphic Design — Andy Nguyen</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Inter:wght@400;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="nav.css?v=site-nav-1">
+</head>
+<body>
+  <div class="page-wrapper">
+
+    <!-- NAV -->
+    <nav class="nav nav--home" id="topNav">
+    <a href="index.html" class="nav-monogram" aria-label="Andy Nguyen — home">AN</a>
+    <button class="nav-menu-btn" id="navMenuBtn" type="button" aria-expanded="false" aria-controls="navLinks" aria-label="Open menu">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+        <path class="burger-top" d="M3 6h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        <path class="burger-mid" d="M3 11h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        <path class="burger-bot" d="M3 16h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </button>
+    <ul class="nav-links" id="navLinks">
+      <li class="nav-item--work">
+        <button class="nav-link nav-btn-work" type="button" data-page="work" aria-haspopup="true" aria-expanded="false">UX/UI<span class="nav-underline"></span></button>
+        <div class="nav-dropdown" role="menu">
+          <a href="tersus.html" class="nav-dropdown-item" role="menuitem"><span class="nav-dropdown-num">01</span>Tersus</a>
+          <a href="cure-quick-quote.html" class="nav-dropdown-item" role="menuitem"><span class="nav-dropdown-num">02</span>Quick Quote</a>
+          <a href="cure-scan-license.html" class="nav-dropdown-item" role="menuitem"><span class="nav-dropdown-num">03</span>Scan to Insure</a>
+          <a href="cure-my-account.html" class="nav-dropdown-item" role="menuitem"><span class="nav-dropdown-num">04</span>My Account</a>
+        </div>
+      </li>
+      <li><a href="graphic-design.html" class="nav-link active" data-page="graphic-design">Graphic Design<span class="nav-underline"></span></a></li>
+      <li><a href="playground.html" class="nav-link" data-page="playground">Playground<span class="nav-underline"></span></a></li>
+      <li><a href="index.html#contact" class="nav-link" data-page="contact">Contact<span class="nav-underline"></span></a></li>
+    </ul>
+    <a href="mailto:nguyenlandy@gmail.com" class="nav-connect">Let's connect<span class="nav-connect-dot" aria-hidden="true"></span></a>
+  </nav>
+    <div class="nav-rule"></div>
+
+    <main class="main-content">
+
+      <!-- HERO -->
+      <section class="pg-hero">
+        <p class="kicker">GRAPHIC DESIGN</p>
+        <h1 class="display-heading">Where things<br>get interesting<span class="accent-period">.</span></h1>
+        <p class="body-text pg-hero-sub">Graphic design, motion, and creative work that doesn't fit a case study format.</p>
+      </section>
+
+      <!-- SCRATCHCARD FEATURED CARD -->
+      <a href="scratchcards.html" class="pg-scratch-card">
+        <div class="pg-scratch-preview">
+          <img src="assets/scratch/pirates-1.jpg" alt="" class="pg-scratch-img pg-scratch-img--1" loading="lazy">
+          <img src="assets/scratch/spooky-scratch.jpg" alt="" class="pg-scratch-img pg-scratch-img--2" loading="lazy">
+          <img src="assets/scratch/vegas-vibes.jpg" alt="" class="pg-scratch-img pg-scratch-img--3" loading="lazy">
+          <img src="assets/scratch/pirates-2.jpg" alt="" class="pg-scratch-img pg-scratch-img--4" loading="lazy">
+        </div>
+        <div class="pg-scratch-overlay"></div>
+        <div class="pg-scratch-content">
+          <div class="pg-scratch-meta">
+            <p class="kicker pg-scratch-kicker">LOTTERY GAMING &nbsp;·&nbsp; 62 DESIGNS</p>
+            <h2 class="card-title-lg pg-scratch-title">Scratchcard Art Direction</h2>
+            <p class="body-text pg-scratch-desc">A full library of scratchcard banner art and play area designs spanning dark fantasy, horror, cartoon, and more — each with its own visual world.</p>
+          </div>
+          <span class="link-arrow pg-scratch-link">Explore the collection <span>➜</span></span>
+        </div>
+      </a>
+
+      <!-- MORE GRID -->
+      <div class="pg-more-grid">
+
+        <!-- CURE TILE -->
+        <a href="cure.html" class="pg-cure-card">
+          <div class="pg-cure-body">
+            <div class="pg-cure-meta">
+              <span class="pg-cure-kicker">MOTION DESIGN &nbsp;·&nbsp; EMAIL &nbsp;·&nbsp; UI GRAPHICS</span>
+              <h2 class="pg-cure-title">CURE Auto Insurance</h2>
+              <p class="pg-cure-desc">Loading animations, email campaigns, and mobile UI graphics designed for a legacy auto insurance brand — built in Lottie for zero performance cost.</p>
+              <div class="pg-cure-tools">
+                <span class="pg-cure-tool-tag">Lottie</span>
+                <span class="pg-cure-tool-tag">Figma</span>
+              </div>
+            </div>
+            <span class="pg-cure-link">View work <span>➜</span></span>
+          </div>
+          <div class="pg-cure-visuals">
+            <video src="assets/cure-rotating-icons.mp4" autoplay loop muted playsinline class="pg-cure-gif-secondary"></video>
+            <video src="assets/cure-binding-animation.mp4" autoplay loop muted playsinline class="pg-cure-gif-main"></video>
+          </div>
+        </a>
+
+        <!-- GLOBALIZER TILE -->
+        <a href="globalizer.html" class="pg-gl-card">
+          <div class="pg-gl-preview">
+            <img src="assets/globalizer-prize-pass.jpg" alt="Globalizer gaming UI" class="pg-gl-img pg-gl-img--main" loading="lazy">
+            <img src="assets/globalizer-pets-beach.jpg" alt="Sweeps.pet illustrated banner" class="pg-gl-img pg-gl-img--secondary" loading="lazy">
+          </div>
+          <div class="pg-gl-content">
+            <div class="pg-gl-meta">
+              <span class="pg-gl-kicker">GAMING UI &nbsp;·&nbsp; ILLUSTRATION &nbsp;·&nbsp; PROMO DESIGN</span>
+              <h2 class="pg-gl-title">Globalizer</h2>
+              <p class="pg-gl-desc">UI screens, illustrated characters, and promotional design across Winloot, Sweeps.pet, RewardIt, and Winstakes.</p>
+              <div class="pg-gl-tools">
+                <span class="pg-gl-tool-tag">Figma</span>
+                <span class="pg-gl-tool-tag">Illustrator</span>
+              </div>
+            </div>
+            <span class="pg-gl-link">View work <span>➜</span></span>
+          </div>
+        </a>
+
+        <div class="pg-more-placeholder">
+          <span class="pg-more-label">More coming soon</span>
+        </div>
+
+      </div>
+
+    
+    <footer class="footer">
+    <div class="footer-inner">
+      <a href="index.html" class="brandmark">andy<span class="dot">.</span></a>
+      <div>© 2026 Andy Nguyen — designed, coded, cat approved.</div>
+      <div class="footer-links">
+        <a href="mailto:nguyenlandy@gmail.com">nguyenlandy@gmail.com</a>
+        <span class="footer-divider">·</span>
+        <a href="https://www.linkedin.com/in/andylounguyen" target="_blank" rel="noopener">LinkedIn</a>
+        <span class="footer-divider">·</span>
+        <a href="assets/andy-nguyen-resume.pdf" target="_blank" rel="noopener">Resume</a>
+      </div>
+    </div>
+  </footer>
+</main>
+  </div>
+  <script src="scripts.js"></script>
+<script src="nav.js?v=site-nav-1"></script>
+</body>
+</html>

@@ -44,12 +44,18 @@
   position: relative;
   z-index: 1;
   width: 100%;
-  max-width: min(720px, 49vw);
+  max-width: min(690px, 47vw);
   margin-left: auto;             /* sits to the right, blended into the page */
   aspect-ratio: 803 / 726;       /* Figma pond composition bbox */
   cursor: pointer;
   /* open water inside the rock ring — an ellipse in the new art */
   --pond-water-mask: ellipse(31% 34% at 49.8% 48%);
+}
+
+@media (min-width: 1600px) {
+  .koipond {
+    max-width: min(clamp(700px, 39vw, 840px), 100%);
+  }
 }
 
 /* full-pond overlay layers all share the baked pond canvas and alignment */
@@ -408,10 +414,20 @@ html.js .koipond { animation: koi-enter 700ms var(--ease-out) 120ms both; }
 
 /* ── responsive ── */
 @media (max-width: 900px) {
-  .koipond { margin: 0 auto; max-width: 440px; }
+  .koipond {
+    margin: 64px auto 0;
+    max-width: min(440px, calc(100vw - 34px));
+  }
+  .hero-scrollcue { display: none; }
+}
+@media (min-width: 901px) and (max-width: 1199px) {
+  .koipond {
+    margin: 28px auto 0;
+    max-width: min(500px, 45vw);
+  }
   .hero-scrollcue { display: none; }
 }
 @media (max-width: 540px) {
-  .koipond { max-width: 100%; }
+  .koipond { max-width: calc(100vw - 28px); }
   .koi-hint { font-size: 0.66rem; }
 }

@@ -25,7 +25,6 @@
   var DIR = 'assets/koi-pond/';
 
   /* [file, left%, top%, width%, height%, flipX] */
-  var GROUND = ['pond/ground-layer-figma.png', -18, -22, 136, 144, 0];
   var DECOR = [
     ['rocks/stone-tower.png', 0.0, 2.88, 42.23, 47.33, 0],
     ['rocks/round-rock-medium.png', 81.57, 62.95, 5.35, 5.79, 0],
@@ -85,11 +84,8 @@
     return img;
   }
 
-  // ground goes FIRST so it paints beneath the pond base (z0 < z1)
-  var groundImg = makeImg(GROUND);
-  groundImg.className = 'pond-ground';
-  groundImg.setAttribute('aria-hidden', 'true');
-  pond.insertBefore(groundImg, pond.firstChild);
+  // (The sandy ground layer was removed — the hero now provides its own
+  //  full-bleed raked-sand garden background behind the pond.)
 
   var layer = document.createElement('div');
   layer.className = 'pond-decor';

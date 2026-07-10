@@ -12,9 +12,9 @@
   --dur-slow:    800ms;
   --rise:        28px;
 
-  --accent: #e8552f;            /* sharper patch-orange for the homepage */
-  --accent-soft: #fbe3d9;
-  --hero-bg: #fbf6ee;
+  --accent: #1f6d46;            /* forest green — enough lift over near-black text to read as an accent at small sizes */
+  --accent-soft: #dcece2;
+  --hero-bg: #efd4b1;
   --grid-line: rgba(26, 22, 18, 0.045);
 }
 
@@ -39,81 +39,11 @@
   padding-top: 0;
 }
 
-.home .nav {
-  background: transparent;
-  /* three zones: monogram · centered links · connect */
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
-}
-.home .nav::before {
-  /* solid strip behind sticky nav so grid lines don't show through text */
-  content: "";
-  position: absolute;
-  inset: 0 -100vw 0 -100vw;
+/* The homepage header sits on the hero sand color, while the nav itself
+   remains transparent. The rest of the page continues to use --bg. */
+.home .nav--home::before {
   background: var(--hero-bg);
-  z-index: -1;
 }
-
-/* circular AN monogram (left) */
-.nav-monogram {
-  grid-column: 1;
-  justify-self: start;
-  width: 46px; height: 46px;
-  display: grid; place-items: center;
-  border: 1.5px solid var(--text-primary);
-  border-radius: 50%;
-  font-family: var(--font-display);
-  font-variation-settings: var(--font-variation);
-  font-weight: 560;
-  font-size: 0.95rem;
-  letter-spacing: 0.01em;
-  color: var(--text-primary);
-  text-decoration: none;
-  transition: background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
-}
-.nav-monogram:hover { background: var(--text-primary); color: var(--bg); }
-
-/* centered links — clean, no persistent active underline (hover only) */
-.home .nav-links { grid-column: 2; justify-self: center; gap: clamp(22px, 2.4vw, 42px); }
-.home .nav-link.active .nav-underline { transform: scaleX(0); opacity: 0; }
-.home .nav-link:hover .nav-underline { transform: scaleX(1); opacity: 0.4; }
-
-/* Let's connect pill (right) */
-.nav-connect {
-  grid-column: 3;
-  justify-self: end;
-  display: inline-flex;
-  align-items: center;
-  gap: 9px;
-  background: var(--text-primary);
-  color: var(--bg);
-  font-family: var(--font-mono);
-  font-size: 0.8rem;
-  letter-spacing: 0.03em;
-  padding: 11px 20px;
-  border-radius: 999px;
-  text-decoration: none;
-  transition: transform var(--dur-fast) var(--ease-spring), background var(--dur-fast) var(--ease-out);
-}
-.nav-connect:hover { transform: translateY(-2px); }
-.nav-connect-dot {
-  width: 7px; height: 7px; border-radius: 50%;
-  background: var(--accent);
-  box-shadow: 0 0 0 0 rgba(232, 85, 47, 0.5);
-  animation: connect-pulse 2.2s var(--ease-out) infinite;
-}
-@keyframes connect-pulse { 0% { box-shadow: 0 0 0 0 rgba(232,85,47,0.5); } 70%, 100% { box-shadow: 0 0 0 7px rgba(232,85,47,0); } }
-
-@media (max-width: 767px) {
-  /* compact mobile bar: monogram left, hamburger right */
-  .home .nav { display: flex; justify-content: space-between; }
-  .nav-connect { display: none; }
-  .nav-monogram { width: 42px; height: 42px; font-size: 0.88rem; }
-  /* the dropdown panel spans the full bar (override the centered-links rule) */
-  .home .nav-links { justify-self: stretch; }
-}
-@media (prefers-reduced-motion: reduce) { .nav-connect-dot { animation: none; } }
 
 /* ─── BACKGROUND GRID CANVAS ─────────────────────────────────── */
 .grid-canvas {
@@ -193,24 +123,111 @@ html.js .reveal.is-in {
   grid-template-columns: minmax(470px, 0.9fr) minmax(560px, 1.1fr);
   align-items: center;
   gap: clamp(44px, 5vw, 84px);
+  padding-inline: clamp(18px, 2.4vw, 40px);
   padding-top: clamp(60px, 8vh, 98px);
   padding-bottom: clamp(54px, 8vh, 92px);
+  background: transparent;
 }
 .hero::before {
   content: "";
   position: absolute;
-  inset: 0 calc(50% - 50vw);
+  /* The garden begins below the independent sand-colored header. */
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100vw;
   z-index: -1;
   pointer-events: none;
+  /* zen-garden render: raked sand + stones (static). A soft highlight
+     sits over it; base cream fills any letterboxing at the edges. */
   background:
-    radial-gradient(ellipse 60% 72% at 67% 50%, rgba(255, 250, 240, 0.62), transparent 70%),
+    radial-gradient(ellipse 60% 72% at 67% 50%, rgba(255, 250, 240, 0.32), transparent 70%),
+    url("assets/koi-pond/pond/hero-garden.png") center 40% / 100% auto no-repeat,
     var(--hero-bg);
+}
+
+/* Keep the garden plate truly full-bleed at every horizontal desktop/tablet
+   size. Previously it fell back to a 1440px cap until 1600px, exposing the
+   white page beneath around the 1591px breakpoint. */
+@media (min-width: 901px) {
+  .hero {
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+  }
+
+}
+
+@media (min-width: 1200px) and (max-width: 1599px) {
+  .hero > .hero-copy {
+    max-width: 520px;
+    margin-left: clamp(110px, 9vw, 145px);
+    transform: none;
+  }
+
+  /* .hero .hero-name (not bare .hero-name) so this beats the base rule,
+     which sits later in the file and would otherwise win the cascade */
+  .hero .hero-name {
+    font-size: clamp(2.4rem, 3.05vw, 3.0rem);   /* fits a clean 2-line wrap */
+  }
+}
+
+@media (min-width: 1600px) {
+  .hero > .hero-copy {
+    max-width: 560px;
+    margin-left: clamp(140px, calc(20vw - 180px), 220px);
+    transform: none;
+  }
+
+  .hero .hero-name {
+    font-size: clamp(3.0rem, 3.1vw, 3.3rem);
+  }
 }
 .hero-copy {
   position: relative;
   z-index: 2;
   padding-top: clamp(8px, 2.5vh, 36px);
   max-width: 560px;
+  transform: translateY(clamp(-92px, -8vh, -44px));
+}
+/* "Begin the stroll" — a persistent scroll cue pinned to the hero's
+   bottom-center, styled to match the pond's "Click to feed the koi" pill.
+   Clicking it strolls down to the work section. */
+.hero-stroll {
+  position: absolute;
+  left: 50%;
+  bottom: clamp(18px, 3.5vh, 40px);
+  transform: translateX(-50%);
+  z-index: 4;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #f2faf8;
+  background: rgba(8, 24, 28, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+  padding: 10px 20px;
+  text-decoration: none;
+  white-space: nowrap;
+  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(2px);
+  transition: transform 180ms var(--ease-out), background 180ms var(--ease-out);
+}
+.hero-stroll:hover {
+  transform: translateX(-50%) translateY(-2px);
+  background: rgba(8, 24, 28, 0.84);
+}
+.hero-stroll .cue-chev {
+  display: inline-block;
+  animation: cue-bob 2.2s var(--ease-out) infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-stroll .cue-chev { animation: none; }
 }
 
 .hero-copy .kicker {
@@ -220,15 +237,26 @@ html.js .reveal.is-in {
   margin-bottom: clamp(16px, 2.8vh, 24px);
 }
 
+/* small serif name label sitting above the headline */
+.hero-eyebrow {
+  font-family: var(--font-display);
+  font-variation-settings: var(--font-variation);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(1.05rem, 1.5vw, 1.25rem);
+  color: var(--text-muted);
+  margin: 0 0 0.55em;
+}
+
 .hero-name {
   font-family: var(--font-display);
   font-variation-settings: var(--font-variation);
-  font-weight: 560;
-  font-size: clamp(3.6rem, 7.2vw, 5.65rem);
-  line-height: 0.98;
-  letter-spacing: -0.035em;
-  margin: 0 0 0.22em;
-  white-space: nowrap;
+  font-weight: 430;                /* lighter, less bold — matches the ref */
+  font-size: clamp(2.4rem, 4vw, 3.5rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin: 0 0 0.5em;
+  max-width: 12em;                 /* holds the headline to a tidy ~2 lines */
 }
 .hero-name .accent-period { color: var(--accent); }
 
@@ -374,7 +402,7 @@ html.js .hero.is-in .patch { opacity: 1; translate: 0 0; scale: 1; }
   transform: translateX(-50%) rotate(-2deg);
   width: 54px;
   height: 16px;
-  background: rgba(232, 85, 47, 0.28);
+  background: rgba(31, 109, 70, 0.28);
 }
 
 .patch--chip {
@@ -455,7 +483,7 @@ html.js .hero.is-in .patch { opacity: 1; translate: 0 0; scale: 1; }
 
 /* dim siblings, not the active row */
 .work-list.has-active .work-row:not(.is-active) { opacity: 0.45; }
-.work-row.is-active { background: rgba(232, 85, 47, 0.045); }
+.work-row.is-active { background: rgba(31, 109, 70, 0.045); }
 
 .work-row-top {
   display: contents;
@@ -557,20 +585,29 @@ html.js .hero.is-in .patch { opacity: 1; translate: 0 0; scale: 1; }
 .work-row.is-active .work-cta .arrow { transform: translateX(5px); }
 
 /* preview thumb inside each row — visible on mobile, hidden where stage exists */
+/* mobile/tablet fallback for the desktop reflecting pool: the same
+   keyed project mockups on a matching teal "water" panel, so the two
+   breakpoints read as one system. The mockups are transparent PNGs —
+   without this water fill they'd show the container color as a hard
+   black rectangle behind them. */
 .work-row-thumb {
   grid-column: 2;
   margin-top: 16px;
-  border-radius: 12px;
+  border-radius: 14px;
   overflow: hidden;
-  border: 1px solid var(--border);
   aspect-ratio: 16 / 10;
-  background: #1a1a1a;
+  padding: 14px;
+  background:
+    radial-gradient(120% 90% at 50% 0%, rgba(28, 74, 80, 0.5), transparent 60%),
+    linear-gradient(#0f363d 0%, #0a2a30 55%, #061e23 100%);
+  box-shadow: inset 0 2px 0 rgba(190, 235, 232, 0.12), inset 0 -18px 40px rgba(3, 14, 17, 0.45);
 }
 .work-row-thumb img {
   width: 100%;
   height: 100%;
   display: block;
   object-fit: contain;
+  filter: drop-shadow(0 10px 20px rgba(3, 16, 19, 0.5));
 }
 
 /* Preview stage (desktop) — a REFLECTING POOL that carries the hero's
@@ -704,8 +741,8 @@ html.js .hero.is-in .patch { opacity: 1; translate: 0 0; scale: 1; }
   content: "";
   width: 9px; height: 9px;
   border-radius: 2px;
-  background: var(--accent);       /* the red seal */
-  box-shadow: 0 0 10px rgba(232, 85, 47, 0.6);
+  background: var(--accent);       /* the seal */
+  box-shadow: 0 0 10px rgba(31, 109, 70, 0.6);
 }
 
 
@@ -865,10 +902,37 @@ html.js .hero.is-in .patch { opacity: 1; translate: 0 0; scale: 1; }
 }
 
 @media (max-width: 900px) {
+  .home .nav--home::before {
+    background: var(--hero-bg);
+  }
+
   .hero {
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
     grid-template-columns: 1fr;
     min-height: auto;
-    padding-top: 32px;
+    gap: 10px;
+    padding: 34px 0 20px;
+    overflow: visible;
+  }
+  .hero::before {
+    top: 0;
+    bottom: 0;
+    width: 100vw;
+    height: auto;
+    background:
+      url("assets/koi-pond/pond/hero-garden-mobile-clean.png") center top / 100% auto no-repeat,
+      var(--hero-bg);
+  }
+  .hero-copy {
+    width: clamp(250px, 55vw, 360px);
+    max-width: none;
+    margin-left: clamp(85px, 27vw, 230px);
+    /* Track the open center of the mobile garden as the artwork scales;
+       nudged ~30px lower so the copy clears the top stones. */
+    padding: clamp(102px, calc(20vw + 30px), 210px) 0 0;
+    transform: none;
   }
   /* the display name must wrap and scale below tablet — nowrap at the
      desktop size overflows the viewport and drags the whole hero
@@ -876,7 +940,16 @@ html.js .hero.is-in .patch { opacity: 1; translate: 0 0; scale: 1; }
   .hero-name {
     white-space: normal;
     overflow-wrap: break-word;
-    font-size: clamp(3rem, 12vw, 4.6rem);
+    font-size: clamp(1.55rem, 4.5vw, 2.4rem);
+    line-height: 1.02;
+    max-width: none;
+  }
+  .hero-eyebrow { font-size: clamp(0.78rem, 1.9vw, 0.9rem); margin-bottom: 0.4em; }
+  .hero-statement {
+    max-width: 100%;
+    font-size: clamp(0.62rem, 1.8vw, 0.78rem);
+    line-height: 1.4;
+    margin-bottom: 0;
   }
   .patch-board { height: clamp(280px, 44vw, 420px); }
   .work-layout { grid-template-columns: 1fr; }
@@ -895,6 +968,51 @@ html.js .hero.is-in .patch { opacity: 1; translate: 0 0; scale: 1; }
   }
   .about-grid { grid-template-columns: 1fr; }
   .gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* Tablet keeps the two-column layout with the pond on the RIGHT — just
+   scaled down and the copy sized to fit the narrower viewport. */
+@media (min-width: 901px) and (max-width: 1199px) {
+  .hero {
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 400px);
+    gap: clamp(16px, 2.4vw, 34px);
+    align-items: center;
+  }
+
+  /* scale the pond down so it fits the right column (beats the base
+     .koipond max-width, since koipond.css loads after home.css) */
+  .hero .koipond { max-width: min(42vw, 400px); }
+
+  .hero-copy {
+    max-width: none;
+    margin-left: clamp(28px, 5vw, 80px);   /* keep copy off the left edge */
+    padding-top: 0;
+  }
+
+  .hero-name {
+    font-size: clamp(1.9rem, 3.3vw, 2.5rem);
+    max-width: 11em;                        /* wrap to ~2 lines, not one sprawl */
+  }
+
+  .hero-statement {
+    max-width: 32em;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .hero-copy {
+    width: 220px;
+    margin-left: 85px;
+    padding-top: 55px;
+  }
+
+  .hero-name {
+    font-size: 1.45rem;
+  }
+
+  .hero-eyebrow { font-size: 0.78rem; }
+  .hero-statement { font-size: 0.62rem; }
 }
 
 @media (max-width: 540px) {

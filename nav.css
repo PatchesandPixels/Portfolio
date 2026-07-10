@@ -64,7 +64,7 @@
 .nav-underline {
   height: 4px;
   width: 100%;
-  background: #1353be;
+  background: #1f6d46;
   transform: scaleX(0);
   transform-origin: left center;
   transition: transform 260ms cubic-bezier(0.4, 0, 0.2, 1), opacity 260ms ease;
@@ -137,4 +137,145 @@
   letter-spacing: 0.14em;
   color: #a39a90;
   min-width: 18px;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   .nav--home — the canonical site-wide nav: circular "AN" monogram,
+   centered links (with the Work dropdown), a "Let's connect" pill,
+   and a mobile hamburger panel. Fully self-contained (literal values,
+   no design-token dependency) so it renders identically on every page
+   — including the case-study pages, which load only this stylesheet.
+   Behavior is in nav.js.
+   ════════════════════════════════════════════════════════════════ */
+.nav--home {
+  background: transparent;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;   /* monogram · links · connect */
+  align-items: center;
+}
+/* full-bleed opaque strip behind the sticky bar */
+.nav--home::before {
+  content: "";
+  position: absolute;
+  inset: 0 -100vw;
+  background: #fcf7f4;
+  z-index: -1;
+}
+
+/* circular AN monogram (left) */
+.nav-monogram {
+  grid-column: 1;
+  justify-self: start;
+  width: 46px; height: 46px;
+  display: grid; place-items: center;
+  border: 1.5px solid #1a1612;
+  border-radius: 50%;
+  font-family: 'Fraunces', 'Times New Roman', serif;
+  font-variation-settings: 'opsz' 144, 'SOFT' 0;
+  font-weight: 560;
+  font-size: 0.95rem;
+  letter-spacing: 0.01em;
+  color: #1a1612;
+  text-decoration: none;
+  transition: background 160ms ease, color 160ms ease;
+}
+.nav-monogram:hover { background: #1a1612; color: #fcf7f4; }
+
+/* centered links — hover-only underline, no persistent active state */
+.nav--home .nav-links {
+  grid-column: 2;
+  justify-self: center;
+  gap: clamp(22px, 2.4vw, 42px);
+}
+.nav--home .nav-link.active .nav-underline { transform: scaleX(0); opacity: 0; }
+.nav--home .nav-link:hover .nav-underline { transform: scaleX(1); opacity: 0.4; }
+
+/* "Let's connect" pill (right) */
+.nav-connect {
+  grid-column: 3;
+  justify-self: end;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  background: #1a1612;
+  color: #fcf7f4;
+  font-family: 'JetBrains Mono', 'SF Mono', monospace;
+  font-size: 0.8rem;
+  letter-spacing: 0.03em;
+  padding: 11px 20px;
+  border-radius: 999px;
+  text-decoration: none;
+  transition: transform 160ms cubic-bezier(0.34, 1.56, 0.64, 1), background 160ms ease;
+}
+.nav-connect:hover { transform: translateY(-2px); }
+.nav-connect-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: #1f6d46;
+  box-shadow: 0 0 0 0 rgba(31, 109, 70, 0.5);
+  animation: nav-connect-pulse 2.2s ease-out infinite;
+}
+@keyframes nav-connect-pulse {
+  0%        { box-shadow: 0 0 0 0 rgba(31, 109, 70, 0.5); }
+  70%, 100% { box-shadow: 0 0 0 7px rgba(31, 109, 70, 0); }
+}
+
+/* hamburger — hidden on desktop, shown in the mobile bar */
+.nav-menu-btn {
+  display: none;
+  width: 48px; height: 48px;
+  align-items: center; justify-content: center;
+  border: 0; background: none; cursor: pointer;
+  border-radius: 10px; color: #1a1612;
+  transition: background 160ms ease;
+}
+.nav-menu-btn:hover { background: rgba(26, 22, 18, 0.06); }
+.nav-menu-btn .burger-mid { transition: opacity 180ms; }
+.nav-menu-btn .burger-top,
+.nav-menu-btn .burger-bot { transition: transform 220ms ease; transform-box: fill-box; transform-origin: center; }
+.nav--home.menu-open .nav-menu-btn .burger-mid { opacity: 0; }
+.nav--home.menu-open .nav-menu-btn .burger-top { transform: translateY(5px) rotate(45deg); }
+.nav--home.menu-open .nav-menu-btn .burger-bot { transform: translateY(-5px) rotate(-45deg); }
+
+@media (max-width: 767px) {
+  /* compact bar: monogram left, hamburger right */
+  .nav--home {
+    display: flex;
+    justify-content: space-between;
+    min-height: 64px;
+  }
+  .nav-connect { display: none; }
+  .nav-monogram { width: 42px; height: 42px; font-size: 0.88rem; }
+
+  /* links collapse into a dropdown panel toggled by the hamburger */
+  .nav-menu-btn { display: inline-flex; }
+  .nav--home .nav-links {
+    position: absolute; top: 100%; left: 0; right: 0;
+    justify-self: stretch;
+    flex-direction: column; align-items: stretch; gap: 0;
+    background: #fcf7f4; border-bottom: 1px solid #d8ccba;
+    box-shadow: 0 18px 32px rgba(26, 22, 18, 0.1);
+    padding: 8px 4px 16px;
+    opacity: 0; transform: translateY(-8px); pointer-events: none;
+    transition: opacity 200ms ease, transform 200ms ease;
+    z-index: 150;
+  }
+  .nav--home.menu-open .nav-links { opacity: 1; transform: none; pointer-events: auto; }
+  .nav--home .nav-links > li { width: 100%; }
+  .nav--home .nav-links .nav-link {
+    flex-direction: row; justify-content: flex-start; width: 100%;
+    min-height: 52px; align-items: center; padding: 0 16px; font-size: 19px;
+  }
+  .nav--home .nav-link .nav-underline,
+  .nav--home .nav-link.active .nav-underline { display: none; }
+  /* the Work dropdown flattens inline within the mobile panel */
+  .nav--home .nav-item--work .nav-dropdown {
+    position: static; transform: none; opacity: 1; pointer-events: auto;
+    border: none; box-shadow: none; background: transparent;
+    padding: 0 8px 4px 28px; min-width: 0;
+  }
+  body.menu-locked { overflow: hidden; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-connect-dot { animation: none; }
 }

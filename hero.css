@@ -473,50 +473,7 @@ html.js .ihero.is-in .ihero-furniture { opacity: 1; scale: 1; }
 @keyframes vbar { from { height: 3px; } to { height: 12px; } }
 @media (prefers-reduced-motion: reduce) { .vinyl-bars i { animation: none; height: 7px; } }
 
-/* ─── MOBILE NAVIGATION (homepage) ───────────────────────────── */
-.nav-menu-btn {
-  display: none; width: 48px; height: 48px;
-  align-items: center; justify-content: center;
-  border-radius: 10px; color: var(--text-primary);
-  transition: background var(--dur-fast) var(--ease-out);
-}
-.nav-menu-btn:hover { background: rgba(26, 22, 18, 0.06); }
-.nav-menu-btn .burger-mid { transition: opacity 180ms; }
-.nav-menu-btn .burger-top,
-.nav-menu-btn .burger-bot { transition: transform 220ms var(--ease-out); transform-box: fill-box; transform-origin: center; }
-.nav.menu-open .nav-menu-btn .burger-mid { opacity: 0; }
-.nav.menu-open .nav-menu-btn .burger-top { transform: translateY(5px) rotate(45deg); }
-.nav.menu-open .nav-menu-btn .burger-bot { transform: translateY(-5px) rotate(-45deg); }
-
-@media (max-width: 767px) {
-  .home .nav { min-height: 64px; }
-  .nav-menu-btn { display: inline-flex; }
-  .home .nav-links {
-    position: absolute; top: 100%; left: 0; right: 0;
-    flex-direction: column; align-items: stretch; gap: 0;
-    background: var(--bg); border-bottom: 1px solid var(--border);
-    box-shadow: 0 18px 32px rgba(26, 22, 18, 0.1);
-    padding: 8px 4px 16px; opacity: 0; transform: translateY(-8px);
-    pointer-events: none;
-    transition: opacity 200ms var(--ease-out), transform 200ms var(--ease-out);
-    z-index: 150;
-  }
-  .home .nav.menu-open .nav-links { opacity: 1; transform: none; pointer-events: auto; }
-  .home .nav-links > li { width: 100%; }
-  .home .nav-links .nav-link {
-    flex-direction: row; justify-content: flex-start; width: 100%;
-    min-height: 52px; align-items: center; padding: 0 16px; font-size: 19px;
-  }
-  .home .nav-link .nav-underline,
-  .home .nav-link.active .nav-underline { display: none; }
-  .home .nav-item--work .nav-dropdown {
-    position: static; transform: none; opacity: 1; pointer-events: auto;
-    border: none; box-shadow: none; background: transparent;
-    padding: 0 8px 4px 28px; min-width: 0;
-  }
-  body.menu-locked { overflow: hidden; }
-}
-
+/* Site nav (incl. mobile hamburger) lives in nav.css (.nav--home). */
 /* ── Responsive composition ──
    Object positions/sizes/visibility per breakpoint live in the
    HERO_ASSETS layout config in hero.js. Mobile drops the room

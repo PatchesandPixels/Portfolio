@@ -17,10 +17,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Inter:wght@400;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css?v=review-fixes-2">
-  <link rel="stylesheet" href="nav.css">
-  <link rel="stylesheet" href="home.css?v=hero-balance-1">
-  <link rel="stylesheet" href="hero.css">
-  <link rel="stylesheet" href="koipond.css?v=food-pellet-1">
+  <link rel="stylesheet" href="nav.css?v=site-nav-1">
+  <link rel="stylesheet" href="home.css?v=stroll-pill-1">
+  <link rel="stylesheet" href="hero.css?v=site-nav-1">
+  <link rel="stylesheet" href="koipond.css?v=hero-sand-5">
 </head>
 <body>
   <!-- Background layers: canvas grid (JS) + static fallback + grain -->
@@ -42,11 +42,17 @@
           </svg>
         </button>
         <ul class="nav-links" id="navLinks">
-          <li><a href="#work" class="nav-link" data-page="work">Work<span class="nav-underline"></span></a></li>
-          <li><a href="#about" class="nav-link" data-page="about">About<span class="nav-underline"></span></a></li>
-          <li><a href="#playground" class="nav-link" data-page="process">Process<span class="nav-underline"></span></a></li>
+          <li class="nav-item--work">
+            <button class="nav-link nav-btn-work" type="button" data-page="work" aria-haspopup="true" aria-expanded="false">Work<span class="nav-underline"></span></button>
+            <div class="nav-dropdown" role="menu">
+              <a href="tersus.html" class="nav-dropdown-item" role="menuitem"><span class="nav-dropdown-num">01</span>Tersus</a>
+              <a href="cure-quick-quote.html" class="nav-dropdown-item" role="menuitem"><span class="nav-dropdown-num">02</span>Quick Quote</a>
+              <a href="cure-scan-license.html" class="nav-dropdown-item" role="menuitem"><span class="nav-dropdown-num">03</span>Scan to Insure</a>
+              <a href="cure-my-account.html" class="nav-dropdown-item" role="menuitem"><span class="nav-dropdown-num">04</span>My Account</a>
+            </div>
+          </li>
           <li><a href="playground.html" class="nav-link" data-page="playground">Playground<span class="nav-underline"></span></a></li>
-          <li><a href="#contact" class="nav-link" data-page="contact">Contact<span class="nav-underline"></span></a></li>
+          <li><a href="index.html#contact" class="nav-link" data-page="contact">Contact<span class="nav-underline"></span></a></li>
         </ul>
         <a href="mailto:nguyenlandy@gmail.com" class="nav-connect">Let's connect<span class="nav-connect-dot" aria-hidden="true"></span></a>
       </nav>
@@ -57,16 +63,11 @@
         <!-- ═══ HERO — name on the left, tossable object field on the right ═══ -->
         <section class="hero" aria-label="Introduction">
           <div class="hero-copy">
-            <p class="kicker">UX/UI &amp; PRODUCT DESIGN</p>
-            <h1 class="hero-name">Andy Nguyen<span class="accent-period">.</span></h1>
+            <p class="hero-eyebrow">Andy Nguyen</p>
+            <h1 class="hero-name">Designing clarity through complexity.</h1>
             <p class="hero-statement">
-              Hi, I'm Andy - a UX/UI designer who helps teams turn complex problems into clear, intuitive experiences. I care about craft, strategy, and the details that make products feel effortless.
+              UX/UI designer exploring the space between product design and engineering — shaping thoughtful digital experiences through systems, craft, and iteration.
             </p>
-            <div class="hero-ctas">
-              <a href="#work" class="btn-patch">View work
-                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 3v10M8 13l-4-4M8 13l4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </a>
-            </div>
           </div>
 
           <!-- ═══ Koi pond — click the water to feed the koi. Optional & ignorable. ═══
@@ -93,6 +94,9 @@
             <span class="koi-hint"><span class="dot"></span>Click to feed the koi</span>
             <p class="koi-msg"><span class="lead">Small interactions matter.</span><br>Selected work below ↓</p>
           </div>
+
+          <!-- persistent scroll cue, pinned to the bottom-center of the hero -->
+          <a class="hero-stroll" href="#work">Begin the stroll <span class="cue-chev" aria-hidden="true">↓</span></a>
         </section>
 
         <!-- ═══ RECENTLY MADE ═══ -->
@@ -294,6 +298,7 @@
   </div>
 
   <script src="scripts.js"></script>
+  <script src="nav.js?v=site-nav-1"></script>
   <script src="home.js?v=grid-reveal-1"></script>
   <!-- jquery.ripples: WebGL water refraction on the pond background.
        Drops are driven by the swimming koi (pondripples.js) — mouse
@@ -301,19 +306,9 @@
        PondRipples is ready when koipond.js boots. -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.ripples/0.5.3/jquery.ripples.min.js"></script>
-  <script src="ponddecor.js?v=stone-grey-1"></script>
+  <script src="ponddecor.js?v=no-ground-1"></script>
   <script src="pondripples.js?v=koi-figma-2"></script>
   <script src="pondwaves.js?v=koi-figma-2"></script>
   <script src="koipond.js?v=food-pellet-1"></script>
-  <script>
-  (function(){
-    const item = document.querySelector(".nav-item--work");
-    const btn  = item && item.querySelector(".nav-btn-work");
-    if (!btn) return;
-    btn.addEventListener("click", function(e){ e.stopPropagation(); item.classList.toggle("is-open"); btn.setAttribute("aria-expanded", item.classList.contains("is-open")); });
-    document.addEventListener("click", function(){ item.classList.remove("is-open"); btn.setAttribute("aria-expanded","false"); });
-    document.addEventListener("keydown", function(e){ if(e.key==="Escape"){ item.classList.remove("is-open"); btn.setAttribute("aria-expanded","false"); }});
-  })();
-  </script>
 </body>
 </html>

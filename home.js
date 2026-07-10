@@ -287,39 +287,8 @@
     rest();   // resting display on load — scroll shows the first project
   })();
 
-  /* ─── 4b. MOBILE NAVIGATION ─────────────────────────────────── */
-  (function mobileNav() {
-    var btn = document.getElementById('navMenuBtn');
-    var nav = document.querySelector('.nav');
-    var links = document.getElementById('navLinks');
-    if (!btn || !nav || !links) return;
-
-    function setOpen(open) {
-      nav.classList.toggle('menu-open', open);
-      btn.setAttribute('aria-expanded', String(open));
-      btn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
-      document.body.classList.toggle('menu-locked', open);
-    }
-
-    btn.addEventListener('click', function (e) {
-      e.stopPropagation();
-      setOpen(!nav.classList.contains('menu-open'));
-    });
-    // close on selection, Escape, or outside tap
-    links.addEventListener('click', function (e) {
-      if (e.target.closest('a')) setOpen(false);
-    });
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape') setOpen(false);
-    });
-    document.addEventListener('click', function (e) {
-      if (nav.classList.contains('menu-open') && !nav.contains(e.target)) setOpen(false);
-    });
-    // leaving the mobile breakpoint resets the state
-    window.matchMedia('(min-width: 768px)').addEventListener('change', function (m) {
-      if (m.matches) setOpen(false);
-    });
-  })();
+  /* Nav behavior (mobile hamburger + Work dropdown) now lives in the
+     shared nav.js, loaded on every page. */
 
   /* ─── 5. PAUSE GALLERY VIDEOS OFFSCREEN ─────────────────────── */
   (function videoGuard() {

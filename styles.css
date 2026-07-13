@@ -141,17 +141,6 @@ button {
   display: block;
 }
 
-.nav-rule {
-  height: 1px;
-  background: var(--border);
-  margin-top: 0;
-  transition: opacity 0.35s ease;
-}
-
-.nav-rule--hidden {
-  opacity: 0;
-}
-
 /* ─── TYPOGRAPHY UTILITIES ───────────────────────────────────── */
 .display-heading {
   font-family: var(--font-display);

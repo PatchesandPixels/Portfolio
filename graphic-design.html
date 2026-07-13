@@ -16,7 +16,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Inter:wght@400;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="nav.css?v=site-nav-1">
+  <link rel="stylesheet" href="nav.css?v=glass-nav-3">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Graphic Design — Andy Nguyen">
   <meta property="og:description" content="Scratchcard art direction, Lottie motion design, gaming UI, and illustration.">
@@ -30,32 +30,26 @@
   <div class="page-wrapper">
 
     <!-- NAV -->
-    <nav class="nav nav--home" id="topNav">
-    <a href="index.html" class="nav-monogram" aria-label="Andy Nguyen — home">AN</a>
-    <button class="nav-menu-btn" id="navMenuBtn" type="button" aria-expanded="false" aria-controls="navLinks" aria-label="Open menu">
-      <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
-        <path class="burger-top" d="M3 6h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-        <path class="burger-mid" d="M3 11h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-        <path class="burger-bot" d="M3 16h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-      </svg>
-    </button>
-    <ul class="nav-links" id="navLinks">
-      <li class="nav-item--work">
-        <button class="nav-link nav-btn-work" type="button" data-page="work" aria-haspopup="true" aria-expanded="false">UX/UI<span class="nav-underline"></span></button>
-        <div class="nav-dropdown" role="menu">
-          <a href="tersus.html" class="nav-dropdown-item" role="menuitem"><span class="nav-dropdown-num">01</span>Tersus</a>
-          <a href="cure-quick-quote.html" class="nav-dropdown-item" role="menuitem"><span class="nav-dropdown-num">02</span>Quick Quote</a>
-          <a href="cure-scan-license.html" class="nav-dropdown-item" role="menuitem"><span class="nav-dropdown-num">03</span>Scan to Insure</a>
-          <a href="cure-my-account.html" class="nav-dropdown-item" role="menuitem"><span class="nav-dropdown-num">04</span>My Account</a>
+    <header class="site-header" id="site-header">
+      <nav class="glass-nav" aria-label="Primary navigation">
+        <a class="nav-logo" href="index.html" aria-label="Andy Nguyen home">AN</a>
+        <button class="nav-toggle" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="nav-links"><span></span><span></span></button>
+        <div class="nav-links" id="nav-links">
+          <div class="nav-item--work">
+            <button class="nav-link nav-btn-work" type="button" data-page="work" aria-haspopup="true" aria-expanded="false">UX/UI</button>
+            <div class="nav-dropdown" role="menu">
+              <a href="tersus.html" class="nav-dropdown-item" role="menuitem"><span class="nav-dropdown-num">01</span>Tersus</a>
+              <a href="cure-quick-quote.html" class="nav-dropdown-item" role="menuitem"><span class="nav-dropdown-num">02</span>Quick Quote</a>
+              <a href="cure-scan-license.html" class="nav-dropdown-item" role="menuitem"><span class="nav-dropdown-num">03</span>Scan to Insure</a>
+              <a href="cure-my-account.html" class="nav-dropdown-item" role="menuitem"><span class="nav-dropdown-num">04</span>My Account</a>
+            </div>
+          </div>
+          <a href="graphic-design.html" class="nav-link" data-page="graphic-design">Graphic Design</a>
+          <a href="playground.html" class="nav-link" data-page="playground">Playground</a>
+          <a href="index.html#contact" class="nav-link" data-page="contact">Contact</a>
         </div>
-      </li>
-      <li><a href="graphic-design.html" class="nav-link active" data-page="graphic-design">Graphic Design<span class="nav-underline"></span></a></li>
-      <li><a href="playground.html" class="nav-link" data-page="playground">Playground<span class="nav-underline"></span></a></li>
-      <li><a href="index.html#contact" class="nav-link" data-page="contact">Contact<span class="nav-underline"></span></a></li>
-    </ul>
-    <a href="mailto:nguyenlandy@gmail.com" class="nav-connect">Let's connect<span class="nav-connect-dot" aria-hidden="true"></span></a>
-  </nav>
-    <div class="nav-rule"></div>
+      </nav>
+    </header>
 
     <main class="main-content">
 
@@ -150,7 +144,7 @@
   </footer>
 </main>
   </div>
-  <script src="scripts.js"></script>
-<script src="nav.js?v=site-nav-1"></script>
+  <script src="scripts.js?v=glass-nav-2"></script>
+  <script src="nav.js?v=glass-nav-3"></script>
 </body>
 </html>

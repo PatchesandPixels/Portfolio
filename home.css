@@ -39,12 +39,6 @@
   padding-top: 0;
 }
 
-/* The homepage header sits on the hero sand color, while the nav itself
-   remains transparent. The rest of the page continues to use --bg. */
-.home .nav--home::before {
-  background: var(--hero-bg);
-}
-
 /* ─── BACKGROUND GRID CANVAS ─────────────────────────────────── */
 .grid-canvas {
   position: fixed;
@@ -118,20 +112,19 @@ html.js .reveal.is-in {
 .hero {
   position: relative;
   isolation: isolate;
-  min-height: calc(100vh - 70px);
+  min-height: 100vh;
   display: grid;
   grid-template-columns: minmax(470px, 0.9fr) minmax(560px, 1.1fr);
   align-items: center;
   gap: clamp(44px, 5vw, 84px);
   padding-inline: clamp(18px, 2.4vw, 40px);
-  padding-top: clamp(60px, 8vh, 98px);
+  padding-top: calc(clamp(60px, 8vh, 98px) + 70px);
   padding-bottom: clamp(54px, 8vh, 92px);
   background: transparent;
 }
 .hero::before {
   content: "";
   position: absolute;
-  /* The garden begins below the independent sand-colored header. */
   top: 0;
   bottom: 0;
   left: 50%;
@@ -969,10 +962,6 @@ html.js .hero.is-in .patch { opacity: 1; translate: 0 0; scale: 1; }
 }
 
 @media (max-width: 900px) {
-  .home .nav--home::before {
-    background: var(--hero-bg);
-  }
-
   .hero {
     width: 100vw;
     margin-left: calc(50% - 50vw);
@@ -980,7 +969,7 @@ html.js .hero.is-in .patch { opacity: 1; translate: 0 0; scale: 1; }
     grid-template-columns: 1fr;
     min-height: auto;
     gap: 10px;
-    padding: 34px 0 20px;
+    padding: 106px 0 20px;
     overflow: visible;
   }
   .hero::before {

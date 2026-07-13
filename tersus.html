@@ -124,12 +124,6 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .nav-link.active .nav-underline {
   display: block;
 }
-.nav-rule {
-  height: 1px;
-  background: var(--rule-2);
-  margin-top: 0;
-}
-
 /* ============== HERO ============== */
 .hero {
   padding: clamp(48px, 8vw, 96px) 0 clamp(60px, 9vw, 120px);
@@ -936,7 +930,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .tr-note { margin: 22px 0 0; padding-top: 16px; border-top: 1px solid var(--rule); font-family: var(--mono); font-size: 11.5px; line-height: 1.6; color: var(--muted); }
 @media (max-width: 760px) { .tr-grid { grid-template-columns: 1fr; } }
 </style>
-  <link rel="stylesheet" href="nav.css?v=site-nav-1">
+  <link rel="stylesheet" href="nav.css?v=glass-nav-3">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Tersus — UX Case Study · Andy Nguyen">
   <meta property="og:description" content="Simplifying a two-sided home-cleaning marketplace across booking, onboarding, and cleaner job management.">
@@ -949,32 +943,26 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 <body>
 
 <div class="page-outer">
-  <nav class="nav nav--home" id="topNav">
-    <a href="index.html" class="nav-monogram" aria-label="Andy Nguyen — home">AN</a>
-    <button class="nav-menu-btn" id="navMenuBtn" type="button" aria-expanded="false" aria-controls="navLinks" aria-label="Open menu">
-      <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
-        <path class="burger-top" d="M3 6h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-        <path class="burger-mid" d="M3 11h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-        <path class="burger-bot" d="M3 16h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-      </svg>
-    </button>
-    <ul class="nav-links" id="navLinks">
-      <li class="nav-item--work">
-        <button class="nav-link nav-btn-work" type="button" data-page="work" aria-haspopup="true" aria-expanded="false">UX/UI<span class="nav-underline"></span></button>
-        <div class="nav-dropdown" role="menu">
-          <a href="tersus.html" class="nav-dropdown-item" role="menuitem"><span class="nav-dropdown-num">01</span>Tersus</a>
-          <a href="cure-quick-quote.html" class="nav-dropdown-item" role="menuitem"><span class="nav-dropdown-num">02</span>Quick Quote</a>
-          <a href="cure-scan-license.html" class="nav-dropdown-item" role="menuitem"><span class="nav-dropdown-num">03</span>Scan to Insure</a>
-          <a href="cure-my-account.html" class="nav-dropdown-item" role="menuitem"><span class="nav-dropdown-num">04</span>My Account</a>
+  <header class="site-header" id="site-header">
+    <nav class="glass-nav" aria-label="Primary navigation">
+      <a class="nav-logo" href="index.html" aria-label="Andy Nguyen home">AN</a>
+      <button class="nav-toggle" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="nav-links"><span></span><span></span></button>
+      <div class="nav-links" id="nav-links">
+        <div class="nav-item--work">
+          <button class="nav-link nav-btn-work" type="button" data-page="work" aria-haspopup="true" aria-expanded="false">UX/UI</button>
+          <div class="nav-dropdown" role="menu">
+            <a href="tersus.html" class="nav-dropdown-item" role="menuitem"><span class="nav-dropdown-num">01</span>Tersus</a>
+            <a href="cure-quick-quote.html" class="nav-dropdown-item" role="menuitem"><span class="nav-dropdown-num">02</span>Quick Quote</a>
+            <a href="cure-scan-license.html" class="nav-dropdown-item" role="menuitem"><span class="nav-dropdown-num">03</span>Scan to Insure</a>
+            <a href="cure-my-account.html" class="nav-dropdown-item" role="menuitem"><span class="nav-dropdown-num">04</span>My Account</a>
+          </div>
         </div>
-      </li>
-      <li><a href="graphic-design.html" class="nav-link" data-page="graphic-design">Graphic Design<span class="nav-underline"></span></a></li>
-      <li><a href="playground.html" class="nav-link" data-page="playground">Playground<span class="nav-underline"></span></a></li>
-      <li><a href="index.html#contact" class="nav-link" data-page="contact">Contact<span class="nav-underline"></span></a></li>
-    </ul>
-    <a href="mailto:nguyenlandy@gmail.com" class="nav-connect">Let's connect<span class="nav-connect-dot" aria-hidden="true"></span></a>
-  </nav>
-  <div class="nav-rule"></div>
+        <a href="graphic-design.html" class="nav-link" data-page="graphic-design">Graphic Design</a>
+        <a href="playground.html" class="nav-link" data-page="playground">Playground</a>
+        <a href="index.html#contact" class="nav-link" data-page="contact">Contact</a>
+      </div>
+    </nav>
+  </header>
 
 <main>
 
@@ -1366,8 +1354,8 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 
 </main>
 
-<script src="scripts.js"></script>
-<script src="nav.js?v=site-nav-1"></script>
+<script src="scripts.js?v=glass-nav-2"></script>
+<script src="nav.js?v=glass-nav-3"></script>
 <script>
 (function () {
   // ── Phone Fan Carousel ──────────────────────────────────
@@ -1455,12 +1443,6 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   }, { rootMargin: '-25% 0px -60% 0px', threshold: [0, 0.2, 0.6] });
   sections.forEach(s => io.observe(s));
   if (sections[0]) setActive(sections[0].id);
-
-  // Nav border on scroll
-  const nav = document.getElementById('topNav');
-  const onScroll = () => nav.classList.toggle('scrolled', window.scrollY > 8);
-  window.addEventListener('scroll', onScroll, { passive: true });
-  onScroll();
 
   // Reveal on scroll
   const reveal = new IntersectionObserver((entries) => {

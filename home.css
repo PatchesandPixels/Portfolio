@@ -985,9 +985,10 @@ html.js .hero.is-in .patch { opacity: 1; translate: 0 0; scale: 1; }
     width: clamp(250px, 55vw, 360px);
     max-width: none;
     margin-left: clamp(85px, 27vw, 230px);
-    /* Track the open center of the mobile garden as the artwork scales;
-       nudged ~30px lower so the copy clears the top stones. */
-    padding: clamp(102px, calc(20vw + 30px), 210px) 0 0;
+    /* Track the open center of the mobile garden as the artwork scales.
+       Steeper vw slope: phones sit ~50px higher (the floating glass nav
+       freed the top), while tablet widths keep clearing the top stones. */
+    padding: clamp(56px, calc(26vw - 48px), 200px) 0 0;
     transform: none;
   }
   /* the display name must wrap and scale below tablet — nowrap at the

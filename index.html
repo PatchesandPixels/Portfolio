@@ -12,7 +12,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Andy Nguyen — UX/UI &amp; Product Designer · Pixels and Patches</title>
-  <meta name="description" content="Andy Nguyen is a UX/UI and product designer with 3 years of experience turning complex product problems into clear, intuitive experiences. Case studies: Tersus, CURE Quick Quote, Scan to Insure, My Account Portal.">
+  <meta name="description" content="Andy Nguyen is a UX/UI and product designer turning complex product problems into clear, intuitive experiences. Case studies: Tersus, CURE Quick Quote, Scan to Insure, My Account Portal.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Andy Nguyen — UX/UI & Product Designer">
+  <meta property="og:description" content="UX/UI designer exploring the space between product design and engineering — case studies in insurtech, marketplaces, and interactive craft.">
+  <meta property="og:image" content="https://pixelsandpatches.com/assets/og-image.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:url" content="https://pixelsandpatches.com/">
+  <meta name="twitter:card" content="summary_large_image">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Inter:wght@400;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
@@ -249,11 +257,32 @@
 
         <!-- ═══ ABOUT / CAPABILITIES ═══ -->
         <section class="home-section" id="about" aria-labelledby="about-title">
-          <div class="about-grid">
+          <div class="about-intro reveal">
+            <p class="kicker" id="about-title">WELCOME TO THE GARDEN</p>
+            <p class="about-lede">The first time I walked through the Portland Japanese Garden, I understood that nothing in it is decoration — <em>every element is chosen to mean something</em>. A garden like that compresses nature, time, and states of mind into a space you can stroll through. I try to design the same way. This site is built on three of its ideas.</p>
+          </div>
+
+          <div class="garden-notes">
+            <article class="garden-note reveal" style="--reveal-delay:0ms;">
+              <p class="garden-note-jp" aria-hidden="true">枯山水</p>
+              <h3 class="garden-note-title">The dry garden <span>craft</span></h3>
+              <p class="garden-note-body">Raked sand and standing stones — oceans and mountains without a drop of water. The stones are permanence; the raked lines are redrawn constantly, like thought itself; and the empty space between them, <em>ma</em>, matters as much as the objects. That's how I work: disciplined iteration, and the restraint to let clarity breathe.</p>
+            </article>
+            <article class="garden-note reveal" style="--reveal-delay:120ms;">
+              <p class="garden-note-jp" aria-hidden="true">鯉</p>
+              <h3 class="garden-note-title">The koi pond <span>outcomes</span></h3>
+              <p class="garden-note-body">Where the dry garden is stillness, the pond is the living counterpart. In the old story, a carp swims up a waterfall and becomes a dragon — koi stand for perseverance and transformation through effort. It's the part of the garden where change and delight are allowed to happen, and it's how I judge my work: by what it changes, not just how it looks.</p>
+            </article>
+            <article class="garden-note reveal" style="--reveal-delay:240ms;">
+              <p class="garden-note-jp" aria-hidden="true">一期一会</p>
+              <h3 class="garden-note-title">The tea ceremony <span>presence</span></h3>
+              <p class="garden-note-body">The tea ceremony is built on one idea: total, unhurried attention to the person in front of you — <em>ichigo ichie</em>, "one time, one meeting." It's the posture I bring to research sessions and to teams. This user, this problem, this moment won't come around again, so it deserves complete presence.</p>
+            </article>
+          </div>
+
+          <div class="about-grid about-close">
             <div class="reveal">
-              <p class="kicker" id="about-title">ABOUT ANDY</p>
-              <p class="about-lede">A product designer partnering with founders and cross-functional teams to <em>ship real products</em>.</p>
-              <p class="body-text">My approach blends research, clarity, and craft to design experiences that are useful, usable, and a little delightful.</p>
+              <p class="body-text">In practice that looks like: partnering with founders and cross-functional teams, testing early and often, and sweating the details until products feel effortless.</p>
               <ul class="capability-patches">
                 <li>Research</li>
                 <li>UX Strategy</li>
@@ -272,6 +301,7 @@
 
         <!-- ═══ CONTACT ═══ -->
         <section class="home-section contact-section" id="contact" aria-labelledby="contact-title">
+          <p class="contact-kicker reveal"><span aria-hidden="true">一期一会</span> · ONE TIME, ONE MEETING</p>
           <h2 class="contact-title reveal" id="contact-title">Have a complicated product problem?<br><em>Let's make it feel simple.</em></h2>
           <p class="contact-sub reveal" style="--reveal-delay:80ms;">I'm always open to new opportunities and interesting problems. Whether you have a project in mind or just want to say hello, I'd love to hear from you.</p>
           <div class="contact-actions reveal" style="--reveal-delay:160ms;">
@@ -308,8 +338,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.ripples/0.5.3/jquery.ripples.min.js"></script>
   <script src="ponddecor.js?v=no-ground-1"></script>
-  <script src="pondripples.js?v=koi-figma-2"></script>
+  <script src="pondripples.js?v=koi-wake-1"></script>
   <script src="pondwaves.js?v=koi-figma-2"></script>
-  <script src="koipond.js?v=food-pellet-1"></script>
+  <script src="koipond.js?v=koi-wake-1"></script>
 </body>
 </html>

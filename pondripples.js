@@ -30,7 +30,9 @@
 
   var BG_SRC = 'assets/koi-pond/pond/pond-base.png';
   var STYLE = {
-    koiRadius: 0.18,
+    koiRadius: 0.18,             /* refraction kept subtle — the visible
+                                    surface wake is the canvas rings in
+                                    koipond.js (spawnRipple wake mode) */
     koiMaxRadius: 13,
     koiStrengthBase: 0.0038,
     koiStrengthSpeed: 0.0044,

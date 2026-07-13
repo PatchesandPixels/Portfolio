@@ -823,6 +823,64 @@ html.js .hero.is-in .patch { opacity: 1; translate: 0 0; scale: 1; }
 .gallery-more:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-4px); }
 
 /* ─── ABOUT / CAPABILITIES ───────────────────────────────────── */
+/* intro lede spans the section, garden notes sit beneath it */
+.about-intro { max-width: 52em; }
+
+/* ── garden notes: the three ideas the site is built on ── */
+.garden-notes {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(16px, 2.2vw, 28px);
+  margin: clamp(36px, 5vh, 56px) 0 clamp(44px, 6vh, 72px);
+}
+.garden-note {
+  position: relative;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 26px 26px 28px;
+  transition: transform var(--dur-med) var(--ease-spring),
+              border-color var(--dur-med) var(--ease-out);
+}
+.garden-note:hover {
+  transform: translateY(-4px);
+  border-color: var(--accent);
+}
+.garden-note-jp {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--accent);
+  opacity: 0.85;
+  margin: 0 0 14px;
+}
+.garden-note-title {
+  font-family: var(--font-display);
+  font-variation-settings: var(--font-variation);
+  font-weight: 520;
+  font-size: 1.22rem;
+  letter-spacing: -0.01em;
+  margin: 0 0 10px;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+.garden-note-title span {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.garden-note-body {
+  font-size: 0.94rem;
+  line-height: 1.6;
+  color: var(--text-body);
+  margin: 0;
+}
+.garden-note-body em { font-style: italic; color: var(--accent); }
+
 .about-grid {
   display: grid;
   grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
@@ -870,6 +928,15 @@ html.js .hero.is-in .patch { opacity: 1; translate: 0 0; scale: 1; }
 
 /* ─── CONTACT ────────────────────────────────────────────────── */
 .contact-section { text-align: center; }
+
+.contact-kicker {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  color: var(--text-muted);
+  margin-bottom: 1.6em;
+}
+.contact-kicker span { color: var(--accent); letter-spacing: 0.04em; }
 
 .contact-title {
   font-family: var(--font-display);
@@ -967,6 +1034,7 @@ html.js .hero.is-in .patch { opacity: 1; translate: 0 0; scale: 1; }
     font-size: 0.98rem;
   }
   .about-grid { grid-template-columns: 1fr; }
+  .garden-notes { grid-template-columns: 1fr; }
   .gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 

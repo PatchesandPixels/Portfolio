@@ -265,3 +265,17 @@
 .sc-close:hover {
   background: rgba(0,0,0,0.8);
 }
+
+/* ── site brandmark in the project topbar (consistent with the main nav) ── */
+.topbar-left { display: flex; align-items: center; gap: 18px; }
+.topbar-monogram {
+  width: 34px; height: 34px; flex-shrink: 0;
+  display: grid; place-items: center;
+  border: 1.5px solid #1a1612; border-radius: 50%;
+  font-family: 'Fraunces', 'Times New Roman', serif;
+  font-variation-settings: 'opsz' 144, 'SOFT' 0;
+  font-weight: 560; font-size: 0.72rem; letter-spacing: 0.01em;
+  color: #1a1612; text-decoration: none;
+  transition: background 160ms ease, color 160ms ease;
+}
+.topbar-monogram:hover { background: #1a1612; color: #fcf7f4; }

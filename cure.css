@@ -297,3 +297,45 @@
   box-shadow: 0 4px 24px rgba(0,0,0,0.08);
 }
 
+
+/* ── site brandmark in the project topbar (consistent with the main nav) ── */
+.topbar-left { display: flex; align-items: center; gap: 18px; }
+.topbar-monogram {
+  width: 34px; height: 34px; flex-shrink: 0;
+  display: grid; place-items: center;
+  border: 1.5px solid #1a1612; border-radius: 50%;
+  font-family: 'Fraunces', 'Times New Roman', serif;
+  font-variation-settings: 'opsz' 144, 'SOFT' 0;
+  font-weight: 560; font-size: 0.72rem; letter-spacing: 0.01em;
+  color: #1a1612; text-decoration: none;
+  transition: background 160ms ease, color 160ms ease;
+}
+.topbar-monogram:hover { background: #1a1612; color: #fcf7f4; }
+
+/* ── project brief strip: the thinking behind the work ── */
+.brief-strip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+  background: #fff;
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 12px;
+  padding: 24px 28px;
+}
+.brief-strip-item h4 {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: rgba(0,0,0,0.4);
+  margin: 0 0 8px;
+  font-weight: 400;
+}
+.brief-strip-item p {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  line-height: 1.65;
+  color: rgba(0,0,0,0.62);
+  margin: 0;
+}
+@media (max-width: 760px) { .brief-strip { grid-template-columns: 1fr; } }

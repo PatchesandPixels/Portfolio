@@ -235,6 +235,23 @@
     });
     wakeRipples();
   }
+  /* small, faint SURFACE ring trailing a swimming koi — this is what
+     makes the top of the water read as disturbed (the WebGL layer only
+     refracts the pond floor beneath) */
+  function spawnKoiWake(x, y) {
+    if (!rippleCtx) return;
+    ripples.push({
+      id: nextRippleId++,
+      x: x,
+      y: y,
+      startedAt: performance.now(),
+      duration: 1050,
+      seed: Math.random() * 1000,
+      foodDrop: false,
+      wake: true
+    });
+    wakeRipples();
+  }
   function wakeRipples() {
     if (rippleRaf === null && rippleCtx) rippleRaf = requestAnimationFrame(drawRipples);
   }
@@ -261,8 +278,9 @@
     var t = Math.min(age / ripple.duration, 1);
     var travel = 1 - Math.pow(1 - t, 2.6);
     var fade = Math.pow(1 - t, 1.55);
-    var maxRadius = fishH * (ripple.foodDrop ? 1.08 : 0.68);
-    var headRadius = 7 + travel * maxRadius;
+    if (ripple.wake) fade *= 0.6;            // koi wakes stay a whisper
+    var maxRadius = fishH * (ripple.foodDrop ? 1.08 : ripple.wake ? 0.42 : 0.68);
+    var headRadius = (ripple.wake ? 4 : 7) + travel * maxRadius;
     var ellipseYScale = 0.46;
 
     if (ripple.foodDrop) drawFoodPixels(ctx, ripple.x, ripple.y, fade);
@@ -351,7 +369,7 @@
       var f = fish[i];
       var speedN = clamp(f.speed / 1.25, 0, 1);
       var depthT = clamp(0.35 + ((2 - f.depthVisual) / 2) * 0.65, 0.35, 1);
-      var alphaBase = speedN * (0.42 - depthT * 0.18);
+      var alphaBase = speedN * (0.42 - depthT * 0.18);   /* subtle — surface wake rings carry visibility */
       if (alphaBase < 0.035) continue;
       var a = f.visualAngle;
       var sideX = -Math.sin(a), sideY = Math.cos(a);
@@ -511,7 +529,7 @@
         f.orbit.life -= dt; if (f.orbit.life <= 0) f.orbit = newOrbit();
         f.orbit.ang += f.orbit.dir * 0.012 * dtf;
         var rr = Math.min(e.rx, e.ry) * f.orbit.r, op = { x: f.orbit.cx + Math.cos(f.orbit.ang) * rr, y: f.orbit.cy + Math.sin(f.orbit.ang) * rr * 0.72 };
-        clampWater(op, lenF * 0.12); tx = op.x; ty = op.y; maxRate = idleRate; targetSpeed = idleSpeed;
+        clampWater(op, lenF * 0.34); tx = op.x; ty = op.y; maxRate = idleRate; targetSpeed = idleSpeed;
       }
 
       f.dartT -= dt; if (f.dartT <= 0 && !reduce && f.restRemaining <= 0) { f.dart = 0.45; f.dartT = 5 + Math.random() * 6; }
@@ -524,7 +542,7 @@
       // rate-clamped turn: cap the per-frame heading change, don't lerp
       var diff = angleDiff(f.angle, desired);
       if (!hasFoodTarget && edge <= 0.94 && Math.abs(diff) > IDLE_MAX_TARGET_DIFF) {
-        var ahead = forwardWaterTarget(f, e, lenF * 0.12);
+        var ahead = forwardWaterTarget(f, e, lenF * 0.34);
         tx = ahead.x; ty = ahead.y;
         desired = Math.atan2(ty - f.y, tx - f.x);
         diff = angleDiff(f.angle, desired);
@@ -541,7 +559,7 @@
           f.idleTurnDir = turnDir;
         }
         if (turnDir && f.idleTurnArc + Math.abs(step) > IDLE_MAX_TURN_ARC) {
-          var smallTurn = forwardWaterTarget(f, e, lenF * 0.12);
+          var smallTurn = forwardWaterTarget(f, e, lenF * 0.34);
           desired = Math.atan2(smallTurn.y - f.y, smallTurn.x - f.x);
           diff = angleDiff(f.angle, desired);
           step = clamp(diff, -cap, cap);
@@ -560,7 +578,10 @@
 
       // light separation only prevents exact stacking; depth sorting handles normal overlaps
       for (var j = 0; j < fish.length; j++) { if (j === k) continue; var o = fish[j]; var dx = f.x - o.x, dy = f.y - o.y, dd = Math.hypot(dx, dy), minD = (fishW * f.sizeMul + fishW * o.sizeMul) * 0.32; if (dd > 0.001 && dd < minD) { var pp = (minD - dd) * 0.22 * dtf; f.x += dx / dd * pp; f.y += dy / dd * pp; } }
-      clampWater(f, lenF * 0.1);
+      // pad = 0.34 body lengths: the rig's tail trails ~0.7 lengths behind
+      // the pivot, so a small pad let bodies sweep over the rim rocks
+      // (worst at the lantern corner, where the rocks bite into the ellipse)
+      clampWater(f, lenF * 0.34);
       f.phase += (0.1 + f.speed * 0.14) * dtf;
 
       // Koi wakes use a capped shared ripple profile so fast fish do not
@@ -574,6 +595,16 @@
           if (window.PondRipples.dropKoi) window.PondRipples.dropKoi(f.x, f.y, fishH, sn2);
           else window.PondRipples.drop(f.x, f.y, fishH * 0.2, 0.005 + sn2 * 0.007);
           f.lastDropX = f.x; f.lastDropY = f.y;
+          // surface wake: a faint expanding ring behind the fish every
+          // ~1.7 body lengths of travel (skipped when barely drifting)
+          if (!reduce && f.speed > 0.28) {
+            f.wakeAcc = (f.wakeAcc || 0) + Math.sqrt(mdx * mdx + mdy * mdy);
+            if (f.wakeAcc > fishH * 1.7) {
+              f.wakeAcc = 0;
+              spawnKoiWake(f.x - Math.cos(f.angle) * fishH * 0.35,
+                           f.y - Math.sin(f.angle) * fishH * 0.35);
+            }
+          }
         }
       }
     }
@@ -649,10 +680,29 @@
   function frame(t) { var dtf = last ? Math.min(3, (t - last) / 16.67) : 1; last = t; update(dtf); render(dtf); var active = !reduce || food.length; raf = active ? requestAnimationFrame(frame) : (last = 0, null); }
   function wake() { if (raf === null) { last = 0; raf = requestAnimationFrame(frame); } }
 
-  /* ── boot ── */
-  buildFish();
-  render(1);
-  if (!reduce) wake();
+  /* ── boot ──
+     If the page loads while hidden or pre-rendered (Chrome prerender,
+     background tabs), the pond can measure 0×0 — which would seed every
+     fish at the origin with zero size. Wait for real dimensions before
+     building. ResizeObserver (not setTimeout polling) because hidden
+     pages throttle timers, but RO fires as soon as layout sizes the box. */
+  (function boot() {
+    var built = false;
+    function tryBuild() {
+      if (built) return;
+      resize();
+      if (!W || !H) return;
+      built = true;
+      if (ro) ro.disconnect();
+      buildFish();
+      render(1);
+      if (!reduce) wake();
+    }
+    var ro = window.ResizeObserver ? new ResizeObserver(tryBuild) : null;
+    if (ro) ro.observe(pond);
+    tryBuild();                                   // normal visible load: build now
+    if (!built && !ro) setTimeout(tryBuild, 400); // ancient-browser fallback
+  })();
 
   var bgEl = pond.querySelector('.koi-bg');
   if (bgEl) bgEl.src = 'assets/koi-pond/pond/pond-base.png';

@@ -145,19 +145,12 @@
     var lastKoiReflection = 0;
     function scheduleReflections(kind, x, y, radius, strength) {
       if (kind === 'reflection' || strength < 0.0032) return;
+      // Koi wakes damp out locally — no reflected echoes bouncing off the
+      // rim and reverberating around the pond. (Feeding/generic drops
+      // still throw a rim echo, since that's a deliberate one-shot.)
+      if (kind === 'koi') return;
 
       var e = waterEllipse();
-      var nx = (x - e.cx) / e.rx, ny = (y - e.cy) / e.ry;
-      var depth = Math.sqrt(nx * nx + ny * ny);
-      var now = Date.now();
-
-      // Koi wake drops happen often, so only reflect the ones already
-      // traveling near the rim and throttle them into soft occasional echoes.
-      if (kind === 'koi') {
-        if (depth < 0.58 || now - lastKoiReflection < REFLECT.koiCooldown) return;
-        lastKoiReflection = now;
-      }
-
       var angles = reflectionAngles(kind, x, y, e);
       var strengthMul = REFLECT.strength[kind] || REFLECT.strength.generic;
       var radiusMul = REFLECT.radius[kind] || REFLECT.radius.generic;

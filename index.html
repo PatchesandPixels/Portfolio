@@ -26,9 +26,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Inter:wght@400;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css?v=review-fixes-2">
   <link rel="stylesheet" href="nav.css?v=glass-nav-3">
-  <link rel="stylesheet" href="home.css?v=mobile-copy-up-1">
+  <link rel="stylesheet" href="home.css?v=tea-ritual-2">
   <link rel="stylesheet" href="hero.css?v=site-nav-1">
-  <link rel="stylesheet" href="koipond.css?v=hero-sand-5">
+  <link rel="stylesheet" href="koipond.css?v=koi-ripple-1">
 </head>
 <body>
   <!-- Background layers: canvas grid (JS) + static fallback + grain -->
@@ -298,13 +298,39 @@
 
         <!-- ═══ CONTACT ═══ -->
         <section class="home-section contact-section" id="contact" aria-labelledby="contact-title">
-          <p class="contact-kicker reveal"><span aria-hidden="true">一期一会</span> · ONE TIME, ONE MEETING</p>
-          <h2 class="contact-title reveal" id="contact-title">Have a complicated product problem?<br><em>Let's make it feel simple.</em></h2>
-          <p class="contact-sub reveal" style="--reveal-delay:80ms;">I'm always open to new opportunities and interesting problems. Whether you have a project in mind or just want to say hello, I'd love to hear from you.</p>
-          <div class="contact-actions reveal" style="--reveal-delay:160ms;">
-            <a href="mailto:nguyenlandy@gmail.com" class="btn-patch">nguyenlandy@gmail.com</a>
-            <a href="https://www.linkedin.com/in/andylounguyen" target="_blank" rel="noopener" class="btn-ghost">LinkedIn ↗</a>
-            <a href="assets/andy-nguyen-resume.pdf" target="_blank" rel="noopener" class="btn-ghost">Resume ↗</a>
+          <p class="contact-kicker reveal"><span aria-hidden="true">一期一会</span> · /contact</p>
+          <h2 class="contact-title reveal" id="contact-title">A final pause before we connect.</h2>
+          <p class="contact-sub reveal" id="contact-hold-instructions" style="--reveal-delay:80ms;">One moment, one meeting. Hold gently to pour.</p>
+
+          <div class="hold-reveal reveal" data-state="idle" style="--reveal-delay:160ms; --reveal-progress:0;">
+            <div class="hold-reveal__fill" aria-hidden="true"></div>
+            <div class="hold-reveal__pour-front" aria-hidden="true"></div>
+
+            <button
+              class="hold-reveal__control"
+              type="button"
+              aria-label="Press and hold to pour tea and reveal Andy Nguyen's email address"
+              aria-describedby="contact-hold-instructions"
+            >
+              <span class="hold-reveal__tea-icon" aria-hidden="true">
+                <span class="hold-reveal__steam hold-reveal__steam--one"></span>
+                <span class="hold-reveal__steam hold-reveal__steam--two"></span>
+                <span class="hold-reveal__tea-bowl"></span>
+              </span>
+              <span class="hold-reveal__check-icon" aria-hidden="true">✓</span>
+            </button>
+
+            <p class="hold-reveal__idle-content"><span>Press and hold</span> to pour the tea</p>
+
+            <div class="hold-reveal__completed-content" aria-hidden="true">
+              <a class="hold-reveal__email" href="mailto:nguyenlandy@gmail.com">nguyenlandy@gmail.com</a>
+              <div class="hold-reveal__actions">
+                <button class="hold-reveal__action hold-reveal__copy" type="button">Copy</button>
+                <a class="hold-reveal__action" href="mailto:nguyenlandy@gmail.com">Send <span aria-hidden="true">↗</span></a>
+              </div>
+            </div>
+
+            <div class="hold-reveal__status sr-only" aria-live="polite" aria-atomic="true"></div>
           </div>
         </section>
 
@@ -326,6 +352,7 @@
   </div>
 
   <script src="scripts.js?v=glass-nav-2"></script>
+  <script src="hold-reveal.js?v=tea-ritual-2"></script>
   <script src="nav.js?v=glass-nav-3"></script>
   <script src="home.js?v=grid-reveal-1"></script>
   <!-- jquery.ripples: WebGL water refraction on the pond background.
@@ -335,8 +362,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.ripples/0.5.3/jquery.ripples.min.js"></script>
   <script src="ponddecor.js?v=no-ground-1"></script>
-  <script src="pondripples.js?v=koi-wake-1"></script>
+  <script src="pondripples.js?v=koi-ripple-2"></script>
   <script src="pondwaves.js?v=koi-figma-2"></script>
-  <script src="koipond.js?v=koi-wake-1"></script>
+  <script src="koipond.js?v=koi-ripple-2"></script>
 </body>
 </html>

@@ -235,23 +235,24 @@
     });
     wakeRipples();
   }
-  /* small, faint SURFACE ring trailing a swimming koi — this is what
-     makes the top of the water read as disturbed (the WebGL layer only
-     refracts the pond floor beneath) */
-  function spawnKoiWake(x, y) {
-    if (!rippleCtx) return;
+  /* A single, very faint ring that a swimming koi drops as it disturbs
+     the surface — it then TRAVELS outward (expands + fades) on the
+     ripple-layer, which sits above the water tint. Deliberately tiny. */
+  function spawnKoiRipple(x, y) {
+    if (!rippleCtx || reduce) return;
     ripples.push({
       id: nextRippleId++,
       x: x,
       y: y,
       startedAt: performance.now(),
-      duration: 1050,
+      duration: 1050,          // short: expands once, then dies out fast
       seed: Math.random() * 1000,
       foodDrop: false,
-      wake: true
+      koi: true
     });
     wakeRipples();
   }
+  /* (unused) */
   function wakeRipples() {
     if (rippleRaf === null && rippleCtx) rippleRaf = requestAnimationFrame(drawRipples);
   }
@@ -278,26 +279,25 @@
     var t = Math.min(age / ripple.duration, 1);
     var travel = 1 - Math.pow(1 - t, 2.6);
     var fade = Math.pow(1 - t, 1.55);
-    if (ripple.wake) fade *= 0.6;            // koi wakes stay a whisper
-    var maxRadius = fishH * (ripple.foodDrop ? 1.08 : ripple.wake ? 0.42 : 0.68);
-    var headRadius = (ripple.wake ? 4 : 7) + travel * maxRadius;
+    var maxRadius = fishH * (ripple.foodDrop ? 1.08 : ripple.koi ? 0.52 : 0.68);
+    var headRadius = (ripple.koi ? 3 : 7) + travel * maxRadius;
     var ellipseYScale = 0.46;
 
     if (ripple.foodDrop) drawFoodPixels(ctx, ripple.x, ripple.y, fade);
-    var ringCount = ripple.foodDrop ? 3 : 2;
+    var ringCount = ripple.foodDrop ? 3 : ripple.koi ? 2 : 2;
     for (var i = 0; i < ringCount; i++) {
       var spacing = fishH * 0.18;
       var radius = headRadius - i * spacing;
       if (radius < 5) continue;
       var ringAge = Math.max(0, Math.min(1, radius / Math.max(maxRadius, 1)));
       var innerFade = Math.pow(Math.max(0, 1 - i * 0.16), 1.2);
-      var opacity = fade * innerFade * (ripple.foodDrop ? 0.34 : 0.24);
+      var opacity = fade * innerFade * (ripple.foodDrop ? 0.34 : ripple.koi ? 0.26 : 0.24);
       if (ringAge > 0.72) opacity *= Math.max(0, (1 - ringAge) / 0.28);
       if (i === 0) opacity *= Math.max(0, (1 - t) / 0.62);
       drawSoftEllipseRing(ctx, ripple.x, ripple.y, radius, radius * ellipseYScale, opacity * 0.42, i);
       drawBrokenEllipseRing(ctx, ripple.x, ripple.y, radius, radius * ellipseYScale, opacity, ripple.seed + i * 17, i);
     }
-    drawTinyHighlights(ctx, ripple.x, ripple.y, headRadius, fade, ripple.seed);
+    if (!ripple.koi) drawTinyHighlights(ctx, ripple.x, ripple.y, headRadius, fade, ripple.seed);
   }
   function drawSoftEllipseRing(ctx, x, y, rx, ry, opacity, ringIndex) {
     ctx.save();
@@ -358,52 +358,6 @@
       ctx.fillRect(px, py, 2, 2);
     }
     ctx.restore();
-  }
-  function drawKoiDisturbance(now) {
-    if (!disturbanceCtx) return;
-    disturbanceCtx.clearRect(0, 0, W, H);
-    if (reduce) return;
-    disturbanceCtx.save();
-    clipWater(disturbanceCtx);
-    for (var i = 0; i < fish.length; i++) {
-      var f = fish[i];
-      var speedN = clamp(f.speed / 1.25, 0, 1);
-      var depthT = clamp(0.35 + ((2 - f.depthVisual) / 2) * 0.65, 0.35, 1);
-      var alphaBase = speedN * (0.42 - depthT * 0.18);   /* subtle — surface wake rings carry visibility */
-      if (alphaBase < 0.035) continue;
-      var a = f.visualAngle;
-      var sideX = -Math.sin(a), sideY = Math.cos(a);
-      var backX = -Math.cos(a), backY = -Math.sin(a);
-      var seed = f.id * 71 + Math.floor(now / 180);
-      disturbanceCtx.save();
-      disturbanceCtx.lineCap = 'round';
-      for (var p = 0; p < 6; p++) {
-        var side = p % 2 ? -1 : 1;
-        var along = fishH * (-0.22 + pseudoRandom(seed + p * 17) * 0.5);
-        var out = fishW * (0.34 + pseudoRandom(seed + p * 29) * 0.34);
-        var jitter = (pseudoRandom(seed + p * 41) - 0.5) * fishH * 0.08;
-        var x = f.x + backX * along + sideX * out * side + backX * jitter;
-        var y = f.y + backY * along + sideY * out * side + backY * jitter;
-        var len = 2 + pseudoRandom(seed + p * 53) * 6;
-        var opacity = alphaBase * (0.045 + pseudoRandom(seed + p * 67) * 0.045);
-        disturbanceCtx.strokeStyle = 'rgba(176, 236, 224,' + opacity.toFixed(3) + ')';
-        disturbanceCtx.lineWidth = p % 3 === 0 ? 1.2 : 1;
-        disturbanceCtx.beginPath();
-        disturbanceCtx.moveTo(Math.round(x), Math.round(y));
-        disturbanceCtx.lineTo(Math.round(x + backX * len + sideX * side * 1.5), Math.round(y + backY * len + sideY * side * 1.5));
-        disturbanceCtx.stroke();
-      }
-      if (alphaBase > 0.16) {
-        disturbanceCtx.fillStyle = 'rgba(205, 247, 232,' + (alphaBase * 0.07).toFixed(3) + ')';
-        for (var q = 0; q < 3; q++) {
-          var px = f.x + backX * fishH * (0.08 + q * 0.11) + sideX * (pseudoRandom(seed + q * 83) - 0.5) * fishW;
-          var py = f.y + backY * fishH * (0.08 + q * 0.11) + sideY * (pseudoRandom(seed + q * 97) - 0.5) * fishW;
-          disturbanceCtx.fillRect(Math.round(px), Math.round(py), 2, 2);
-        }
-      }
-      disturbanceCtx.restore();
-    }
-    disturbanceCtx.restore();
   }
   function pseudoRandom(n) {
     var x = Math.sin(n) * 10000;
@@ -584,8 +538,8 @@
       clampWater(f, lenF * 0.34);
       f.phase += (0.1 + f.speed * 0.14) * dtf;
 
-      // Koi wakes use a capped shared ripple profile so fast fish do not
-      // throw oversized waves across the pond.
+      // Koi drop a capped refraction ripple into the WebGL water as they
+      // swim (this bends the pond floor beneath — kept subtle).
       if (window.PondRipples) {
         var mdx = f.x - (f.lastDropX === undefined ? f.x : f.lastDropX);
         var mdy = f.y - (f.lastDropY === undefined ? f.y : f.lastDropY);
@@ -595,16 +549,17 @@
           if (window.PondRipples.dropKoi) window.PondRipples.dropKoi(f.x, f.y, fishH, sn2);
           else window.PondRipples.drop(f.x, f.y, fishH * 0.2, 0.005 + sn2 * 0.007);
           f.lastDropX = f.x; f.lastDropY = f.y;
-          // surface wake: a faint expanding ring behind the fish every
-          // ~1.7 body lengths of travel (skipped when barely drifting)
-          if (!reduce && f.speed > 0.28) {
-            f.wakeAcc = (f.wakeAcc || 0) + Math.sqrt(mdx * mdx + mdy * mdy);
-            if (f.wakeAcc > fishH * 1.7) {
-              f.wakeAcc = 0;
-              spawnKoiWake(f.x - Math.cos(f.angle) * fishH * 0.35,
-                           f.y - Math.sin(f.angle) * fishH * 0.35);
-            }
-          }
+        }
+      }
+
+      // SURFACE ripple: every ~1.7 body-lengths of travel the koi drops a
+      // single faint ring that then travels outward across the surface.
+      // Rare + tiny so it reads as "very little."
+      if (f.speed > 0.24) {
+        f.ripAcc = (f.ripAcc || 0) + f.speed * dtf;
+        if (f.ripAcc > fishH * 1.7) {
+          f.ripAcc = 0;
+          spawnKoiRipple(f.x, f.y);
         }
       }
     }
@@ -674,7 +629,6 @@
       return la === lb ? a.y - b.y : la - lb;
     }).forEach(function (f, idx) { f.el.style.zIndex = idx; });
     for (var k = 0; k < fish.length; k++) placeFish(fish[k], dtf || 1);
-    drawKoiDisturbance(performance.now());
   }
 
   function frame(t) { var dtf = last ? Math.min(3, (t - last) / 16.67) : 1; last = t; update(dtf); render(dtf); var active = !reduce || food.length; raf = active ? requestAnimationFrame(frame) : (last = 0, null); }

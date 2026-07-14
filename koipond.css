@@ -267,16 +267,11 @@
   clip-path: var(--pond-water-mask);
 }
 
-/* 5a — tiny local disturbances tied to the koi position. Drawn by
-   koipond.js as broken pixels/short soft strokes near moving fish, not
-   long wake trails. */
+/* (reserved, currently unused — the koi's visible surface ripple now
+   travels on .ripple-layer via koipond.js spawnKoiRipple) */
 .koi-disturbance-canvas {
   z-index: 5;
-  opacity: 0.46;
-  image-rendering: pixelated;
-  mix-blend-mode: screen;
-  -webkit-clip-path: var(--pond-water-mask);
-  clip-path: var(--pond-water-mask);
+  opacity: 0;
 }
 
 /* 5c — water tint above the koi: a subtle teal wash that knocks the

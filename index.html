@@ -29,6 +29,7 @@
   <link rel="stylesheet" href="home.css?v=tea-ritual-2">
   <link rel="stylesheet" href="hero.css?v=site-nav-1">
   <link rel="stylesheet" href="koipond.css?v=koi-ripple-1">
+  <link rel="stylesheet" href="about.css?v=about-panel-1">
 </head>
 <body>
   <!-- Background layers: canvas grid (JS) + static fallback + grain -->
@@ -59,10 +60,85 @@
             </div>
             <a href="graphic-design.html" class="nav-link" data-page="graphic-design">Graphic Design</a>
             <a href="playground.html" class="nav-link" data-page="playground">Playground</a>
+            <a href="index.html#about" class="nav-link" data-page="about" data-about-toggle aria-haspopup="dialog" aria-expanded="false">About</a>
             <a href="index.html#contact" class="nav-link" data-page="contact">Contact</a>
           </div>
         </nav>
       </header>
+
+      <!-- ═══ ABOUT pop-down panel (about.css / about.js) ═══ -->
+      <div class="about-overlay" id="about-overlay" role="dialog" aria-modal="true" aria-labelledby="about-name">
+        <div class="about-panel">
+          <button class="about-close-btn" type="button" aria-label="Close about">✕</button>
+
+          <p class="about-eyebrow">About</p>
+          <h2 class="about-name" id="about-name">Andy Nguyen</h2>
+
+          <div class="about-bio">
+            <p>I'm a product and UX/UI designer in Seattle. I studied Digital Technology &amp; Culture at Washington State, and I've spent the years since chasing one feeling: the moment a product stops feeling like <em>software</em> and starts feeling <em>effortless</em>.</p>
+            <p>I build from the ground up, guided by a simple idea — design for people, not personas. The same care goes into a two-sided marketplace, an insurance flow, or a thousand small-business apps: strip away the friction until what's left is obvious.</p>
+            <p>I don't treat product design and graphic design as separate crafts. The eye that structures a booking flow also art-directs a scratchcard or a gaming UI. And yes — all of it is thoroughly cat-approved.</p>
+          </div>
+
+          <p class="about-sec-head">The garden this site is built on</p>
+          <div class="about-garden">
+            <div class="about-garden-note">
+              <p class="about-garden-jp" aria-hidden="true">枯山水</p>
+              <h4>The dry garden <span>craft</span></h4>
+              <p>Raked sand and standing stones. The stones are permanence; the raked lines, redrawn constantly, are thought itself; the empty space between them — <em>ma</em> — matters as much as the objects. Disciplined iteration, and the restraint to let clarity breathe.</p>
+            </div>
+            <div class="about-garden-note">
+              <p class="about-garden-jp" aria-hidden="true">鯉</p>
+              <h4>The koi pond <span>outcomes</span></h4>
+              <p>The living counterpart to the dry garden. In the old story a carp swims up a waterfall and becomes a dragon — perseverance and transformation through effort. I judge my work by what it changes, not just how it looks.</p>
+            </div>
+            <div class="about-garden-note">
+              <p class="about-garden-jp" aria-hidden="true">一期一会</p>
+              <h4>The tea ceremony <span>presence</span></h4>
+              <p>Total, unhurried attention to the person in front of you — <em>ichigo ichie</em>, "one time, one meeting." The posture I bring to research sessions and to teams.</p>
+            </div>
+          </div>
+
+          <p class="about-sec-head">Experience</p>
+          <div class="about-exp-row">
+            <span class="about-exp-date">2023 — Now</span>
+            <div class="about-exp-body">
+              <h4>Pixels and Patches <span>Product Designer · Freelance / Contract</span></h4>
+              <p>End-to-end product &amp; UX/UI design for clients, discovery through final design — web and mobile. Recent work: Tersus and CURE (Quick Quote, Scan to Insure, My Account).</p>
+            </div>
+          </div>
+          <div class="about-exp-row">
+            <span class="about-exp-date">2018 — Now</span>
+            <div class="about-exp-body">
+              <h4>Pushpay <span>Application Design Specialist</span></h4>
+              <p>Designed and helped launch ~1,000 client apps on the App Store — tailored mobile experiences for nonprofits and small businesses at scale.</p>
+            </div>
+          </div>
+          <div class="about-exp-row">
+            <span class="about-exp-date">Education</span>
+            <div class="about-exp-body">
+              <h4>B.A. Digital Technology &amp; Culture <span>Washington State University</span></h4>
+            </div>
+          </div>
+
+          <p class="about-sec-head">What I do</p>
+          <ul class="about-chips">
+            <li>Product Design</li>
+            <li>Design Systems</li>
+            <li>Interaction Design</li>
+            <li>Prototyping</li>
+            <li>User Research</li>
+            <li>Usability Testing</li>
+            <li>Accessibility</li>
+            <li>Visual Design</li>
+          </ul>
+
+          <div class="about-actions">
+            <a class="about-link-primary" href="assets/andy-nguyen-resume.pdf" target="_blank" rel="noopener">View resume ↗</a>
+            <a class="about-link-ghost" href="mailto:nguyenlandy@gmail.com">nguyenlandy@gmail.com</a>
+          </div>
+        </div>
+      </div>
 
       <main class="main-content" id="main">
 
@@ -253,48 +329,6 @@
         </section>
 
         <!-- ═══ ABOUT / CAPABILITIES ═══ -->
-        <section class="home-section" id="about" aria-labelledby="about-title">
-          <div class="about-intro reveal">
-            <p class="kicker" id="about-title">WELCOME TO THE GARDEN</p>
-            <p class="about-lede">The first time I walked through the Portland Japanese Garden, I understood that nothing in it is decoration — <em>every element is chosen to mean something</em>. A garden like that compresses nature, time, and states of mind into a space you can stroll through. I try to design the same way. This site is built on three of its ideas.</p>
-          </div>
-
-          <div class="garden-notes">
-            <article class="garden-note reveal" style="--reveal-delay:0ms;">
-              <p class="garden-note-jp" aria-hidden="true">枯山水</p>
-              <h3 class="garden-note-title">The dry garden <span>craft</span></h3>
-              <p class="garden-note-body">Raked sand and standing stones — oceans and mountains without a drop of water. The stones are permanence; the raked lines are redrawn constantly, like thought itself; and the empty space between them, <em>ma</em>, matters as much as the objects. That's how I work: disciplined iteration, and the restraint to let clarity breathe.</p>
-            </article>
-            <article class="garden-note reveal" style="--reveal-delay:120ms;">
-              <p class="garden-note-jp" aria-hidden="true">鯉</p>
-              <h3 class="garden-note-title">The koi pond <span>outcomes</span></h3>
-              <p class="garden-note-body">Where the dry garden is stillness, the pond is the living counterpart. In the old story, a carp swims up a waterfall and becomes a dragon — koi stand for perseverance and transformation through effort. It's the part of the garden where change and delight are allowed to happen, and it's how I judge my work: by what it changes, not just how it looks.</p>
-            </article>
-            <article class="garden-note reveal" style="--reveal-delay:240ms;">
-              <p class="garden-note-jp" aria-hidden="true">一期一会</p>
-              <h3 class="garden-note-title">The tea ceremony <span>presence</span></h3>
-              <p class="garden-note-body">The tea ceremony is built on one idea: total, unhurried attention to the person in front of you — <em>ichigo ichie</em>, "one time, one meeting." It's the posture I bring to research sessions and to teams. This user, this problem, this moment won't come around again, so it deserves complete presence.</p>
-            </article>
-          </div>
-
-          <div class="about-grid about-close">
-            <div class="reveal">
-              <p class="body-text">In practice that looks like: partnering with founders and cross-functional teams, testing early and often, and sweating the details until products feel effortless.</p>
-              <ul class="capability-patches">
-                <li>Research</li>
-                <li>UX Strategy</li>
-                <li>Interaction Design</li>
-                <li>UI Design</li>
-                <li>Prototyping</li>
-                <li>Visual Craft</li>
-              </ul>
-              <a href="assets/andy-nguyen-resume.pdf" target="_blank" rel="noopener" class="btn-ghost">View resume ↗</a>
-            </div>
-            <div class="about-visual reveal" style="--reveal-delay:120ms;">
-              <img src="assets/about-cat.png" alt="Illustrated cat — Andy's studio assistant" loading="lazy">
-            </div>
-          </div>
-        </section>
 
         <!-- ═══ CONTACT ═══ -->
         <section class="home-section contact-section" id="contact" aria-labelledby="contact-title">
@@ -365,5 +399,6 @@
   <script src="pondripples.js?v=koi-ripple-2"></script>
   <script src="pondwaves.js?v=koi-figma-2"></script>
   <script src="koipond.js?v=koi-ripple-2"></script>
+  <script src="about.js?v=about-panel-2"></script>
 </body>
 </html>

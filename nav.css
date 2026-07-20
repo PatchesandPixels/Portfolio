@@ -32,6 +32,12 @@
   pointer-events: none;
 }
 
+/* Case-study pages: quicker, snappier tuck-away so the reading column
+   takes over without the header lingering. */
+body.case-study .site-header {
+  transition: opacity 200ms ease, transform 240ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 .glass-nav {
   width: min(100%, var(--nav-max-width));
   min-height: 76px;

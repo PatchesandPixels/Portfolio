@@ -84,6 +84,10 @@
   (function hideOnScroll() {
     var lastScrollY = window.scrollY;
     var ticking = false;
+    // Case-study pages tuck the header away sooner so the reading column
+    // takes over faster; the homepage keeps a more forgiving threshold.
+    var isCaseStudy = document.body.classList.contains('case-study');
+    var hideThreshold = isCaseStudy ? 32 : 80;
 
     window.addEventListener('scroll', function () {
       if (ticking) return;
@@ -92,10 +96,12 @@
       window.requestAnimationFrame(function () {
         var currentScrollY = window.scrollY;
 
-        if (currentScrollY > lastScrollY && currentScrollY > 80) {
+        if (currentScrollY > lastScrollY && currentScrollY > hideThreshold) {
           closeMenu();
           header.classList.add('nav--hidden');
-        } else {
+        } else if (currentScrollY < lastScrollY) {
+          // Only an actual upward scroll brings it back, so a timed
+          // auto-hide near the top isn't undone by tiny downward jitter.
           header.classList.remove('nav--hidden');
         }
 
@@ -103,5 +109,25 @@
         ticking = false;
       });
     }, { passive: true });
+
+    if (isCaseStudy) {
+      // Arriving on a case study, tuck the nav away on a short timer — no
+      // scroll required — so the story reads full-bleed. Skipped if the
+      // reader scrolls or opens the menu before it fires.
+      var autoHide = window.setTimeout(function () {
+        if (!navLinks.classList.contains('is-open')) header.classList.add('nav--hidden');
+      }, 1200);
+      var cancelAutoHide = function () { window.clearTimeout(autoHide); };
+      window.addEventListener('scroll', cancelAutoHide, { passive: true, once: true });
+      navToggle.addEventListener('click', cancelAutoHide, { once: true });
+
+      // The timed hide can land at the very top, where scrolling up can't
+      // reveal it — so bring the nav back when the pointer nears the top edge.
+      window.addEventListener('mousemove', function (event) {
+        if (event.clientY <= 60 && !navLinks.classList.contains('is-open')) {
+          header.classList.remove('nav--hidden');
+        }
+      }, { passive: true });
+    }
   })();
 })();
